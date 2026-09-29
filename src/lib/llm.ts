@@ -7,7 +7,9 @@ import { tmpdir } from "node:os";
 // which runs under the user's own login. Never expose this app to other people.
 
 const CLAUDE_BIN = process.env.CLAUDE_BIN ?? "claude";
-const TIMEOUT_MS = 5 * 60 * 1000;
+// Max effort thinks long: a 4,000-character sample took 14-18 minutes (2026-09-29),
+// and API retries add more. Memos may be ten times longer, so wait up to an hour.
+const TIMEOUT_MS = 60 * 60 * 1000;
 
 type AskOptions = {
   system: string;
@@ -20,7 +22,7 @@ export async function askStructured<T>({
   system,
   prompt,
   schema,
-  model = process.env.CLAUDE_MODEL,
+  model = process.env.CLAUDE_MODEL || "claude-opus-5-5",
 }: AskOptions): Promise<T> {
   const args = [
     "-p",
@@ -32,8 +34,9 @@ export async function askStructured<T>({
     "--setting-sources", "",
     "--strict-mcp-config",
     "--no-session-persistence",
+    "--effort", process.env.CLAUDE_EFFORT || "max",
+    "--model", model,
   ];
-  if (model) args.push("--model", model);
 
   const stdout = await run(args, prompt);
   const result = JSON.parse(stdout);

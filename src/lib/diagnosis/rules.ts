@@ -4,7 +4,7 @@ import type { Evidence, ItemResult, Memo, ModelOutput, Report, Signal } from "./
 const TOP_FIX_COUNT = 3;
 
 // Questions that ask for an absence ("~없는가?") may be answered yes without a quote.
-const ABSENCE_QUESTIONS = new Set(["consistency.no_conflict"]);
+const ABSENCE_QUESTIONS = new Set(["consistency.no_conflict", "exposition.not_dumped"]);
 
 /** All yes → good, some yes → improve, no yes → fix. */
 export function signalFor(answers: ModelOutput["answers"]): Signal {

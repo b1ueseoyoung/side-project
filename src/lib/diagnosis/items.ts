@@ -1,13 +1,14 @@
 // Diagnosis items and yes/no questions for rough planning memos. Draft from
 // the feature design doc (2단계 표); unverified hypotheses until reviewed.
 
-export type Axis = "setting" | "commercial" | "character" | "craft";
+export type Axis = "setting" | "commercial" | "character" | "craft" | "webtoon";
 
 export const AXIS_LABELS: Record<Axis, string> = {
   setting: "설정",
   commercial: "상업성",
   character: "캐릭터",
-  craft: "작법",
+  craft: "서사",
+  webtoon: "웹툰 연재",
 };
 
 export type Question = { id: string; text: string };
@@ -68,6 +69,39 @@ export const JUDGED_ITEMS: JudgedItem[] = [
     ],
   },
   {
+    id: "genre_fit",
+    axis: "commercial",
+    label: "장르 재미",
+    questions: [
+      {
+        id: "genre_fit.core_fun",
+        text: "이 장르 독자가 기대하는 핵심 재미(예: 로판의 관계와 신분 변화, 현판의 성장과 보상, 스릴러의 긴장)가 이야기의 중심에 있는가?",
+      },
+    ],
+  },
+  {
+    id: "originality",
+    axis: "commercial",
+    label: "개성",
+    questions: [
+      {
+        id: "originality.twist",
+        text: "같은 장르에 흔한 설정(예: 회귀, 빙의, 계약 관계) 위에 이 작품에만 있는 비틀기나 고유한 요소가 있는가?",
+      },
+    ],
+  },
+  {
+    id: "selling_point",
+    axis: "commercial",
+    label: "셀링 포인트",
+    questions: [
+      {
+        id: "selling_point.clear",
+        text: "독자가 이 작품을 골라 볼 이유가 로그라인이나 설정에서 한눈에 드러나는가?",
+      },
+    ],
+  },
+  {
     id: "desire_lack",
     axis: "character",
     label: "욕망과 결핍",
@@ -91,6 +125,25 @@ export const JUDGED_ITEMS: JudgedItem[] = [
     ],
   },
   {
+    id: "protagonist_appeal",
+    axis: "character",
+    label: "주인공 매력",
+    questions: [
+      {
+        id: "protagonist_appeal.root",
+        text: "주인공에게 독자가 응원하거나 계속 지켜보고 싶어질 매력(절실한 욕망, 분명한 태도나 개성)이 있는가?",
+      },
+    ],
+  },
+  {
+    id: "arc",
+    axis: "character",
+    label: "인물 변화",
+    questions: [
+      { id: "arc.change", text: "주인공이 이야기를 거치며 달라지는 지점(생각, 관계, 목표의 변화)이 있는가?" },
+    ],
+  },
+  {
     id: "central_question",
     axis: "craft",
     label: "중심 질문",
@@ -102,11 +155,11 @@ export const JUDGED_ITEMS: JudgedItem[] = [
     ],
   },
   {
-    id: "first_episode",
+    id: "stakes",
     axis: "craft",
-    label: "첫 화 사건",
+    label: "갈등의 크기",
     questions: [
-      { id: "first_episode.event", text: "첫 화에서 보여줄 사건이나 장면이 정해져 있는가?" },
+      { id: "stakes.cost", text: "목표를 가로막는 갈등이 충분히 크고, 실패했을 때 잃을 것이 분명한가?" },
     ],
   },
   {
@@ -128,21 +181,53 @@ export const JUDGED_ITEMS: JudgedItem[] = [
       { id: "ending.decided", text: "결말이나 이야기가 도달할 지점이 정해져 있는가?" },
     ],
   },
+  {
+    id: "theme",
+    axis: "craft",
+    label: "주제 일관성",
+    questions: [
+      { id: "theme.coherent", text: "이야기가 전하려는 주제나 감정이 주요 사건과 결말에서 일관되게 드러나는가?" },
+    ],
+  },
+  {
+    id: "first_episode",
+    axis: "webtoon",
+    label: "첫 화 사건",
+    questions: [
+      { id: "first_episode.event", text: "첫 화에서 보여줄 사건이나 장면이 정해져 있는가?" },
+    ],
+  },
+  {
+    id: "early_pace",
+    axis: "webtoon",
+    label: "초반 전개",
+    questions: [
+      { id: "early_pace.goal_early", text: "1~3화 안에 주인공의 목표와 핵심 갈등이 드러나도록 짜여 있는가?" },
+    ],
+  },
+  {
+    id: "cliffhanger",
+    axis: "webtoon",
+    label: "회차 끝 긴장",
+    questions: [
+      {
+        id: "cliffhanger.hooks",
+        text: "회차를 끊을 만한 반전이나 궁금증(절단 지점)이 사건 흐름 곳곳에 있는가?",
+      },
+    ],
+  },
+  {
+    id: "exposition",
+    axis: "webtoon",
+    label: "설명 분산",
+    questions: [
+      { id: "exposition.not_dumped", text: "세계관과 설정 설명이 초반 한두 장면에 몰려 있지 않은가?" },
+    ],
+  },
 ];
 
-export const UNAVAILABLE_ITEMS: UnavailableItem[] = [
-  {
-    id: "genre_fit",
-    axis: "commercial",
-    label: "장르 적합성",
-    reason: "플랫폼별 작품 데이터를 확보한 뒤에 판정해요.",
-  },
-  {
-    id: "originality",
-    axis: "commercial",
-    label: "흔한 설정 대비 차별점",
-    reason: "비교할 작품 데이터가 없어 아직 판정하지 않아요.",
-  },
-];
+// Items that need data the app does not have yet. None right now; reports
+// saved before genre fit and originality were judged still list them.
+export const UNAVAILABLE_ITEMS: UnavailableItem[] = [];
 
 export const ALL_QUESTIONS = JUDGED_ITEMS.flatMap((item) => item.questions);
