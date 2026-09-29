@@ -106,6 +106,17 @@ body {
   word-break: keep-all;
 }
 
+/* Keyboard focus: one quiet ring everywhere; text fields use their border instead. */
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
 /* Press feedback for anything clickable. */
 @utility press {
   transition: transform var(--duration-press) var(--ease-out);
@@ -131,6 +142,13 @@ body {
 
   &[data-active] {
     background-size: 100% 100%;
+    /* Draw after a jump-scroll has mostly settled, so the stroke is seen. */
+    transition-delay: 250ms;
+
+    /* Also draw when the element mounts already active. */
+    @starting-style {
+      background-size: 0% 100%;
+    }
   }
 }
 

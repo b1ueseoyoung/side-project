@@ -1,15 +1,22 @@
-export default function Home() {
+import { redirect } from "next/navigation";
+
+import { DiagnosisApp } from "@/components/diagnosis-app";
+import { SiteHeader } from "@/components/site-header";
+import { requireViewer } from "@/lib/dal";
+
+export default async function Home() {
+  const viewer = await requireViewer();
+  // The deployed app only shows saved reports; diagnosis runs on the owner's Mac.
+  if (!viewer.canDiagnose) redirect("/reports");
+
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-8 px-4 py-24">
-      <div className="flex flex-col gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          투고 전 원고 진단
-        </h1>
-        <p className="text-lg leading-8 text-muted">
-          기획서와 1~3화 원고를 올리면 캐릭터, 상업성, 작법 세 가지 기준으로
-          진단하고 가장 먼저 고칠 점을 알려드려요.
-        </p>
-      </div>
+    <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 pt-10 pb-16 sm:gap-10 sm:pt-16">
+      <SiteHeader viewer={viewer} current="new" />
+      <p className="text-muted">
+        러프한 기획 메모를 붙여넣으면 설정을 정리하고, 상업성·캐릭터·작법과 참고작 겹침을 보고 가장 먼저 손볼
+        점을 알려드려요.
+      </p>
+      <DiagnosisApp />
     </main>
   );
 }

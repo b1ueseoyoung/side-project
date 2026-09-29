@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { MARK_LABELS, ShapeRow, Signal, type Mark } from "@/components/signal";
 import { ElapsedTime } from "@/components/elapsed-time";
+import { enter, primaryButton, secondaryButton } from "@/components/styles";
 
 // Sample content is taken from samples/01-memory-empress.json.
 
@@ -18,15 +19,6 @@ function Section({ title, note, children }: { title: string; note: string; child
     </section>
   );
 }
-
-const primaryButton =
-  "press rounded-md bg-accent px-4 py-2 text-sm font-semibold text-surface";
-const secondaryButton =
-  "press rounded-md border border-border bg-surface px-4 py-2 text-sm transition-colors duration-(--duration-fast) hover:bg-background";
-
-// Fade in + 4px rise on mount. Height is not animated (DESIGN.md: 모션).
-const enter =
-  "transition-[opacity,translate] duration-(--duration-base) ease-out starting:translate-y-1 starting:opacity-0 motion-reduce:starting:translate-y-0";
 
 function Typography() {
   return (

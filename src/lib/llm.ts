@@ -46,7 +46,7 @@ export async function askStructured<T>({
 function run(args: string[], input: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // Run outside the repo so the project's CLAUDE.md is not loaded.
-    const child = spawn(CLAUDE_BIN, args, { cwd: tmpdir() });
+    const child = spawn(/*turbopackIgnore: true*/ CLAUDE_BIN, args, { cwd: tmpdir() });
     let stdout = "";
     let stderr = "";
     const timer = setTimeout(() => child.kill(), TIMEOUT_MS);

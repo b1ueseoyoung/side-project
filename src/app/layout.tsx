@@ -14,9 +14,10 @@ const notoSerifKr = Noto_Serif_KR({
 });
 
 export const metadata: Metadata = {
-  title: "투고 전 원고 진단",
-  description:
-    "웹툰 지망생이 투고 전에 기획서와 1~3화 원고를 진단받고 가장 먼저 고칠 점을 확인하는 서비스",
+  title: "기획 메모 진단",
+  description: "웹툰·만화 기획 메모를 정리하고 가장 먼저 손볼 점을 알려주는 개인용 도구",
+  // Private tool for two people: keep it out of search engines.
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

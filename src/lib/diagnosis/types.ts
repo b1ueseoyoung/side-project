@@ -1,43 +1,39 @@
 import type { Axis } from "./items.ts";
 
-export type Character = { name: string; role: string; want: string };
-
-export type Manuscript = {
+/** What the writer pastes: a rough planning memo in any shape. */
+export type Memo = {
   genre: string;
-  logline: string;
-  synopsis: string;
-  characters: Character[];
-  /** Scripts for episodes 1-3, as pasted text. */
-  episodes: [string, string, string];
+  memo: string;
+  /** Works the writer names as references, if not already in the memo. */
+  references: string;
 };
 
-export type Source =
-  | "logline"
-  | "synopsis"
-  | "characters"
-  | "episode1"
-  | "episode2"
-  | "episode3";
+/** A verbatim quote from the memo. */
+export type Evidence = { quote: string };
 
-export type Evidence = {
-  source: Source;
-  /** Scene label as written in the script (e.g. "#3"), or "" for plan documents. */
-  scene: string;
-  /** Verbatim quote from the input. */
-  quote: string;
+type Answer = {
+  question_id: string;
+  answer: "yes" | "no";
+  reason: string;
+  evidence: Evidence[];
 };
+
+type Noted = { text: string; evidence: Evidence[] };
 
 /** Raw model output, validated against the JSON schema in prompt.ts. */
 export type ModelOutput = {
-  answers: {
-    question_id: string;
-    answer: "yes" | "no";
-    reason: string;
-    evidence: Evidence[];
-  }[];
+  setting: {
+    characters: { name: string; role: string; want: string; evidence: Evidence[] }[];
+    rules: Noted[];
+    events: Noted[];
+    dropped: Noted[];
+    conflicts: Noted[];
+  };
+  references: { work: string; evidence: Evidence[]; overlaps: Noted[] }[];
+  answers: Answer[];
   items: { item_id: string; comment: string; direction: string }[];
   summary: string;
-  strengths: { text: string; evidence: Evidence }[];
+  strengths: Noted[];
 };
 
 export type Signal = "good" | "improve" | "fix";
@@ -47,15 +43,22 @@ export type ItemResult = {
   axis: Axis;
   label: string;
   signal: Signal;
-  answers: ModelOutput["answers"];
+  answers: Answer[];
   comment: string;
   direction: string;
 };
 
+export type Setting = ModelOutput["setting"];
+export type ReferenceNote = ModelOutput["references"][number];
+
 export type Report = {
   summary: string;
-  strengths: ModelOutput["strengths"];
+  strengths: Noted[];
   topFixes: ItemResult[];
+  setting: Setting;
   items: ItemResult[];
+  references: ReferenceNote[];
   unavailable: { id: string; axis: Axis; label: string; reason: string }[];
+  /** How many model quotes were dropped because they were not in the memo. */
+  droppedQuotes: number;
 };
