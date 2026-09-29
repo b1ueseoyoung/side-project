@@ -1,0 +1,501 @@
+"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+// Sample content is taken from samples/01-memory-empress.json.
+
+type Mark = "good" | "improve" | "fix" | "na" | "note";
+
+const MARK_LABELS: Record<Mark, string> = {
+  good: "좋아요",
+  improve: "조금 더",
+  fix: "고쳐요",
+  na: "원고 필요",
+  note: "참고",
+};
+
+const MARK_COLORS: Record<Mark, string> = {
+  good: "text-signal-good",
+  improve: "text-signal-improve",
+  fix: "text-signal-fix",
+  na: "text-signal-na",
+  note: "text-muted",
+};
+
+function Shape({ mark }: { mark: Mark }) {
+  const common = { width: 14, height: 14, viewBox: "0 0 14 14", "aria-hidden": true };
+  switch (mark) {
+    case "good":
+      return (
+        <svg {...common}>
+          <circle cx="7" cy="7" r="6" fill="currentColor" />
+        </svg>
+      );
+    case "improve":
+      return (
+        <svg {...common}>
+          <path d="M7 1.5 13 12.5H1Z" fill="currentColor" />
+        </svg>
+      );
+    case "fix":
+      return (
+        <svg {...common}>
+          <rect x="1.5" y="1.5" width="11" height="11" fill="currentColor" />
+        </svg>
+      );
+    case "na":
+      return (
+        <svg {...common}>
+          <circle cx="7" cy="7" r="5.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2.5 2" />
+        </svg>
+      );
+    case "note":
+      return null;
+  }
+}
+
+function Signal({ mark }: { mark: Mark }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 text-sm font-semibold ${MARK_COLORS[mark]}`}>
+      <Shape mark={mark} />
+      {MARK_LABELS[mark]}
+    </span>
+  );
+}
+
+function Section({ title, note, children }: { title: string; note: string; children: ReactNode }) {
+  return (
+    <section className="flex flex-col gap-4 border-t border-border pt-8">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-lg font-semibold">{title}</h2>
+        <p className="text-sm text-muted">{note}</p>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+const primaryButton =
+  "press rounded-md bg-accent px-4 py-2 text-sm font-semibold text-surface";
+const secondaryButton =
+  "press rounded-md border border-border bg-surface px-4 py-2 text-sm transition-colors duration-(--duration-fast) hover:bg-background";
+
+// Fade in + 4px rise on mount. Height is not animated (DESIGN.md: 모션).
+const enter =
+  "transition-[opacity,translate] duration-(--duration-base) ease-out starting:translate-y-1 starting:opacity-0 motion-reduce:starting:translate-y-0";
+
+function Typography() {
+  return (
+    <Section title="글꼴" note="UI는 고딕, 편집자의 목소리(총평, 코멘트, 인용)는 명조.">
+      <p className="font-serif text-xl">
+        세계관은 매력적인데, 1화 첫 장면이 설정 설명으로 시작해서 리엔의 목소리가 늦게 나와요.
+      </p>
+      <p className="max-w-[34em]">
+        리포트 본문은 17px, 줄간격 1.75로 둡니다. 한 줄은 한글 35~40자 안쪽이라 눈이 다음 줄을 쉽게
+        찾아요. 단어가 줄 끝에서 잘리지 않도록 keep-all을 씁니다.
+      </p>
+      <p className="text-sm text-muted">보조 설명은 15px, 흐린 글자색.</p>
+    </Section>
+  );
+}
+
+function Buttons() {
+  return (
+    <Section title="버튼" note="누르면 97%로 줄어들어요(120ms). 호버는 색만 바뀌고 크기는 그대로예요.">
+      <div className="flex flex-wrap gap-3">
+        <button type="button" className={primaryButton}>
+          진단 받기
+        </button>
+        <button type="button" className={secondaryButton}>
+          대본 다시 붙여넣기
+        </button>
+      </div>
+    </Section>
+  );
+}
+
+function Signals() {
+  return (
+    <Section title="신호등" note="색, 모양, 글자를 항상 함께 보여줘요. 참고 항목은 모양 없이 글자만.">
+      <div className="flex flex-wrap gap-x-6 gap-y-3">
+        {(Object.keys(MARK_LABELS) as Mark[]).map((m) => (
+          <Signal key={m} mark={m} />
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+const TOP_FIXES = [
+  {
+    label: "1화 도입",
+    comment: "1화가 처형장이 아니라 제국 설정 설명으로 시작해요.",
+    quote: "에델 제국은 천 년 동안 거울 신의 가호를 받아왔다.",
+    scene: "1화 #1",
+  },
+  {
+    label: "정보량",
+    comment: "#1 내레이션에 이어 #5에서도 가문 설정을 한꺼번에 설명해요.",
+    quote: "아가씨가 태어나신 로웰 공작가는 제국에서 가장 오래된 가문이고",
+    scene: "1화 #5",
+  },
+  {
+    label: "대사량",
+    comment: "이델이 리엔도 아는 사실을 독자에게 알려주려고 말해요.",
+    quote: "아가씨도 아시다시피 오늘은 황태자 전하의 성년식이잖아요.",
+    scene: "1화 #5",
+  },
+];
+
+function TopFixes() {
+  return (
+    <Section title="가장 먼저 고칠 3가지" note="카드 격자가 아니라 세로 목록. 번호는 우선순위예요.">
+      <ol className="flex flex-col gap-2">
+        {TOP_FIXES.map((f, i) => (
+          <li key={f.label}>
+            <button
+              type="button"
+              className="press flex w-full gap-4 rounded-md bg-surface p-4 text-left transition-colors duration-(--duration-fast) hover:bg-background"
+            >
+              <span className="text-lg font-semibold text-muted">{i + 1}</span>
+              <span className="flex flex-col gap-1">
+                <span className="flex items-center gap-3">
+                  <span className="font-semibold">{f.label}</span>
+                  <Signal mark="fix" />
+                </span>
+                <span className="font-serif">{f.comment}</span>
+                <span className="text-sm text-muted">
+                  {f.scene} · “{f.quote}”
+                </span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </Section>
+  );
+}
+
+const AXES: { axis: string; items: { label: string; mark: Mark; reason: string }[] }[] = [
+  {
+    axis: "캐릭터",
+    items: [
+      { label: "욕망과 결핍", mark: "good", reason: "#4 “이번엔 누가 우리를 팔았는지 알아낼 거야”에서 목표가 드러나요." },
+      { label: "행동 동기", mark: "good", reason: "시놉시스의 선택마다 앞선 사건이 이유가 돼요." },
+      { label: "조연 구분", mark: "improve", reason: "카엘과 이델의 역할은 다르지만 말투가 비슷해요." },
+    ],
+  },
+  {
+    axis: "작법·연출",
+    items: [
+      { label: "1화 도입", mark: "fix", reason: "첫 장면이 사건이 아닌 내레이션 설명이에요." },
+      { label: "정보량", mark: "fix", reason: "#1과 #5에 설정 설명이 몰려 있어요." },
+    ],
+  },
+];
+
+function Accordion() {
+  const [open, setOpen] = useState<string | null>("캐릭터");
+  return (
+    <Section title="항목별 신호등" note="기본은 접혀 있어요. 펼친 내용만 살짝 떠오르고, 높이는 움직이지 않아요.">
+      <div className="flex flex-col">
+        {AXES.map(({ axis, items }) => {
+          const isOpen = open === axis;
+          return (
+            <div key={axis} className="border-b border-border">
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                onClick={() => setOpen(isOpen ? null : axis)}
+                className="flex w-full items-center justify-between py-3 text-left"
+              >
+                <span className="font-semibold">{axis}</span>
+                <span className="flex gap-2">
+                  {items.map((it) => (
+                    <span key={it.label} className={MARK_COLORS[it.mark]}>
+                      <Shape mark={it.mark} />
+                    </span>
+                  ))}
+                </span>
+              </button>
+              {isOpen && (
+                <ul className={`flex flex-col gap-3 pb-4 ${enter}`}>
+                  {items.map((it) => (
+                    <li key={it.label} className="flex flex-col gap-1">
+                      <span className="flex items-center gap-3">
+                        <span>{it.label}</span>
+                        <Signal mark={it.mark} />
+                      </span>
+                      <span className="font-serif text-sm text-muted">{it.reason}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </Section>
+  );
+}
+
+type Scene = {
+  heading: string;
+  lines: { text: string; mark?: { id: string; kind: "good" | "fix" } }[];
+  comment?: { id: string; kind: "good" | "fix"; text: string };
+};
+
+const SCENES: Scene[] = [
+  {
+    heading: "#1 제국 전경 (내레이션)",
+    lines: [
+      {
+        text: "내레이션: 에델 제국은 천 년 동안 거울 신의 가호를 받아왔다. 황실의 피를 이은 자만이 신전의 거울에 닿을 수 있다.",
+        mark: { id: "c1", kind: "fix" },
+      },
+    ],
+    comment: {
+      id: "c1",
+      kind: "fix",
+      text: "첫 장면이 설정 설명이에요. #2 처형장에서 시작하고 설정은 사건 속에 나눠 보여주면 어떨까요.",
+    },
+  },
+  {
+    heading: "#4 신전, 회상",
+    lines: [
+      { text: "리엔이 피 묻은 손으로 거울에 손을 댄다." },
+      {
+        text: "리엔: 한 번만. 한 번만 더 기회를 줘. 이번엔 누가 우리를 팔았는지 알아낼 거야.",
+        mark: { id: "c2", kind: "good" },
+      },
+    ],
+    comment: {
+      id: "c2",
+      kind: "good",
+      text: "리엔이 원하는 것이 한 줄에 분명히 나와요. 이 대사가 작품의 엔진이에요.",
+    },
+  },
+  {
+    heading: "#5 리엔의 침실, 3년 전",
+    lines: [
+      { text: "이델: 아가씨! 악몽을 꾸셨어요?" },
+      {
+        text: "이델: 아가씨도 아시다시피 오늘은 황태자 전하의 성년식이잖아요.",
+        mark: { id: "c3", kind: "fix" },
+      },
+    ],
+    comment: {
+      id: "c3",
+      kind: "fix",
+      text: "리엔도 아는 사실을 독자에게 알려주려는 대사예요. 성년식 준비 장면으로 보여주면 어떨까요.",
+    },
+  },
+];
+
+function ScriptView() {
+  const [active, setActive] = useState<string | null>(null);
+  return (
+    <Section
+      title="원고 보기"
+      note="코멘트를 누르면 대본에 형광펜이 한 번 그려져요. 코멘트는 짚은 장면과 같은 높이에 있어요."
+    >
+      <div className="flex flex-col gap-6">
+        {SCENES.map((scene) => (
+          <div key={scene.heading} className="grid gap-3 md:grid-cols-[1fr_16rem] md:gap-8">
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-semibold text-muted tabular-nums">{scene.heading}</p>
+              {scene.lines.map((line) =>
+                line.mark ? (
+                  <p key={line.text}>
+                    <span
+                      data-active={active === line.mark.id ? "" : undefined}
+                      style={{
+                        ["--marker-color" as string]:
+                          line.mark.kind === "good" ? "var(--marker-good)" : "var(--marker-fix)",
+                      }}
+                      className={`marker-draw underline underline-offset-4 ${
+                        line.mark.kind === "good" ? "decoration-signal-good" : "decoration-signal-improve"
+                      } ${line.mark.kind === "good" ? "decoration-solid" : "decoration-dotted"}`}
+                    >
+                      {line.text}
+                    </span>
+                  </p>
+                ) : (
+                  <p key={line.text}>{line.text}</p>
+                ),
+              )}
+            </div>
+            {scene.comment && (
+              <button
+                type="button"
+                aria-pressed={active === scene.comment.id}
+                onClick={() => setActive(active === scene.comment!.id ? null : scene.comment!.id)}
+                className={`press flex flex-col gap-2 self-start rounded-md border p-3 text-left transition-colors duration-(--duration-fast) ${
+                  active === scene.comment.id ? "border-foreground bg-surface" : "border-border hover:bg-surface"
+                }`}
+              >
+                <Signal mark={scene.comment.kind === "good" ? "good" : "fix"} />
+                <span className="font-serif text-sm">{scene.comment.text}</span>
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+const STEPS = ["캐릭터", "상업성", "작법·연출"];
+
+function Progress() {
+  const [done, setDone] = useState<string[] | null>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+
+  function run() {
+    timers.current.forEach(clearTimeout);
+    setDone([]);
+    // Axes run concurrently, so they finish in no fixed order.
+    const order = [...STEPS].sort(() => Math.random() - 0.5);
+    timers.current = order.map((step, i) =>
+      setTimeout(() => setDone((d) => [...(d ?? []), step]), 700 + i * 600),
+    );
+  }
+
+  return (
+    <Section
+      title="진단 중"
+      note="세 축을 동시에 보므로 순서 없는 체크리스트. 끝난 축에만 체크가 붙어요."
+    >
+      <ul className="flex flex-col gap-2">
+        {STEPS.map((step) => {
+          const finished = done?.includes(step);
+          return (
+            <li key={step} className="flex items-center gap-3">
+              <span className="flex size-5 items-center justify-center">
+                {finished ? (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    aria-hidden
+                    className="text-signal-good transition-[opacity,scale] duration-(--duration-base) ease-out starting:scale-90 starting:opacity-0"
+                  >
+                    <path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                ) : (
+                  <span className="size-1.5 rounded-sm bg-border" />
+                )}
+              </span>
+              <span className={finished ? "" : "text-muted"}>
+                {step} {done === null ? "" : finished ? "다 봤어요" : "보는 중"}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <div>
+        <button type="button" className={secondaryButton} onClick={run}>
+          진단 흉내 내기
+        </button>
+      </div>
+    </Section>
+  );
+}
+
+function Rediagnosis() {
+  const [after, setAfter] = useState(false);
+  const layer = "col-start-1 row-start-1 transition-[opacity,filter] duration-[250ms] ease-out";
+  return (
+    <Section title="재진단 변화" note="이전 모양에서 새 모양으로 흐려지며 한 번 바뀌어요(250ms).">
+      <div className="flex items-center gap-6">
+        <span className="w-24">1화 도입</span>
+        <span className="grid" aria-live="polite">
+          <span className={`${layer} ${after ? "opacity-0 blur-[2px]" : "opacity-100"}`} aria-hidden={after}>
+            <Signal mark="fix" />
+          </span>
+          <span className={`${layer} ${after ? "opacity-100" : "opacity-0 blur-[2px]"}`} aria-hidden={!after}>
+            <Signal mark="good" />
+          </span>
+        </span>
+      </div>
+      <div>
+        <button type="button" className={secondaryButton} onClick={() => setAfter((a) => !a)}>
+          {after ? "이전으로" : "수정본 결과 보기"}
+        </button>
+      </div>
+    </Section>
+  );
+}
+
+function Sheet() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  return (
+    <Section
+      title="모바일 코멘트 시트"
+      note="아래에서 올라와요(400ms, drawer 이징). 드래그로 닫기는 실제 화면을 만들 때 붙여요."
+    >
+      <div>
+        <button type="button" className={secondaryButton} onClick={() => setOpen(true)}>
+          코멘트 열기
+        </button>
+      </div>
+      <div
+        onClick={() => setOpen(false)}
+        className={`fixed inset-0 z-10 bg-foreground/20 transition-opacity duration-(--duration-sheet) ease-drawer ${
+          open ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!open}
+        aria-label="코멘트"
+        inert={!open}
+        className={`fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-lg flex-col gap-3 rounded-t-md bg-surface p-5 pb-8 shadow-float transition-transform duration-(--duration-sheet) ease-drawer motion-reduce:transition-none ${
+          open ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <span className="mx-auto h-1 w-10 rounded-sm bg-border" />
+        <Signal mark="fix" />
+        <p className="font-serif">{SCENES[2].comment!.text}</p>
+        <p className="text-sm text-muted">1화 #5 · “{SCENES[2].lines[1].text}”</p>
+        <button type="button" className={secondaryButton} onClick={() => setOpen(false)}>
+          닫기
+        </button>
+      </div>
+    </Section>
+  );
+}
+
+export function Preview() {
+  return (
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-16">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-2xl font-semibold">디자인 미리보기</h1>
+        <p className="text-muted">
+          DESIGN.md의 결정을 실제 컴포넌트로 확인하는 개발용 화면이에요. 운영체제에서 모션 줄이기를 켜면
+          움직임이 사라지는지도 확인할 수 있어요.
+        </p>
+      </div>
+      <Typography />
+      <Buttons />
+      <Signals />
+      <TopFixes />
+      <Accordion />
+      <ScriptView />
+      <Progress />
+      <Rediagnosis />
+      <Sheet />
+    </main>
+  );
+}

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Calm, neutral palette. See the UI/UX design doc: 디자인 방향. */
+/* Calm, neutral palette. See DESIGN.md and the UI/UX design doc: 디자인 방향. */
 :root {
   --background: #fafaf9;
   --surface: #ffffff;
@@ -14,6 +14,15 @@
   --signal-improve: #b8912f;
   --signal-fix: #b5574b;
   --signal-na: #a8a29e;
+
+  /* Highlighter marks on the script, like a pen on paper. */
+  --marker-good: #d3e8d6;
+  --marker-fix: #f6df9e;
+
+  --duration-press: 120ms;
+  --duration-fast: 160ms;
+  --duration-base: 220ms;
+  --duration-sheet: 400ms;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,10 +38,18 @@
     --signal-improve: #d9b660;
     --signal-fix: #d98a7e;
     --signal-na: #78716c;
+
+    --marker-good: rgb(127 184 143 / 0.28);
+    --marker-fix: rgb(217 182 96 / 0.3);
   }
 }
 
+/*
+ * Default Tailwind scales are cleared so indigo, rounded-2xl, shadow-lg and
+ * similar defaults don't exist. Only the choices in DESIGN.md are available.
+ */
 @theme inline {
+  --color-*: initial;
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-foreground: var(--foreground);
@@ -43,11 +60,82 @@
   --color-signal-improve: var(--signal-improve);
   --color-signal-fix: var(--signal-fix);
   --color-signal-na: var(--signal-na);
-  --font-sans: var(--font-noto-sans-kr);
+  --color-marker-good: var(--marker-good);
+  --color-marker-fix: var(--marker-fix);
+
+  --font-*: initial;
+  --font-sans: var(--font-noto-sans-kr), sans-serif;
+  --font-serif: var(--font-noto-serif-kr), serif;
+  --font-mono: ui-monospace, monospace;
+
+  --text-*: initial;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.6;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.75;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.625rem;
+  --text-xl--line-height: 1.4;
+  --text-2xl: 2rem;
+  --text-2xl--line-height: 1.3;
+
+  --radius-*: initial;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+
+  --shadow-*: initial;
+  --shadow-float: 0 1px 2px rgb(28 25 23 / 0.06), 0 8px 24px rgb(28 25 23 / 0.08);
+
+  --ease-*: initial;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-noto-sans-kr), sans-serif;
+  word-break: keep-all;
+}
+
+/* Press feedback for anything clickable. */
+@utility press {
+  transition: transform var(--duration-press) var(--ease-out);
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/*
+ * Highlighter that draws left to right once when data-active is set.
+ * The one signature motion of the app (DESIGN.md: 모션).
+ */
+@utility marker-draw {
+  background-image: linear-gradient(
+    transparent 55%,
+    var(--marker-color, var(--marker-fix)) 55%
+  );
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-decoration-break: clone;
+  transition: background-size 300ms var(--ease-out);
+
+  &[data-active] {
+    background-size: 100% 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press:active {
+    transform: none;
+  }
+
+  .marker-draw {
+    transition: none;
+  }
 }
