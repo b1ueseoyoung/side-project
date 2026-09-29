@@ -10,9 +10,6 @@ export default function Home() {
           진단하고 가장 먼저 고칠 점을 알려드려요.
         </p>
       </div>
-      <p className="rounded-lg border border-border bg-surface px-4 py-3 text-sm">
-        올린 원고는 AI 학습에 쓰지 않습니다.
-      </p>
     </main>
   );
 }
