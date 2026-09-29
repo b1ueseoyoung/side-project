@@ -1,21 +1,22 @@
 // Shared class names for the decisions in DESIGN.md.
 
 export const primaryButton =
-  "press rounded-md bg-accent px-4 py-2 text-sm font-semibold text-surface disabled:opacity-60";
+  "press inline-flex h-12 items-center justify-center gap-2 rounded-md bg-accent px-6 font-semibold text-on-accent hover:bg-accent-hover disabled:opacity-50";
 
 export const secondaryButton =
-  "press rounded-md border border-border bg-surface px-4 py-2 text-sm transition-colors duration-(--duration-fast) hover:bg-background";
+  "press inline-flex h-10 items-center justify-center gap-1.5 rounded-md border border-border bg-surface px-4 text-sm font-semibold hover:bg-surface-hover";
 
 export const textButton =
-  "text-sm text-muted underline underline-offset-4 transition-colors duration-(--duration-fast) hover:text-foreground";
+  "text-sm font-medium text-muted underline-offset-4 transition-colors duration-(--duration-fast) hover:text-foreground hover:underline";
 
-const fieldBase =
-  "w-full rounded-sm border border-border px-3 py-2 transition-colors duration-(--duration-fast) placeholder:text-muted/70 focus:border-foreground focus:outline-none";
+export const field =
+  "w-full rounded-md border border-border bg-surface px-4 py-3 transition-[border-color,box-shadow] duration-(--duration-fast) placeholder:text-muted/60 focus:border-accent focus:ring-4 focus:ring-accent/15 focus:outline-none";
 
-export const field = `${fieldBase} bg-surface`;
+export const card = "rounded-lg bg-surface";
 
-/** A field placed on a surface-colored block. */
-export const fieldOnSurface = `${fieldBase} bg-background`;
+export const tag = "rounded-sm bg-fill-strong px-1.5 py-0.5 text-xs font-semibold text-secondary";
+
+export const container = "mx-auto w-full max-w-2xl px-4 sm:px-6";
 
 // Fade in + 4px rise on mount. Height is not animated (DESIGN.md: 모션).
 export const enter =

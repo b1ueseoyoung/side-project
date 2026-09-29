@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 
 import { removeReport } from "@/app/actions";
-import { textButton } from "./styles";
 
 // Deleting takes a second press, like clearing a draft.
 export function DeleteReportButton({ id }: { id: string }) {
@@ -13,7 +12,9 @@ export function DeleteReportButton({ id }: { id: string }) {
   return (
     <button
       type="button"
-      className={textButton}
+      className={`rounded-md px-3 py-2 text-sm font-semibold transition-colors duration-(--duration-fast) disabled:opacity-60 ${
+        confirming ? "bg-signal-fix-soft text-signal-fix" : "text-muted hover:text-signal-fix"
+      }`}
       disabled={pending}
       onBlur={() => setConfirming(false)}
       onClick={() => {

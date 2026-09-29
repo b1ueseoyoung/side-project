@@ -4,9 +4,12 @@ import { GENRES, MAX_MEMO_LENGTH, MAX_REFERENCES_LENGTH } from "@/lib/diagnosis/
 import type { Memo } from "@/lib/diagnosis/types";
 import playSample from "../../samples/02-play-assignment.json";
 import webtoonSample from "../../samples/01-memory-empress.json";
-import { enter, field, primaryButton, textButton } from "./styles";
+import { card, enter, field, primaryButton, tag } from "./styles";
 
 export const EMPTY_MEMO: Memo = { genre: "", memo: "", references: "" };
+
+const sampleButton =
+  "press inline-flex h-8 items-center rounded-full bg-fill px-3 text-xs font-semibold text-secondary hover:bg-fill-strong";
 
 type Props = {
   value: Memo;
@@ -20,46 +23,50 @@ export function MemoForm({ value: m, onChange, onSubmit, error }: Props) {
 
   return (
     <form
-      className={`flex flex-col gap-10 ${enter}`}
+      className={`flex flex-col gap-4 ${enter}`}
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
       }}
     >
-      <fieldset className="flex flex-col gap-3">
-        <legend className="mb-3 text-lg font-semibold">장르</legend>
-        <div className="flex flex-wrap gap-2">
-          {GENRES.map((g) => (
-            <label
-              key={g}
-              className={`press cursor-pointer rounded-sm border px-3.5 py-2 text-sm transition-colors duration-(--duration-fast) has-focus-visible:outline-2 has-focus-visible:outline-foreground ${
-                m.genre === g ? "border-foreground bg-surface font-semibold" : "border-border hover:bg-surface"
-              }`}
-            >
-              <input
-                type="radio"
-                name="genre"
-                value={g}
-                checked={m.genre === g}
-                onChange={() => onChange({ ...m, genre: g })}
-                className="sr-only"
-              />
-              {g}
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      <section className={`${card} p-5 sm:p-6`}>
+        <fieldset>
+          <legend className="mb-4 text-lg font-bold tracking-tight">장르</legend>
+          <div className="flex flex-wrap gap-2">
+            {GENRES.map((g) => (
+              <label
+                key={g}
+                className={`press cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent ${
+                  m.genre === g
+                    ? "border-foreground bg-foreground text-surface"
+                    : "border-border bg-surface text-secondary hover:bg-fill"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="genre"
+                  value={g}
+                  checked={m.genre === g}
+                  onChange={() => onChange({ ...m, genre: g })}
+                  className="sr-only"
+                />
+                {g}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </section>
 
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <label htmlFor="memo" className="text-lg font-semibold">
+      <section className={`${card} flex flex-col gap-3 p-5 sm:p-6`}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <label htmlFor="memo" className="text-lg font-bold tracking-tight">
             기획 메모
           </label>
-          <span className="flex gap-4">
-            <button type="button" className={textButton} onClick={() => onChange(webtoonSample as Memo)}>
+          <span className="flex gap-2">
+            <button type="button" className={sampleButton} onClick={() => onChange(webtoonSample as Memo)}>
               웹툰 샘플
             </button>
-            <button type="button" className={textButton} onClick={() => onChange(playSample as Memo)}>
+            <button type="button" className={sampleButton} onClick={() => onChange(playSample as Memo)}>
               형식 예시 샘플
             </button>
           </span>
@@ -70,20 +77,22 @@ export function MemoForm({ value: m, onChange, onSubmit, error }: Props) {
         </p>
         <textarea
           id="memo"
-          rows={20}
+          rows={16}
           value={m.memo}
           onChange={(e) => onChange({ ...m, memo: e.target.value })}
           placeholder={"전제 : 회귀할 때마다 기억을 하나씩 잃는다\n주인공 리엔 - 처형당한 황녀. 배신자를 찾고 싶다\n1화는 처형장에서 시작?\n..."}
-          className={field}
+          className={`${field} mt-1 resize-y leading-relaxed`}
         />
-        <p className={`self-end text-sm tabular-nums ${over ? "font-semibold" : "text-muted"}`}>
+        <p
+          className={`self-end text-sm tabular-nums ${over ? "font-semibold text-signal-fix" : "text-muted"}`}
+        >
           {m.memo.length.toLocaleString()} / {MAX_MEMO_LENGTH.toLocaleString()}자{over && " · 너무 길어요"}
         </p>
-      </div>
+      </section>
 
-      <div className="flex flex-col gap-3">
-        <label htmlFor="references" className="text-lg font-semibold">
-          참고작 <span className="text-sm font-normal text-muted">선택</span>
+      <section className={`${card} flex flex-col gap-3 p-5 sm:p-6`}>
+        <label htmlFor="references" className="flex items-center gap-2 text-lg font-bold tracking-tight">
+          참고작 <span className={tag}>선택</span>
         </label>
         <p className="text-sm text-muted">
           메모에 적지 않은 참고작이 있으면 적어 주세요. 여기와 메모에 적힌 작품하고만 겹치는 부분을 봐요.
@@ -94,23 +103,24 @@ export function MemoForm({ value: m, onChange, onSubmit, error }: Props) {
           maxLength={MAX_REFERENCES_LENGTH}
           onChange={(e) => onChange({ ...m, references: e.target.value })}
           placeholder="카우보이 비밥 「가니메데 비가」, 사무라이 참프루 11화"
-          className={field}
+          className={`${field} mt-1`}
         />
-      </div>
+      </section>
 
-      <div className="sticky bottom-0 -mx-4 flex flex-col gap-3 border-t border-border bg-background px-4 py-3 sm:static sm:mx-0 sm:border-0 sm:p-0">
+      <div className="sticky bottom-0 -mx-4 flex flex-col gap-3 border-t border-border bg-surface px-4 py-3 sm:static sm:mx-0 sm:mt-2 sm:border-0 sm:bg-transparent sm:p-0">
         {error && (
-          <p role="alert" className={`text-sm font-semibold ${enter}`}>
+          <p
+            role="alert"
+            className={`rounded-md bg-signal-fix-soft px-4 py-3 text-sm font-semibold text-signal-fix ${enter}`}
+          >
             {error}
           </p>
         )}
-        <div>
-          <button type="submit" className={primaryButton}>
-            진단 받기
-          </button>
-        </div>
+        <button type="submit" className={`${primaryButton} w-full sm:w-auto sm:self-start`}>
+          진단 받기
+        </button>
       </div>
-      <p className="-mt-6 text-sm text-muted">
+      <p className="text-sm text-muted">
         진단은 이 컴퓨터의 Claude Code로 실행되고, 메모와 결과는 로그인한 두 사람만 볼 수 있는 곳에 저장돼요.
       </p>
     </form>

@@ -16,8 +16,16 @@ export const MARK_COLORS: Record<Mark, string> = {
   note: "text-muted",
 };
 
-export function Shape({ mark }: { mark: Mark }) {
-  const common = { width: 14, height: 14, viewBox: "0 0 14 14", "aria-hidden": true };
+const BADGE_COLORS: Record<Mark, string> = {
+  good: "bg-signal-good-soft text-signal-good",
+  improve: "bg-signal-improve-soft text-signal-improve",
+  fix: "bg-signal-fix-soft text-signal-fix",
+  na: "bg-signal-na-soft text-signal-na",
+  note: "bg-fill text-muted",
+};
+
+export function Shape({ mark, size = 14 }: { mark: Mark; size?: number }) {
+  const common = { width: size, height: size, viewBox: "0 0 14 14", "aria-hidden": true };
   switch (mark) {
     case "good":
       return (
@@ -48,17 +56,13 @@ export function Shape({ mark }: { mark: Mark }) {
   }
 }
 
-// Color goes on the shape only; the label stays in foreground for contrast.
+// Shape and label share the ink color on its soft badge; each pair is >= 4.5:1.
 export function Signal({ mark }: { mark: Mark }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
-        mark === "note" ? "text-muted" : "text-foreground"
-      }`}
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${BADGE_COLORS[mark]}`}
     >
-      <span className={MARK_COLORS[mark]}>
-        <Shape mark={mark} />
-      </span>
+      <Shape mark={mark} size={10} />
       {MARK_LABELS[mark]}
     </span>
   );

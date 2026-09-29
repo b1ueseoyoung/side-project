@@ -7,7 +7,7 @@ import { runDiagnosis } from "@/app/actions";
 import type { Memo } from "@/lib/diagnosis/types";
 import { ElapsedTime } from "./elapsed-time";
 import { EMPTY_MEMO, MemoForm } from "./memo-form";
-import { enter } from "./styles";
+import { card, enter } from "./styles";
 
 // The draft lives in this browser only, so a reload doesn't lose a long memo.
 const DRAFT_KEY = "memo-draft";
@@ -60,7 +60,7 @@ function App() {
 
   if (running !== null) {
     return (
-      <div className={`flex flex-col gap-4 ${enter}`}>
+      <div className={`${card} flex flex-col items-center gap-4 px-6 py-14 text-center ${enter}`}>
         <ElapsedTime startedAt={running} />
         <p className="text-sm text-muted">이 창을 닫으면 결과를 받지 못해요.</p>
       </div>

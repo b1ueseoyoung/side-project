@@ -4,15 +4,15 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { MARK_LABELS, ShapeRow, Signal, type Mark } from "@/components/signal";
 import { ElapsedTime } from "@/components/elapsed-time";
-import { enter, primaryButton, secondaryButton } from "@/components/styles";
+import { card, enter, primaryButton, secondaryButton } from "@/components/styles";
 
 // Sample content is taken from samples/01-memory-empress.json.
 
 function Section({ title, note, children }: { title: string; note: string; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-4 border-t border-border pt-8">
+    <section className={`${card} flex flex-col gap-4 p-5 sm:p-6`}>
       <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className="text-lg font-bold tracking-tight">{title}</h2>
         <p className="text-sm text-muted">{note}</p>
       </div>
       {children}
@@ -22,12 +22,12 @@ function Section({ title, note, children }: { title: string; note: string; child
 
 function Typography() {
   return (
-    <Section title="글꼴" note="UI는 고딕, 편집자의 목소리(총평, 코멘트, 인용)는 명조.">
-      <p className="font-serif text-xl">
+    <Section title="글꼴" note="모든 글자는 Pretendard. 위계는 크기와 굵기로 만들어요.">
+      <p className="text-xl leading-snug font-bold tracking-tight">
         세계관은 매력적인데, 1화 첫 장면이 설정 설명으로 시작해서 리엔의 목소리가 늦게 나와요.
       </p>
-      <p className="max-w-[34em]">
-        리포트 본문은 17px, 줄간격 1.75로 둡니다. 한 줄은 한글 35~40자 안쪽이라 눈이 다음 줄을 쉽게
+      <p className="max-w-[34em] leading-relaxed">
+        리포트 본문은 16px, 줄간격 1.7로 둡니다. 한 줄은 한글 35~40자 안쪽이라 눈이 다음 줄을 쉽게
         찾아요. 단어가 줄 끝에서 잘리지 않도록 keep-all을 씁니다.
       </p>
       <p className="text-sm text-muted">보조 설명은 15px, 흐린 글자색.</p>
@@ -53,7 +53,7 @@ function Buttons() {
 function Signals() {
   return (
     <Section title="신호등" note="색, 모양, 글자를 항상 함께 보여줘요. 참고 항목은 모양 없이 글자만.">
-      <div className="flex flex-wrap gap-x-6 gap-y-3">
+      <div className="flex flex-wrap gap-2">
         {(Object.keys(MARK_LABELS) as Mark[]).map((m) => (
           <Signal key={m} mark={m} />
         ))}
@@ -86,21 +86,23 @@ const TOP_FIXES = [
 function TopFixes() {
   return (
     <Section title="가장 먼저 고칠 3가지" note="카드 격자가 아니라 세로 목록. 번호는 우선순위예요.">
-      <ol className="flex flex-col gap-2">
+      <ol className="flex flex-col gap-3">
         {TOP_FIXES.map((f, i) => (
           <li key={f.label}>
             <button
               type="button"
-              className="press flex w-full gap-4 rounded-md bg-surface p-4 text-left transition-colors duration-(--duration-fast) hover:bg-background"
+              className="press flex w-full gap-4 rounded-lg border border-border bg-surface p-5 text-left hover:bg-surface-hover"
             >
-              <span className="text-lg font-semibold text-muted">{i + 1}</span>
-              <span className="flex flex-col gap-1">
-                <span className="flex items-center gap-3">
-                  <span className="font-semibold">{f.label}</span>
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-foreground text-sm font-bold text-surface tabular-nums">
+                {i + 1}
+              </span>
+              <span className="flex flex-col gap-2">
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="font-bold">{f.label}</span>
                   <Signal mark="fix" />
                 </span>
-                <span className="font-serif">{f.comment}</span>
-                <span className="text-sm text-muted">
+                <span className="leading-relaxed">{f.comment}</span>
+                <span className="block rounded-md bg-fill px-3.5 py-2.5 text-sm text-secondary">
                   {f.scene} · “{f.quote}”
                 </span>
               </span>
@@ -156,7 +158,7 @@ function Accordion() {
                         <span>{it.label}</span>
                         <Signal mark={it.mark} />
                       </span>
-                      <span className="font-serif text-sm text-muted">{it.reason}</span>
+                      <span className="text-sm text-secondary">{it.reason}</span>
                     </li>
                   ))}
                 </ul>
@@ -261,11 +263,11 @@ function ScriptView() {
                 aria-pressed={active === scene.comment.id}
                 onClick={() => setActive(active === scene.comment!.id ? null : scene.comment!.id)}
                 className={`press flex flex-col gap-2 self-start rounded-md border p-3 text-left transition-colors duration-(--duration-fast) ${
-                  active === scene.comment.id ? "border-foreground bg-surface" : "border-border hover:bg-surface"
+                  active === scene.comment.id ? "border-transparent bg-accent-soft" : "border-border hover:bg-surface-hover"
                 }`}
               >
                 <Signal mark={scene.comment.kind === "good" ? "good" : "fix"} />
-                <span className="font-serif text-sm">{scene.comment.text}</span>
+                <span className="text-sm leading-relaxed">{scene.comment.text}</span>
               </button>
             )}
           </div>
@@ -364,7 +366,7 @@ function Sheet() {
       >
         <span className="mx-auto h-1 w-10 rounded-sm bg-border" />
         <Signal mark="fix" />
-        <p className="font-serif">{SCENES[2].comment!.text}</p>
+        <p className="leading-relaxed">{SCENES[2].comment!.text}</p>
         <p className="text-sm text-muted">1화 #5 · “{SCENES[2].lines[1].text}”</p>
         <button type="button" className={secondaryButton} onClick={() => setOpen(false)}>
           닫기
@@ -376,10 +378,10 @@ function Sheet() {
 
 export function Preview() {
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-16">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">디자인 미리보기</h1>
-        <p className="text-muted">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-12 sm:px-6">
+      <div className="mb-4 flex flex-col gap-2">
+        <h1 className="text-2xl font-bold tracking-tight">디자인 미리보기</h1>
+        <p className="text-secondary">
           DESIGN.md의 결정을 실제 컴포넌트로 확인하는 개발용 화면이에요. 운영체제에서 모션 줄이기를 켜면
           움직임이 사라지는지도 확인할 수 있어요.
         </p>
