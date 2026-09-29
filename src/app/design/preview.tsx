@@ -1,83 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+
+import { MARK_LABELS, ShapeRow, Signal, type Mark } from "@/components/signal";
+import { ElapsedTime } from "@/components/elapsed-time";
 
 // Sample content is taken from samples/01-memory-empress.json.
-
-type Mark = "good" | "improve" | "fix" | "na" | "note";
-
-const MARK_LABELS: Record<Mark, string> = {
-  good: "좋아요",
-  improve: "조금 더",
-  fix: "고쳐요",
-  na: "원고 필요",
-  note: "참고",
-};
-
-const MARK_COLORS: Record<Mark, string> = {
-  good: "text-signal-good",
-  improve: "text-signal-improve",
-  fix: "text-signal-fix",
-  na: "text-signal-na",
-  note: "text-muted",
-};
-
-function Shape({ mark }: { mark: Mark }) {
-  const common = { width: 14, height: 14, viewBox: "0 0 14 14", "aria-hidden": true };
-  switch (mark) {
-    case "good":
-      return (
-        <svg {...common}>
-          <circle cx="7" cy="7" r="6" fill="currentColor" />
-        </svg>
-      );
-    case "improve":
-      return (
-        <svg {...common}>
-          <path d="M7 1.5 13 12.5H1Z" fill="currentColor" />
-        </svg>
-      );
-    case "fix":
-      return (
-        <svg {...common}>
-          <rect x="1.5" y="1.5" width="11" height="11" fill="currentColor" />
-        </svg>
-      );
-    case "na":
-      return (
-        <svg {...common}>
-          <circle cx="7" cy="7" r="5.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2.5 2" />
-        </svg>
-      );
-    case "note":
-      return null;
-  }
-}
-
-// Color goes on the shape only; the label stays in foreground for contrast.
-function Signal({ mark }: { mark: Mark }) {
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
-        mark === "note" ? "text-muted" : "text-foreground"
-      }`}
-    >
-      <span className={MARK_COLORS[mark]}>
-        <Shape mark={mark} />
-      </span>
-      {MARK_LABELS[mark]}
-    </span>
-  );
-}
-
-/** Screen reader text for a collapsed axis, e.g. "좋아요 2개, 조금 더 1개". */
-function countSummary(marks: Mark[]) {
-  return (Object.keys(MARK_LABELS) as Mark[])
-    .map((m) => [m, marks.filter((x) => x === m).length] as const)
-    .filter(([, n]) => n > 0)
-    .map(([m, n]) => `${MARK_LABELS[m]} ${n}개`)
-    .join(", ");
-}
 
 function Section({ title, note, children }: { title: string; note: string; children: ReactNode }) {
   return (
@@ -226,14 +154,7 @@ function Accordion() {
                 className="flex w-full items-center justify-between py-3 text-left"
               >
                 <span className="font-semibold">{axis}</span>
-                <span className="flex gap-2">
-                  {items.map((it) => (
-                    <span key={it.label} className={MARK_COLORS[it.mark]}>
-                      <Shape mark={it.mark} />
-                    </span>
-                  ))}
-                  <span className="sr-only">{countSummary(items.map((it) => it.mark))}</span>
-                </span>
+                <ShapeRow marks={items.map((it) => it.mark)} />
               </button>
               {isOpen && (
                 <ul className={`flex flex-col gap-3 pb-4 ${enter}`}>
@@ -362,59 +283,26 @@ function ScriptView() {
   );
 }
 
-const STEPS = ["캐릭터", "상업성", "작법·연출"];
-
 function Progress() {
-  const [done, setDone] = useState<string[] | null>(null);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
-
-  function run() {
-    timers.current.forEach(clearTimeout);
-    setDone([]);
-    // Axes run concurrently, so they finish in no fixed order.
-    const order = [...STEPS].sort(() => Math.random() - 0.5);
-    timers.current = order.map((step, i) =>
-      setTimeout(() => setDone((d) => [...(d ?? []), step]), 700 + i * 600),
-    );
-  }
+  const [startedAt, setStartedAt] = useState<number | null>(null);
 
   return (
     <Section
       title="진단 중"
-      note="세 축을 동시에 보므로 순서 없는 체크리스트. 끝난 축에만 체크가 붙어요."
+      note="한 번의 호출로 진단하므로 가짜 단계 대신 경과 시간과 보통 걸리는 시간을 보여줘요."
     >
-      <ul className="flex flex-col gap-2">
-        {STEPS.map((step) => {
-          const finished = done?.includes(step);
-          return (
-            <li key={step} className="flex items-center gap-3">
-              <span className="flex size-5 items-center justify-center">
-                {finished ? (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    aria-hidden
-                    className="text-signal-good transition-[opacity,scale] duration-(--duration-base) ease-out starting:scale-90 starting:opacity-0"
-                  >
-                    <path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" strokeWidth="2" />
-                  </svg>
-                ) : (
-                  <span className="size-1.5 rounded-sm bg-border" />
-                )}
-              </span>
-              <span className={finished ? "" : "text-muted"}>
-                {step} {done === null ? "" : finished ? "다 봤어요" : "보는 중"}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      {startedAt === null ? (
+        <p className="text-muted">아직 시작하지 않았어요.</p>
+      ) : (
+        <ElapsedTime startedAt={startedAt} />
+      )}
       <div>
-        <button type="button" className={secondaryButton} onClick={run}>
-          진단 흉내 내기
+        <button
+          type="button"
+          className={secondaryButton}
+          onClick={() => setStartedAt(startedAt === null ? Date.now() : null)}
+        >
+          {startedAt === null ? "진단 흉내 내기" : "멈추기"}
         </button>
       </div>
     </Section>
