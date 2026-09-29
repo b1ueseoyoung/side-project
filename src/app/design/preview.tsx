@@ -54,13 +54,29 @@ function Shape({ mark }: { mark: Mark }) {
   }
 }
 
+// Color goes on the shape only; the label stays in foreground for contrast.
 function Signal({ mark }: { mark: Mark }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 text-sm font-semibold ${MARK_COLORS[mark]}`}>
-      <Shape mark={mark} />
+    <span
+      className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
+        mark === "note" ? "text-muted" : "text-foreground"
+      }`}
+    >
+      <span className={MARK_COLORS[mark]}>
+        <Shape mark={mark} />
+      </span>
       {MARK_LABELS[mark]}
     </span>
   );
+}
+
+/** Screen reader text for a collapsed axis, e.g. "좋아요 2개, 조금 더 1개". */
+function countSummary(marks: Mark[]) {
+  return (Object.keys(MARK_LABELS) as Mark[])
+    .map((m) => [m, marks.filter((x) => x === m).length] as const)
+    .filter(([, n]) => n > 0)
+    .map(([m, n]) => `${MARK_LABELS[m]} ${n}개`)
+    .join(", ");
 }
 
 function Section({ title, note, children }: { title: string; note: string; children: ReactNode }) {
@@ -216,6 +232,7 @@ function Accordion() {
                       <Shape mark={it.mark} />
                     </span>
                   ))}
+                  <span className="sr-only">{countSummary(items.map((it) => it.mark))}</span>
                 </span>
               </button>
               {isOpen && (
@@ -406,16 +423,16 @@ function Progress() {
 
 function Rediagnosis() {
   const [after, setAfter] = useState(false);
-  const layer = "col-start-1 row-start-1 transition-[opacity,filter] duration-[250ms] ease-out";
+  const layer = "col-start-1 row-start-1 transition-opacity duration-(--duration-base) ease-out";
   return (
-    <Section title="재진단 변화" note="이전 모양에서 새 모양으로 흐려지며 한 번 바뀌어요(250ms).">
+    <Section title="재진단 변화" note="이전 모양에서 새 모양으로 한 번 크로스페이드해요(220ms).">
       <div className="flex items-center gap-6">
         <span className="w-24">1화 도입</span>
         <span className="grid" aria-live="polite">
-          <span className={`${layer} ${after ? "opacity-0 blur-[2px]" : "opacity-100"}`} aria-hidden={after}>
+          <span className={`${layer} ${after ? "opacity-0" : "opacity-100"}`} aria-hidden={after}>
             <Signal mark="fix" />
           </span>
-          <span className={`${layer} ${after ? "opacity-100" : "opacity-0 blur-[2px]"}`} aria-hidden={!after}>
+          <span className={`${layer} ${after ? "opacity-100" : "opacity-0"}`} aria-hidden={!after}>
             <Signal mark="good" />
           </span>
         </span>

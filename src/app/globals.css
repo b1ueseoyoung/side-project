@@ -9,11 +9,15 @@
   --border: #e7e5e4;
   --accent: #3b6ea8;
 
-  /* Signal colors are always paired with a shape and a label (WCAG 1.4.1). */
+  /*
+   * Signal colors are always paired with a shape and a label (WCAG 1.4.1).
+   * They color the shape only; labels use foreground. Each stays >= 3:1
+   * against background and surface (WCAG 1.4.11).
+   */
   --signal-good: #4d8a5f;
-  --signal-improve: #b8912f;
+  --signal-improve: #9f7d24;
   --signal-fix: #b5574b;
-  --signal-na: #a8a29e;
+  --signal-na: #8f8984;
 
   /* Highlighter marks on the script, like a pen on paper. */
   --marker-good: #d3e8d6;
