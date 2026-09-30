@@ -1,0 +1,29 @@
+{
+  "sampleId": "p4a",
+  "pair": "p4",
+  "variant": "A",
+  "partner": "p4b",
+  "labelStatus": "사람 검토 전 임시 라벨 (AI 작성, 전문가 정답 아님)",
+  "difference": "p4b와는 줄거리 구상의 '결말' 줄 하나만 다르다. 여기에는 결말이 적혀 있다.",
+  "targets": [
+    {
+      "questionId": "ending.decided",
+      "expected": "문제 없음",
+      "evidence": [
+        "은서는 진실을 밝히지만, 처벌할 사람 대부분은 이미 죽었거나 늙었다.",
+        "은서는 기사 대신 언니의 이름으로 장부를 공개하고, 마을은 다시 물에 잠긴다."
+      ],
+      "note": "결말이 한 줄로 분명히 정해져 있다."
+    }
+  ],
+  "mustFind": [],
+  "mustNotFlag": [
+    {
+      "id": "many-culprits",
+      "description": "여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다",
+      "quotes": ["한 사람의 범행이 아니다."],
+      "questionIds": ["turning_points.why", "consistency.no_conflict"]
+    }
+  ],
+  "mayAlsoChange": ["arc.change", "theme.coherent"]
+}

@@ -1,0 +1,39 @@
+{
+  "sampleId": "p3a",
+  "pair": "p3",
+  "variant": "A",
+  "partner": "p3b",
+  "labelStatus": "사람 검토 전 임시 라벨 (AI 작성, 전문가 정답 아님)",
+  "difference": "p3b와는 설정 메모 첫 세 줄만 다르다. 여기서는 폐기안과 최종안이 [폐기]/[최종]으로 표시되어 있다.",
+  "targets": [
+    {
+      "questionId": "versions.separated",
+      "expected": "문제 없음",
+      "evidence": [
+        "[폐기] 소운이 흑의 무리의 첩자로 길러졌다가 배신하는 설정.",
+        "[최종] 소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다.",
+        "[폐기] 객잔 이름 '청운객잔' → [최종] '흑비단객잔'."
+      ],
+      "note": "버린 설정과 최종 설정이 표시로 구분된다."
+    },
+    {
+      "questionId": "consistency.no_conflict",
+      "expected": "문제 없음",
+      "evidence": [],
+      "note": "폐기안을 빼고 보면 최종 설정끼리 어긋나지 않는다."
+    }
+  ],
+  "mustFind": [],
+  "mustNotFlag": [
+    {
+      "id": "discarded-as-conflict",
+      "description": "[폐기] 표시한 첩자 설정과 '청운객잔'을 최종 설정과 어긋난다고 지적한다",
+      "quotes": [
+        "[폐기] 소운이 흑의 무리의 첩자로 길러졌다가 배신하는 설정.",
+        "[폐기] 객잔 이름 '청운객잔' → [최종] '흑비단객잔'."
+      ],
+      "questionIds": ["consistency.no_conflict"]
+    }
+  ],
+  "mayAlsoChange": []
+}

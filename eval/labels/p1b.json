@@ -1,0 +1,46 @@
+{
+  "sampleId": "p1b",
+  "pair": "p1",
+  "variant": "B",
+  "partner": "p1a",
+  "labelStatus": "사람 검토 전 임시 라벨 (AI 작성, 전문가 정답 아님)",
+  "difference": "p1a의 테오 항목을 '3년 전 영지를 잃던 날 마차 사고로 죽었다'로 바꿨다. 나머지는 p1a와 같다.",
+  "targets": [
+    {
+      "questionId": "consistency.no_conflict",
+      "expected": "문제 있음",
+      "evidence": [
+        "테오 로웬(14): 아델의 남동생. 3년 전 영지를 잃던 날 마차 사고로 죽었다.",
+        "원하는 것은 가문의 빚을 갚고 남동생 테오의 기사 학교 학비를 마련하는 것."
+      ],
+      "note": "죽은 남동생의 학비를 마련하려 한다. 중반의 '테오의 학비를 포기하고'도 같은 충돌에 걸린다."
+    }
+  ],
+  "mustFind": [
+    {
+      "id": "dead-brother-tuition",
+      "questionId": "consistency.no_conflict",
+      "description": "3년 전 죽었다는 테오의 기사 학교 학비를 아델이 마련하려 한다",
+      "quotes": [
+        "테오 로웬(14): 아델의 남동생. 3년 전 영지를 잃던 날 마차 사고로 죽었다.",
+        "원하는 것은 가문의 빚을 갚고 남동생 테오의 기사 학교 학비를 마련하는 것."
+      ],
+      "match": "all"
+    }
+  ],
+  "mustNotFlag": [
+    {
+      "id": "alias",
+      "description": "가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다",
+      "quotes": ["아델은 사교계에서 '엘라'라는 가명을 쓴다."],
+      "questionIds": ["consistency.no_conflict"]
+    },
+    {
+      "id": "rina-informant",
+      "description": "리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다",
+      "quotes": ["몰래 황태자 쪽 정보원 노릇을 한다.", "리나가 황태자의 정보원이었다는 사실도 밝혀진다."],
+      "questionIds": ["consistency.no_conflict"]
+    }
+  ],
+  "mayAlsoChange": ["desire_lack.want", "supporting.role", "motivation.reason"]
+}

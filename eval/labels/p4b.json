@@ -1,0 +1,41 @@
+{
+  "sampleId": "p4b",
+  "pair": "p4",
+  "variant": "B",
+  "partner": "p4a",
+  "labelStatus": "사람 검토 전 임시 라벨 (AI 작성, 전문가 정답 아님)",
+  "difference": "p4a에서 줄거리 구상의 '결말' 줄 하나만 지웠다. 나머지는 p4a와 같다.",
+  "targets": [
+    {
+      "questionId": "ending.decided",
+      "expected": "정보 부족",
+      "evidence": ["은주의 실종에는 마을 사람 여럿이 조금씩 관여했다."],
+      "note": "메모에 결말이 없을 뿐이고, 작품에 결말이 없다고 단정할 근거는 없다. 근거는 결말이 필요해지는 마지막 줄거리 줄이면 된다."
+    }
+  ],
+  "mustFind": [
+    {
+      "id": "ending-missing",
+      "questionId": "ending.decided",
+      "description": "이야기가 도달할 지점(결말)이 메모에 없다",
+      "quotes": [],
+      "match": "any"
+    }
+  ],
+  "mustNotFlag": [
+    {
+      "id": "many-culprits",
+      "description": "여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다",
+      "quotes": ["한 사람의 범행이 아니다."],
+      "questionIds": ["turning_points.why", "consistency.no_conflict"]
+    },
+    {
+      "id": "invented-ending",
+      "description": "메모에 없는 결말을 지어내 판단 근거로 삼는다",
+      "quotes": [],
+      "questionIds": ["ending.decided"],
+      "humanOnly": true
+    }
+  ],
+  "mayAlsoChange": ["arc.change", "theme.coherent"]
+}

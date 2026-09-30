@@ -11,6 +11,14 @@ const CLAUDE_BIN = process.env.CLAUDE_BIN ?? "claude";
 // and API retries add more. Memos may be ten times longer, so wait up to an hour.
 const TIMEOUT_MS = 60 * 60 * 1000;
 
+/** Model and effort `claude -p` runs with; the eval runner records them. */
+export function claudeSettings() {
+  return {
+    model: process.env.CLAUDE_MODEL || "claude-opus-5-5",
+    effort: process.env.CLAUDE_EFFORT || "max",
+  };
+}
+
 type AskOptions = {
   system: string;
   prompt: string;
@@ -18,12 +26,26 @@ type AskOptions = {
   model?: string;
 };
 
-export async function askStructured<T>({
+/** The JSON that `claude -p --output-format json` prints. */
+export type ClaudeResult = { structured_output?: unknown; is_error?: boolean; subtype?: string } & Record<
+  string,
+  unknown
+>;
+
+export async function askStructured<T>(options: AskOptions): Promise<T> {
+  return (await askStructuredWithResult<T>(options)).value;
+}
+
+/**
+ * Same call as askStructured, also returning the CLI's full result. A failed
+ * result is attached to the thrown error as `result`.
+ */
+export async function askStructuredWithResult<T>({
   system,
   prompt,
   schema,
-  model = process.env.CLAUDE_MODEL || "claude-opus-5-5",
-}: AskOptions): Promise<T> {
+  model = claudeSettings().model,
+}: AskOptions): Promise<{ value: T; result: ClaudeResult }> {
   const args = [
     "-p",
     "--output-format", "json",
@@ -34,16 +56,16 @@ export async function askStructured<T>({
     "--setting-sources", "",
     "--strict-mcp-config",
     "--no-session-persistence",
-    "--effort", process.env.CLAUDE_EFFORT || "max",
+    "--effort", claudeSettings().effort,
     "--model", model,
   ];
 
   const stdout = await run(args, prompt);
-  const result = JSON.parse(stdout);
+  const result = JSON.parse(stdout) as ClaudeResult;
   if (result.is_error || result.subtype !== "success") {
-    throw new Error(`Claude Code failed: ${result.subtype ?? "unknown error"}`);
+    throw Object.assign(new Error(`Claude Code failed: ${result.subtype ?? "unknown error"}`), { result });
   }
-  return result.structured_output as T;
+  return { value: result.structured_output as T, result };
 }
 
 function run(args: string[], input: string): Promise<string> {

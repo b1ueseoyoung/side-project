@@ -1,0 +1,30 @@
+{
+  "sampleId": "p2a",
+  "pair": "p2",
+  "variant": "A",
+  "partner": "p2b",
+  "labelStatus": "사람 검토 전 임시 라벨 (AI 작성, 전문가 정답 아님)",
+  "difference": "p2b와는 한결의 세 선택(2화 서윤 구하기, 4~10화 회수인과 맞서기, 20화 수명 10년 내주기)에 붙은 이유 문장 세 개만 다르다. 여기에는 이유 문장이 있다. 원본은 dev/samples의 대본 샘플 A(남은 날)를 기획 메모 형식으로 다시 쓴 것이다.",
+  "targets": [
+    {
+      "questionId": "motivation.reason",
+      "expected": "문제 없음",
+      "evidence": [
+        "아버지 때처럼 알고도 모른 척하면 평생 후회할 것 같아서다.",
+        "자신도 빚 때문에 인생을 저당 잡힌 처지라 서윤의 계약을 남의 일로 볼 수 없어서다.",
+        "서윤이 어른들이 정한 날짜가 아니라 자기 날짜로 살기를 바라서다."
+      ],
+      "note": "주인공의 세 핵심 선택마다 바로 뒤에 이유가 적혀 있다."
+    }
+  ],
+  "mustFind": [],
+  "mustNotFlag": [
+    {
+      "id": "miso-hidden",
+      "description": "작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다",
+      "quotes": ["미소의 정체와 목적은 2부 중반에 공개한다.", "1부에서는 일부러 숨긴다."],
+      "questionIds": ["motivation.reason", "consistency.no_conflict"]
+    }
+  ],
+  "mayAlsoChange": ["protagonist_appeal.root", "arc.change", "theme.coherent", "stakes.cost"]
+}

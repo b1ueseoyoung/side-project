@@ -1,0 +1,54 @@
+{
+  "sampleId": "p1b",
+  "run": 1,
+  "dryRun": false,
+  "ok": true,
+  "stage": "done",
+  "error": null,
+  "startedAt": "2026-09-30T01:30:29.323Z",
+  "durationMs": 809110,
+  "settings": {
+    "model": "claude-opus-5-5",
+    "effort": "max"
+  },
+  "cliModels": [
+    "claude-haiku-4-5-20251001",
+    "claude-opus-5-5"
+  ],
+  "cliDurationMs": 807486,
+  "cliApiDurationMs": 808462,
+  "cliUsage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 3374,
+    "cache_read_input_tokens": 4749,
+    "output_tokens": 94428,
+    "output_tokens_details": {
+      "thinking_tokens": 80580
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3374,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 94428,
+        "cache_read_input_tokens": 4749,
+        "cache_creation_input_tokens": 3374,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3374
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cliCostUsd": 1.9203358
+}

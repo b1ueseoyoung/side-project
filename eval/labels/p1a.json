@@ -1,0 +1,32 @@
+{
+  "sampleId": "p1a",
+  "pair": "p1",
+  "variant": "A",
+  "partner": "p1b",
+  "labelStatus": "사람 검토 전 임시 라벨 (AI 작성, 전문가 정답 아님)",
+  "difference": "p1b와는 인물 목록의 테오 항목 한 줄만 다르다. 여기서는 테오가 살아 있고 내년 봄 기사 학교에 입학한다.",
+  "targets": [
+    {
+      "questionId": "consistency.no_conflict",
+      "expected": "문제 없음",
+      "evidence": [],
+      "note": "테오의 입학 예정, 아델의 학비 목표, 중반의 학비 포기가 서로 맞는다. 가명 '엘라'와 리나의 정보원 설정은 작가가 의도를 밝힌 장치다."
+    }
+  ],
+  "mustFind": [],
+  "mustNotFlag": [
+    {
+      "id": "alias",
+      "description": "가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다",
+      "quotes": ["아델은 사교계에서 '엘라'라는 가명을 쓴다."],
+      "questionIds": ["consistency.no_conflict"]
+    },
+    {
+      "id": "rina-informant",
+      "description": "리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다",
+      "quotes": ["몰래 황태자 쪽 정보원 노릇을 한다.", "리나가 황태자의 정보원이었다는 사실도 밝혀진다."],
+      "questionIds": ["consistency.no_conflict"]
+    }
+  ],
+  "mayAlsoChange": ["desire_lack.want", "supporting.role", "motivation.reason"]
+}

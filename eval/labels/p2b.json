@@ -1,0 +1,42 @@
+{
+  "sampleId": "p2b",
+  "pair": "p2",
+  "variant": "B",
+  "partner": "p2a",
+  "labelStatus": "사람 검토 전 임시 라벨 (AI 작성, 전문가 정답 아님)",
+  "difference": "p2a에서 한결의 세 선택에 붙은 이유 문장 세 개만 지웠다. 인물 소개의 과거(아버지 임종을 지키지 못함)는 그대로 남아 있다.",
+  "targets": [
+    {
+      "questionId": "motivation.reason",
+      "expected": "정보 부족",
+      "evidence": [
+        "한결은 서윤을 구하기로 한다.",
+        "한결은 회수인과 맞서기로 한다.",
+        "한결은 자기 수명 10년을 내주고 서윤의 계약을 깬다."
+      ],
+      "note": "선택은 적혀 있지만 이유 문장이 없다. 작품에 동기가 없다는 뜻이 아니라 메모에 적히지 않은 것이다. 인물 소개의 과거만 보고 '이유가 적혀 있다'고 판정하면 짐작으로 채운 것이다."
+    }
+  ],
+  "mustFind": [
+    {
+      "id": "choices-without-reason",
+      "questionId": "motivation.reason",
+      "description": "2화 서윤을 구하기로 한 이유, 4~10화 회수인과 맞서기로 한 이유, 20화 수명 10년을 내준 이유가 메모에 없다",
+      "quotes": [
+        "한결은 서윤을 구하기로 한다.",
+        "한결은 회수인과 맞서기로 한다.",
+        "한결은 자기 수명 10년을 내주고 서윤의 계약을 깬다."
+      ],
+      "match": "all"
+    }
+  ],
+  "mustNotFlag": [
+    {
+      "id": "miso-hidden",
+      "description": "작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다",
+      "quotes": ["미소의 정체와 목적은 2부 중반에 공개한다.", "1부에서는 일부러 숨긴다."],
+      "questionIds": ["motivation.reason", "consistency.no_conflict"]
+    }
+  ],
+  "mayAlsoChange": ["protagonist_appeal.root", "arc.change", "theme.coherent", "stakes.cost"]
+}

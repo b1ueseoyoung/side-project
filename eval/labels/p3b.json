@@ -1,0 +1,59 @@
+{
+  "sampleId": "p3b",
+  "pair": "p3",
+  "variant": "B",
+  "partner": "p3a",
+  "labelStatus": "사람 검토 전 임시 라벨 (AI 작성, 전문가 정답 아님)",
+  "difference": "p3a의 설정 메모에서 날짜와 [폐기]/[최종] 표시를 지우고, 폐기안(첩자로 길러짐, 청운객잔)을 최종 설정처럼 평서문으로 적었다. 줄거리는 그대로 흑비단객잔을 쓴다.",
+  "targets": [
+    {
+      "questionId": "versions.separated",
+      "expected": "문제 있음",
+      "evidence": [
+        "소운은 흑의 무리의 첩자로 길러졌다가 배신한다.",
+        "소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다.",
+        "객잔 이름은 '청운객잔'이다."
+      ],
+      "note": "양립할 수 없는 설정이 모두 최종안처럼 적혀 있고, 어느 쪽이 버린 것인지 표시가 없다."
+    },
+    {
+      "questionId": "consistency.no_conflict",
+      "expected": "문제 있음",
+      "evidence": [
+        "소운은 흑의 무리의 첩자로 길러졌다가 배신한다.",
+        "소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다.",
+        "객잔 이름은 '청운객잔'이다.",
+        "소운이 흑비단객잔에 점소이로 들어온다."
+      ],
+      "note": "첩자로 길러졌다는 것과 누구의 제자도 된 적 없다는 것이 충돌하고, 객잔 이름이 두 가지다."
+    }
+  ],
+  "mustFind": [
+    {
+      "id": "spy-vs-nobody",
+      "questionId": "consistency.no_conflict",
+      "description": "흑의 무리의 첩자로 길러졌다는 설정과 누구의 제자도 된 적 없다는 설정이 함께 적혀 있다",
+      "quotes": [
+        "소운은 흑의 무리의 첩자로 길러졌다가 배신한다.",
+        "소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다."
+      ],
+      "match": "all"
+    },
+    {
+      "id": "inn-name",
+      "questionId": "consistency.no_conflict",
+      "description": "객잔 이름이 청운객잔과 흑비단객잔으로 엇갈린다",
+      "quotes": ["객잔 이름은 '청운객잔'이다.", "소운이 흑비단객잔에 점소이로 들어온다."],
+      "match": "all"
+    },
+    {
+      "id": "versions-mixed",
+      "questionId": "versions.separated",
+      "description": "어느 설정이 최종이고 어느 설정을 버렸는지 표시가 없다",
+      "quotes": ["소운은 흑의 무리의 첩자로 길러졌다가 배신한다.", "객잔 이름은 '청운객잔'이다."],
+      "match": "any"
+    }
+  ],
+  "mustNotFlag": [],
+  "mayAlsoChange": []
+}
