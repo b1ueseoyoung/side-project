@@ -32,8 +32,10 @@ bun run eval -- --samples all --repeat 3 --max-calls 24
 ```
 
 - 일부 샘플만 돌리려면 `--samples p1a,p1b`처럼 쓴다.
-- 모델과 추론 강도는 앱과 같이 `CLAUDE_MODEL`, `CLAUDE_EFFORT`로 정해진다(기본값 `claude-opus-5-5`, `max`). max 설정은 샘플 하나에 10분 넘게 걸릴 수 있다.
+- 모델과 추론 강도는 앱과 같이 `OPENAI_MODEL`, `OPENAI_EFFORT`로 정해진다(기본값 `gpt-6-luna`, `max`). API 키는 `.env.local`의 `OPENAI_API_KEY`를 읽는다.
+- `--max-calls`는 실제 과금 상한이다. 모델 호출 한 번이 곧 과금 한 번이다.
 - 모델 호출이 실패하면 재시도하지 않고 멈춘다(종료 코드 2). 원인은 해당 실행의 `meta.json`에 있다.
+- Claude 기준선은 `BASELINE-2026-09-30.md`에 남아 있다.
 
 ## 결과 파일
 
@@ -42,11 +44,11 @@ bun run eval -- --samples all --repeat 3 --max-calls 24
 | 파일 | 내용 |
 | --- | --- |
 | `input.json` | 모델에 넣은 메모와 프롬프트 해시 |
-| `model-output.json` | 모델 원본 응답(후처리 전) |
-| `cli-result.json` | Claude Code CLI가 돌려준 결과(원본 응답 본문 제외, 사용량·소요 시간 포함) |
+| `model-output.json` | 모델 응답을 질문·항목 순서 배열로 바꾼 것(앱 후처리 전) |
+| `api-response.json` | OpenAI Responses API 응답 본문에서 output을 뺀 것(usage 포함) |
 | `report.json` | 앱 후처리를 거친 최종 리포트. 후처리가 거부하면 `null` |
 | `postprocess.json` | 원문에 없는 인용, 후처리로 바뀐 답, 질문 누락·중복, 먼저 고칠 3가지 분석 |
-| `meta.json` | 성공·실패 단계, 오류, 소요 시간, 모델 설정, CLI가 보고한 모델 |
+| `meta.json` | 성공·실패 단계, 오류, 소요 시간, 모델 설정, 응답이 보고한 모델(`apiModel`), 응답 ID(`responseId`), 토큰 사용량(`usage`), 표준 요금 비용(`costUsd`) |
 
 폴더 맨 위에는 `run-info.json`(설정, 프롬프트·규칙 해시, git 커밋)과 `runs.jsonl`(실행별 한 줄 요약)이 있다. 채점기를 돌리면 `summary.md`, `summary.json`, `review.csv`(사람 검토표)가 생긴다.
 

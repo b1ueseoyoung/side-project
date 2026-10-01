@@ -31,7 +31,8 @@ type RunInfo = {
   repeat: number;
   plannedModelCalls: number;
   settings: Settings;
-  claudeCliVersion: string | null;
+  provider?: string;
+  claudeCliVersion?: string | null;
   versions: {
     gitHead: string | null;
     uncommittedVersionedFiles: string[];
@@ -40,7 +41,16 @@ type RunInfo = {
     outputSchemaSha256: string;
   };
 };
-type Meta = { ok: boolean; stage: string; error: string | null; durationMs: number; cliModels: string[] };
+type Meta = {
+  ok: boolean;
+  stage: string;
+  error: string | null;
+  durationMs: number;
+  cliModels?: string[];
+  apiModel?: string | null;
+  usage?: { input_tokens?: number; output_tokens?: number } | null;
+  costUsd?: number | null;
+};
 type Post = PostprocessDiff & { postprocessError: string | null };
 type RunData = {
   sampleId: string;
@@ -153,8 +163,22 @@ const repeats = info.samples.flatMap((id) => {
 });
 
 const failed = runs.filter((r) => !r.meta?.ok);
+const mid = (xs: number[]) => {
+  const s = [...xs].sort((x, y) => x - y);
+  if (!s.length) return 0;
+  const mid = s.length / 2;
+  return s.length % 2 ? s[Math.floor(mid)] : (s[mid - 1] + s[mid]) / 2;
+};
+const nums = (xs: (number | null | undefined)[]) => xs.filter((x): x is number => typeof x === "number");
+const costs = nums(runs.map((r) => r.meta?.costUsd));
+const inputTokens = nums(runs.map((r) => r.meta?.usage?.input_tokens));
+const outputTokens = nums(runs.map((r) => r.meta?.usage?.output_tokens));
+const cost = costs.length ? { total: costs.reduce((a, b) => a + b, 0), median: mid(costs), max: Math.max(...costs) } : null;
+const tokens = inputTokens.length ? { inputMedian: mid(inputTokens), outputMedian: mid(outputTokens) } : null;
 const summary = {
   runInfo: info,
+  cost,
+  tokens,
   labelProblems,
   runs: runs.map((r) => ({ sampleId: r.sampleId, run: r.run, meta: r.meta, post: r.post })),
   targets,
@@ -173,7 +197,7 @@ const short = (s: string, n = 60) => esc(s.length > n ? `${s.slice(0, n)}…` : 
 const table = (head: string[], rows: string[][]) =>
   [`| ${head.join(" | ")} |`, `| ${head.map(() => "---").join(" | ")} |`, ...rows.map((r) => `| ${r.join(" | ")} |`)].join("\n");
 const secs = runs.map((r) => (r.meta ? Math.round(r.meta.durationMs / 1000) : 0)).sort((x, y) => x - y);
-const median = secs.length ? secs[Math.floor((secs.length - 1) / 2)] : 0;
+const median = Math.round(mid(secs));
 const label = (id: string) => ITEM_OF.get(id)?.label ?? id;
 const stageText: Record<string, string> = { done: "성공", model: "모델 호출 실패", postprocess: "후처리 실패" };
 // A run folder without meta.json was interrupted or is still running; it stays in the failure count.
@@ -197,9 +221,15 @@ lines.push(
     (failed.length ? ` (${failed.map((r) => `${r.sampleId}#${r.run} ${stageText[r.meta?.stage ?? ""] ?? NO_META}`).join(", ")})` : "") +
     `, 실행 안 됨 ${info.samples.length * info.repeat - runs.length}건`,
 );
-lines.push(`- 모델 설정: ${info.settings.model}, 추론 ${info.settings.effort}, CLI ${info.claudeCliVersion ?? "-"}`);
-const cliModels = [...new Set(runs.flatMap((r) => r.meta?.cliModels ?? []))];
-lines.push(`- CLI가 보고한 실제 모델: ${cliModels.join(", ") || "-"}`);
+lines.push(
+  `- 모델 설정: ${info.settings.model}, 추론 ${info.settings.effort}, ${info.provider ?? `CLI ${info.claudeCliVersion ?? "-"}`}`,
+);
+const apiModels = [...new Set(runs.flatMap((r) => (r.meta?.apiModel ? [r.meta.apiModel] : [])))];
+const models = apiModels.length ? apiModels : [...new Set(runs.flatMap((r) => r.meta?.cliModels ?? []))];
+lines.push(`- 응답이 보고한 실제 모델: ${models.join(", ") || "-"}`);
+const usd = (x: number) => `$${x.toFixed(4)}`;
+if (cost) lines.push(`- 비용: 합계 ${usd(cost.total)}, 1회 중앙값 ${usd(cost.median)}, 최대 ${usd(cost.max)} (표준 요금)`);
+if (tokens) lines.push(`- 토큰: 입력 중앙값 ${tokens.inputMedian}, 출력 중앙값 ${tokens.outputMedian}`);
 lines.push(
   `- 버전: git ${info.versions.gitHead?.slice(0, 7) ?? "-"}` +
     (info.versions.uncommittedVersionedFiles.length ? ` (커밋 안 된 변경: ${info.versions.uncommittedVersionedFiles.join(", ")})` : "") +

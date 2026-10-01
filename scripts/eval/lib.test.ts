@@ -8,6 +8,7 @@ import type { Memo } from "../../src/lib/diagnosis/types.ts";
 import {
   checkMustFind,
   checkMustNotFlag,
+  costUsd,
   diffPostprocess,
   fakeModelOutput,
   judgeTarget,
@@ -106,6 +107,29 @@ describe("pair and repeat comparison", () => {
   });
 });
 
+describe("costUsd", () => {
+  const usage = {
+    input_tokens: 5671,
+    input_tokens_details: { cache_write_tokens: 5668, cached_tokens: 0 },
+    output_tokens: 14748,
+    output_tokens_details: { reasoning_tokens: 7103 },
+    total_tokens: 20419,
+  };
+
+  test("prices luna usage including cache writes and cached input", () => {
+    assert.ok(Math.abs((costUsd("gpt-6-luna", usage) ?? 0) - 0.0080828) < 1e-9);
+    const cached = { input_tokens: 1000, input_tokens_details: { cached_tokens: 400 }, output_tokens: 100 };
+    assert.ok(Math.abs((costUsd("gpt-6-luna-2026-09-01", cached) ?? 0) - (600 * 0.1 + 400 * 0.01 + 100 * 0.5) / 1e6) < 1e-12);
+  });
+
+  test("is null for an unknown model or missing usage", () => {
+    assert.equal(costUsd("gpt-4o", usage), null);
+    assert.equal(costUsd(undefined, usage), null);
+    assert.equal(costUsd("gpt-6-luna", null), null);
+    assert.equal(costUsd("gpt-6-luna", {}), null);
+  });
+});
+
 test("safeError masks secret-looking environment values", () => {
   process.env.EVAL_TEST_TOKEN = "super-secret-value";
   assert.equal(
@@ -113,4 +137,6 @@ test("safeError masks secret-looking environment values", () => {
     "failed with <EVAL_TEST_TOKEN> and <masked>",
   );
   delete process.env.EVAL_TEST_TOKEN;
+  const key = "sk-proj-" + "a".repeat(20);
+  assert.equal(safeError(new Error(`bad key ${key}.`)), "bad key <masked>.");
 });

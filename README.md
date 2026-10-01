@@ -7,6 +7,8 @@
 - 설정이나 줄거리를 대신 지어주지 않고, 문제와 방향만 짚는다.
 - 표절은 판정하지 않는다. 작가가 직접 적은 참고작과 겹치는 부분만 참고로 보여준다.
 - 개성과 장르 재미는 작품 데이터와 비교한 결과가 아니라, 모델이 장르의 흔한 설정 유형(회귀, 빙의 등)을 기준으로 판단한 것이다. 다른 작품 이름은 대지 않는다.
+- 메모는 진단을 위해 OpenAI API로 보내지고 OpenAI에 일정 기간 보관된다. 비용 상한은 OpenAI 선불 크레딧 잔액이다(자동 충전은 끈다).
+- 진단 1회 약 $0.020(eval 8건 평균, 표준 요금), 보통 6분 걸린다. 8건 중 2건은 약 20분이 걸렸다.
 
 ## 기능
 
@@ -25,18 +27,18 @@
 ## 구조
 
 - Next.js 16 (App Router, TypeScript, Tailwind CSS 4). 디자인 규칙은 [DESIGN.md](DESIGN.md).
-- **진단은 작성자의 맥에서만** 실행한다. 로컬에 설치된 Claude Code를 `claude -p`로 부르며(`src/lib/llm.ts`), 본인 구독 로그인이라 다른 사람의 진단에 쓰지 않는다.
-- **배포 앱(Vercel)** 은 저장된 리포트를 두 사람이 보는 곳이다. 진단 기능은 `APP_MODE=local`이고 Vercel이 아닐 때만 켜진다(`src/lib/env.ts`).
+- **진단**은 OpenAI Responses API(`gpt-6-luna`)를 background 모드로 부른다(`src/lib/llm.ts`). 서버는 작업을 맡기고 바로 응답하고, 브라우저가 10초마다 결과를 확인한다. 진행 중인 작업 번호는 브라우저에 보관해서, 창을 닫아도 같은 브라우저에서 이어받는다.
+- **배포 앱(Vercel)** 에서 허용된 두 사람이 진단하고 리포트를 본다. `APP_MODE=local`은 맥에서 로그인만 건너뛴다(`src/lib/env.ts`).
 - DB는 Neon Postgres + Drizzle ORM(`src/db/`). 맥의 로컬 앱과 배포 앱이 같은 DB를 쓴다.
 - 로그인은 이메일 링크(better-auth). `ALLOWED_EMAILS`에 있는 주소만 링크를 받는다. 데이터 접근은 모두 `src/lib/dal.ts`에서 로그인을 확인한 뒤 한다.
 
-## 맥에서 실행 (진단)
+## 맥에서 실행
 
-Claude Code가 설치되어 있고 로그인된 상태여야 한다.
+`.env.local`에 `OPENAI_API_KEY`가 있어야 한다.
 
 ```bash
 npm install
-cp .env.example .env.local   # DATABASE_URL, ALLOWED_EMAILS, OWNER_EMAIL, APP_MODE=local 채우기
+cp .env.example .env.local   # DATABASE_URL, ALLOWED_EMAILS, OWNER_EMAIL, OPENAI_API_KEY, APP_MODE=local 채우기
 npm run db:migrate           # 처음 한 번, 테이블 만들기
 npm run dev                  # 브라우저가 자동으로 열린다
 ```
@@ -46,10 +48,12 @@ npm run dev                  # 브라우저가 자동으로 열린다
 ## 배포 (Vercel)
 
 1. Vercel에 저장소를 연결하고, Storage에서 Neon Postgres를 만들어 연결한다(`DATABASE_URL`이 자동으로 들어간다).
-2. 환경변수: `ALLOWED_EMAILS`, `OWNER_EMAIL`, `BETTER_AUTH_SECRET`(`openssl rand -base64 32`), `BETTER_AUTH_URL`(배포 주소), `SMTP_URL`, `SMTP_FROM`. `APP_MODE`는 넣지 않는다.
+2. 환경변수: `ALLOWED_EMAILS`, `OWNER_EMAIL`, `OPENAI_API_KEY`, `BETTER_AUTH_SECRET`(`openssl rand -base64 32`), `BETTER_AUTH_URL`(배포 주소), `SMTP_URL`, `SMTP_FROM`. `APP_MODE`는 넣지 않는다.
 3. 맥의 `.env.local`에 같은 `DATABASE_URL`을 넣고 `npm run db:migrate`.
 
 로그인 메일은 SMTP로 보낸다. Gmail 앱 비밀번호를 쓰면 친구에게도 보낼 수 있다(Resend 무료 발신 주소는 가입자 본인에게만 보낸다).
+
+공유 주소는 `https://side-project-gamma.vercel.app`이다(`side-project-for-me13` 별칭은 Vercel 인증으로 막혀 있다).
 
 ## 설계 문서
 

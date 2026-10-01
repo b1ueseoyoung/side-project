@@ -3,33 +3,83 @@
 import { redirect } from "next/navigation";
 
 import { deleteReport, requireViewer, saveReport } from "@/lib/dal";
-import { diagnose } from "@/lib/diagnosis/diagnose";
+import { checkDiagnosis, errorMessage, isTransient, startDiagnosis } from "@/lib/diagnosis/diagnose";
 import type { Memo } from "@/lib/diagnosis/types";
 import { validateMemo } from "@/lib/diagnosis/validate";
+import { ApiError, isResponseId } from "@/lib/llm";
 
-export type DiagnosisResult = { ok: true; id: string } | { ok: false; error: string };
+export type StartResult = { ok: true; responseId: string } | { ok: false; error: string };
+export type PollResult = { state: "running" } | { state: "done"; id: string } | { state: "failed"; error: string };
 
-// Server functions are reachable by direct POST, so each one checks the
-// viewer itself. Diagnosis runs only in local mode on the owner's Mac.
-export async function runDiagnosis(input: Memo): Promise<DiagnosisResult> {
-  const viewer = await requireViewer();
-  if (!viewer.canDiagnose) return { ok: false, error: "진단은 작성자의 컴퓨터에서만 할 수 있어요." };
-
-  const memo: Memo = {
+// toMemo normalizes user input to a well-formed Memo.
+function toMemo(input: Memo): Memo {
+  return {
     genre: String(input?.genre ?? ""),
     memo: String(input?.memo ?? ""),
     references: String(input?.references ?? ""),
   };
+}
+
+// requestDiagnosis starts a diagnosis and returns its OpenAI response id.
+// Server functions are reachable by direct POST, so each one checks the viewer itself.
+export async function requestDiagnosis(input: Memo): Promise<StartResult> {
+  await requireViewer();
+  const memo = toMemo(input);
   const problem = validateMemo(memo);
   if (problem) return { ok: false, error: problem };
 
   try {
-    const report = await diagnose(memo);
-    return { ok: true, id: await saveReport(memo, report) };
+    const responseId = await startDiagnosis(memo);
+    return { ok: true, responseId };
   } catch (error) {
-    // Log the failure without the memo text.
-    console.error("Diagnosis failed:", error instanceof Error ? error.message : error);
-    return { ok: false, error: "진단을 끝내지 못했어요. 잠시 뒤에 다시 해보세요." };
+    const code = error instanceof ApiError ? error.code : null;
+    const status = error instanceof ApiError ? error.status : null;
+    console.error("Diagnosis start failed:", error instanceof Error ? error.message : error, code);
+    return { ok: false, error: errorMessage(code, status) };
+  }
+}
+
+// pollDiagnosis checks a running diagnosis and saves the report when complete.
+export async function pollDiagnosis(responseId: string, input: Memo): Promise<PollResult> {
+  await requireViewer();
+  const memo = toMemo(input);
+  const id = String(responseId);
+
+  if (!isResponseId(id)) {
+    return { state: "failed", error: errorMessage(null, null) };
+  }
+  const problem = validateMemo(memo);
+  if (problem) return { state: "failed", error: errorMessage(null, null) };
+
+  try {
+    const check = await checkDiagnosis(id, memo);
+    if (check.state === "running") return { state: "running" };
+    if (check.state === "failed") {
+      console.error("Diagnosis failed:", check.reason);
+      return { state: "failed", error: errorMessage(check.reason, null) };
+    }
+    // check.state === "done"
+    if (!check.run.report) {
+      console.error("Diagnosis postprocess failed:", check.run.error instanceof Error ? check.run.error.message : check.run.error);
+      return { state: "failed", error: errorMessage(null, null) };
+    }
+
+    try {
+      const reportId = await saveReport(memo, check.run.report, id);
+      return { state: "done", id: reportId };
+    } catch (error) {
+      console.error("Diagnosis save failed:", error instanceof Error ? error.message : error);
+      // Same response id, same report id: saving twice is a no-op.
+      return { state: "running" };
+    }
+  } catch (error) {
+    console.error("Diagnosis check failed:", error instanceof Error ? error.message : error);
+
+    // The work continues on OpenAI's side; try again next poll.
+    if (isTransient(error)) return { state: "running" };
+
+    // Permanent errors: fail.
+    return { state: "failed", error: errorMessage(null, null) };
   }
 }
 

@@ -1,91 +1,102 @@
 import "server-only";
 
-import { spawn } from "node:child_process";
-import { tmpdir } from "node:os";
+import { requireEnv } from "./env.ts";
 
-// Personal, local use only: calls the installed Claude Code CLI (`claude -p`),
-// which runs under the user's own login. Never expose this app to other people.
+// OpenAI Responses API over fetch, run in background mode: the server starts a
+// response and returns at once, and callers poll it by id.
 
-const CLAUDE_BIN = process.env.CLAUDE_BIN ?? "claude";
-// Max effort thinks long: a 4,000-character sample took 14-18 minutes (2026-09-29),
-// and API retries add more. Memos may be ten times longer, so wait up to an hour.
-const TIMEOUT_MS = 60 * 60 * 1000;
+const API = "https://api.openai.com/v1/responses";
+const REQUEST_TIMEOUT_MS = 30_000;
 
-/** Model and effort `claude -p` runs with; the eval runner records them. */
-export function claudeSettings() {
+/** Model and reasoning effort for diagnoses; the eval runner records them. */
+export function openaiSettings(): { model: string; effort: string } {
   return {
-    model: process.env.CLAUDE_MODEL || "claude-opus-5-5",
-    effort: process.env.CLAUDE_EFFORT || "max",
+    model: process.env.OPENAI_MODEL || "gpt-6-luna",
+    effort: process.env.OPENAI_EFFORT || "max",
   };
 }
 
-type AskOptions = {
+export type ApiResponse = {
+  id: string;
+  status: "queued" | "in_progress" | "completed" | "failed" | "cancelled" | "incomplete";
+  model?: string;
+  output?: { type: string; content?: { type: string; text?: string; refusal?: string }[] }[];
+  error?: { code?: string | null; message?: string } | null;
+  incomplete_details?: { reason?: string } | null;
+  usage?: Record<string, unknown> | null;
+  metadata?: Record<string, string> | null;
+} & Record<string, unknown>;
+
+export class ApiError extends Error {
+  status: number;
+  code: string | null;
+
+  constructor(status: number, code: string | null, message: string) {
+    super(`OpenAI ${status}: ${message}`);
+    this.name = "ApiError";
+    this.status = status;
+    this.code = code;
+  }
+}
+
+export function isResponseId(id: string): boolean {
+  return /^resp_[A-Za-z0-9_-]{1,200}$/.test(id);
+}
+
+type StartOptions = {
   system: string;
   prompt: string;
   schema: Record<string, unknown>;
-  model?: string;
+  metadata: Record<string, string>;
 };
 
-/** The JSON that `claude -p --output-format json` prints. */
-export type ClaudeResult = { structured_output?: unknown; is_error?: boolean; subtype?: string } & Record<
-  string,
-  unknown
->;
-
-export async function askStructured<T>(options: AskOptions): Promise<T> {
-  return (await askStructuredWithResult<T>(options)).value;
-}
-
-/**
- * Same call as askStructured, also returning the CLI's full result. A failed
- * result is attached to the thrown error as `result`.
- */
-export async function askStructuredWithResult<T>({
-  system,
-  prompt,
-  schema,
-  model = claudeSettings().model,
-}: AskOptions): Promise<{ value: T; result: ClaudeResult }> {
-  const args = [
-    "-p",
-    "--output-format", "json",
-    "--json-schema", JSON.stringify(schema),
-    "--system-prompt", system,
-    // No tools, settings, MCP servers or saved sessions: a plain one-shot answer.
-    "--tools", "",
-    "--setting-sources", "",
-    "--strict-mcp-config",
-    "--no-session-persistence",
-    "--effort", claudeSettings().effort,
-    "--model", model,
-  ];
-
-  const stdout = await run(args, prompt);
-  const result = JSON.parse(stdout) as ClaudeResult;
-  if (result.is_error || result.subtype !== "success") {
-    throw Object.assign(new Error(`Claude Code failed: ${result.subtype ?? "unknown error"}`), { result });
-  }
-  return { value: result.structured_output as T, result };
-}
-
-function run(args: string[], input: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    // Run outside the repo so the project's CLAUDE.md is not loaded.
-    const child = spawn(/*turbopackIgnore: true*/ CLAUDE_BIN, args, { cwd: tmpdir() });
-    let stdout = "";
-    let stderr = "";
-    const timer = setTimeout(() => child.kill(), TIMEOUT_MS);
-
-    child.stdout.on("data", (chunk) => (stdout += chunk));
-    child.stderr.on("data", (chunk) => (stderr += chunk));
-    child.on("error", reject);
-    child.on("close", (code) => {
-      clearTimeout(timer);
-      if (code === 0) resolve(stdout);
-      else reject(new Error(`claude exited with ${code}: ${stderr.trim()}`));
-    });
-
-    // Manuscripts go through stdin to avoid argument length limits.
-    child.stdin.end(input);
+export function startStructured({ system, prompt, schema, metadata }: StartOptions): Promise<ApiResponse> {
+  const { model, effort } = openaiSettings();
+  return request("POST", API, {
+    model,
+    reasoning: { effort },
+    instructions: system,
+    input: prompt,
+    text: { format: { type: "json_schema", name: "diagnosis", schema, strict: true } },
+    background: true,
+    // Keep the response after the polling window so a closed tab can pick it up later.
+    store: true,
+    metadata,
   });
+}
+
+export function getResponse(id: string): Promise<ApiResponse> {
+  if (!isResponseId(id)) return Promise.reject(new Error("Invalid response id"));
+  return request("GET", `${API}/${id}`);
+}
+
+/** Parsed structured output of a completed response; throws "refusal" if the model refused. */
+export function structuredOutput<T>(r: ApiResponse): T {
+  if (r.status !== "completed") throw new Error(`Response is ${r.status}`);
+  const content = (r.output ?? []).filter((o) => o.type === "message").flatMap((o) => o.content ?? []);
+  if (content.some((c) => c.type === "refusal")) throw new Error("refusal");
+  const text = content
+    .filter((c) => c.type === "output_text")
+    .map((c) => c.text ?? "")
+    .join("");
+  return JSON.parse(text) as T;
+}
+
+async function request(method: "GET" | "POST", url: string, body?: unknown): Promise<ApiResponse> {
+  const res = await fetch(url, {
+    method,
+    headers: {
+      Authorization: `Bearer ${requireEnv("OPENAI_API_KEY")}`,
+      "Content-Type": "application/json",
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
+  const json = (await res.json().catch(() => null)) as {
+    error?: { code?: string | null; message?: string };
+  } | null;
+  if (!res.ok) {
+    throw new ApiError(res.status, json?.error?.code ?? null, json?.error?.message ?? res.statusText);
+  }
+  return json as ApiResponse;
 }

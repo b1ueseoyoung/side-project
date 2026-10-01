@@ -13,22 +13,20 @@ export function SiteHeader({ viewer, current }: { viewer: Viewer; current: "new"
     <header className="sticky top-0 z-10 border-b border-border bg-surface">
       <div className={`${container} flex h-14 items-center justify-between gap-4`}>
         <Link
-          href={viewer.canDiagnose ? "/" : "/reports"}
+          href="/"
           className="flex items-center gap-2.5 font-bold tracking-tight"
         >
           <Logo />
           기획 메모 진단
         </Link>
         <nav className="flex items-center gap-1">
-          {viewer.canDiagnose && (
-            <Link href="/" className={link} aria-current={current === "new" ? "page" : undefined}>
-              새 진단
-            </Link>
-          )}
+          <Link href="/" className={link} aria-current={current === "new" ? "page" : undefined}>
+            새 진단
+          </Link>
           <Link href="/reports" className={link} aria-current={current === "reports" ? "page" : undefined}>
             리포트
           </Link>
-          {!viewer.canDiagnose && <SignOutButton />}
+          {!viewer.local && <SignOutButton />}
         </nav>
       </div>
     </header>

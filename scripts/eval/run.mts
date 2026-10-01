@@ -13,9 +13,9 @@ import { buildRun, diagnoseDetailed } from "../../src/lib/diagnosis/diagnose.ts"
 import type { DiagnosisRun } from "../../src/lib/diagnosis/diagnose.ts";
 import { OUTPUT_SCHEMA, SYSTEM_PROMPT, buildPrompt } from "../../src/lib/diagnosis/prompt.ts";
 import type { Memo } from "../../src/lib/diagnosis/types.ts";
-import { claudeSettings } from "../../src/lib/llm.ts";
-import type { ClaudeResult } from "../../src/lib/llm.ts";
-import { diffPostprocess, fakeModelOutput, safeError } from "./lib.ts";
+import { openaiSettings } from "../../src/lib/llm.ts";
+import type { ApiResponse } from "../../src/lib/llm.ts";
+import { costUsd, diffPostprocess, fakeModelOutput, safeError } from "./lib.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const VERSIONED_FILES = [
@@ -49,7 +49,6 @@ const tryRun = (command: string, args: string[]) => {
   }
 };
 const git = (...args: string[]) => tryRun("git", args);
-const claudeVersion = () => tryRun(process.env.CLAUDE_BIN ?? "claude", ["--version"]);
 
 const dryRun = values["dry-run"];
 const repeat = Number(values.repeat);
@@ -81,8 +80,8 @@ await writeJson(out, "run-info.json", {
   samples: chosen,
   repeat,
   plannedModelCalls: dryRun ? 0 : calls,
-  settings: claudeSettings(),
-  claudeCliVersion: dryRun ? null : claudeVersion(),
+  provider: "openai-responses",
+  settings: openaiSettings(),
   versions: {
     gitHead: git("rev-parse", "HEAD"),
     uncommittedVersionedFiles: (git("status", "--porcelain", "--", ...VERSIONED_FILES) ?? "")
@@ -108,31 +107,33 @@ runs: for (const sampleId of chosen) {
     const startedAt = new Date();
     let run: DiagnosisRun | null = null;
     let error: string | null = null;
-    let failedCli: ClaudeResult | null = null;
+    let failedApi: ApiResponse | null = null;
+    let failedResponseId: string | null = null;
     try {
-      run = dryRun ? buildRun(fakeModelOutput(memo, sampleId, n), { dry_run: true }, memo) : await diagnoseDetailed(memo);
+      run = dryRun
+        ? buildRun(fakeModelOutput(memo, sampleId, n), { id: "dry-run", status: "completed" } as ApiResponse, memo)
+        : await diagnoseDetailed(memo);
     } catch (e) {
       error = safeError(e);
-      failedCli = (e as { result?: ClaudeResult }).result ?? null;
+      failedApi = (e as { api?: ApiResponse }).api ?? null;
+      failedResponseId = (e as { responseId?: string }).responseId ?? null;
     }
     const durationMs = Date.now() - startedAt.getTime();
 
     if (run) {
-      const cli = { ...run.cli };
-      delete cli.structured_output;
       await writeJson(dir, "model-output.json", run.output);
-      await writeJson(dir, "cli-result.json", cli);
+      await writeJson(dir, "api-response.json", run.api);
       await writeJson(dir, "report.json", run.report);
       await writeJson(dir, "postprocess.json", {
         ...diffPostprocess(run.output, run.report, memo),
         postprocessError: run.error ? safeError(run.error) : null,
       });
-    } else if (failedCli) {
-      await writeJson(dir, "cli-result.json", failedCli);
+    } else if (failedApi) {
+      await writeJson(dir, "api-response.json", failedApi);
     }
 
     const stage = !run ? "model" : run.report ? "done" : "postprocess";
-    const cli = run?.cli ?? failedCli;
+    const api = run?.api ?? failedApi;
     const meta = {
       sampleId,
       run: n,
@@ -142,12 +143,11 @@ runs: for (const sampleId of chosen) {
       error: error ?? (run?.error ? safeError(run.error) : null),
       startedAt: startedAt.toISOString(),
       durationMs,
-      settings: claudeSettings(),
-      cliModels: cli?.modelUsage && typeof cli.modelUsage === "object" ? Object.keys(cli.modelUsage) : [],
-      cliDurationMs: cli?.duration_ms ?? null,
-      cliApiDurationMs: cli?.duration_api_ms ?? null,
-      cliUsage: cli?.usage ?? null,
-      cliCostUsd: cli?.total_cost_usd ?? null,
+      settings: openaiSettings(),
+      apiModel: api?.model ?? null,
+      responseId: api?.id ?? failedResponseId,
+      usage: api?.usage ?? null,
+      costUsd: costUsd(api?.model, api?.usage),
     };
     await writeJson(dir, "meta.json", meta);
     await appendFile(

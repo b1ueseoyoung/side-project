@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-// Opus at max effort: a sample memo took about 14 minutes.
-const TYPICAL_MINUTES = 15;
+// gpt-6-luna at max effort: median 305 s over 8 eval runs; two runs took about 20 minutes.
+const TYPICAL_MINUTES = 6;
 
 // Diagnosis is a single call, so there are no real steps to show.
 // Show elapsed time and the usual duration instead of fake progress.

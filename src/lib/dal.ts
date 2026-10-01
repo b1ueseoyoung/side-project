@@ -9,24 +9,25 @@ import { cache } from "react";
 import { db } from "@/db";
 import { reports } from "@/db/schema";
 import { auth } from "./auth";
+import { reportIdFor } from "./diagnosis/diagnose";
 import type { Memo, Report } from "./diagnosis/types";
 import { isAllowedEmail, isLocalMode, ownerEmail } from "./env";
 
 // Data access layer: every read and write of reports goes through here and
 // checks who is asking first (Next.js data security guide).
 
-export type Viewer = { email: string; canDiagnose: boolean };
+export type Viewer = { email: string; local: boolean };
 
 export const getViewer = cache(async (): Promise<Viewer | null> => {
   // Everything here is per request and private; never prerender it.
   await connection();
   // On the owner's Mac the app only listens on 127.0.0.1, so there is no login.
-  if (isLocalMode()) return { email: ownerEmail(), canDiagnose: true };
+  if (isLocalMode()) return { email: ownerEmail(), local: true };
 
   const session = await auth().api.getSession({ headers: await headers() });
   const email = session?.user.email;
   if (!email || !isAllowedEmail(email)) return null;
-  return { email: email.toLowerCase(), canDiagnose: false };
+  return { email: email.toLowerCase(), local: false };
 });
 
 export async function requireViewer(): Promise<Viewer> {
@@ -56,12 +57,14 @@ export async function getReport(id: string) {
   return { ...row, canDelete: row.createdBy === viewer.email };
 }
 
-export async function saveReport(memo: Memo, report: Report): Promise<string> {
+export async function saveReport(memo: Memo, report: Report, responseId: string): Promise<string> {
   const viewer = await requireViewer();
-  if (!viewer.canDiagnose) throw new Error("Diagnosis is only available in local mode");
-  const [row] = await db()
+  const id = reportIdFor(responseId);
+  // Same response id, same report id: checking a finished diagnosis again (another tab, a retried request) saves nothing new.
+  await db()
     .insert(reports)
     .values({
+      id,
       title: titleFor(memo, report),
       genre: memo.genre,
       memo: memo.memo,
@@ -69,8 +72,8 @@ export async function saveReport(memo: Memo, report: Report): Promise<string> {
       report,
       createdBy: viewer.email,
     })
-    .returning({ id: reports.id });
-  return row.id;
+    .onConflictDoNothing({ target: reports.id });
+  return id;
 }
 
 export async function deleteReport(id: string): Promise<boolean> {

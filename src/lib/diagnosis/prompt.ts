@@ -73,6 +73,11 @@ const noted = {
   additionalProperties: false,
 };
 
+/** Schema property name for a question: its id with "." replaced by "__". */
+export function answerKey(questionId: string): string {
+  return questionId.replaceAll(".", "__");
+}
+
 export const OUTPUT_SCHEMA = {
   type: "object",
   properties: {
@@ -114,32 +119,44 @@ export const OUTPUT_SCHEMA = {
         additionalProperties: false,
       },
     },
+    // One required key per question and item: a strict schema cannot make an array cover them all.
     answers: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          question_id: { type: "string", enum: ALL_QUESTIONS.map((q) => q.id) },
-          answer: { type: "string", enum: ["yes", "no"] },
-          reason: { type: "string" },
-          evidence: evidenceList,
-        },
-        required: ["question_id", "answer", "reason", "evidence"],
-        additionalProperties: false,
-      },
+      type: "object",
+      properties: Object.fromEntries(
+        ALL_QUESTIONS.map((q) => [
+          answerKey(q.id),
+          {
+            type: "object",
+            description: q.text,
+            properties: {
+              answer: { type: "string", enum: ["yes", "no"] },
+              reason: { type: "string" },
+              evidence: evidenceList,
+            },
+            required: ["answer", "reason", "evidence"],
+            additionalProperties: false,
+          },
+        ]),
+      ),
+      required: ALL_QUESTIONS.map((q) => answerKey(q.id)),
+      additionalProperties: false,
     },
     items: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          item_id: { type: "string", enum: JUDGED_ITEMS.map((i) => i.id) },
-          comment: { type: "string" },
-          direction: { type: "string" },
-        },
-        required: ["item_id", "comment", "direction"],
-        additionalProperties: false,
-      },
+      type: "object",
+      properties: Object.fromEntries(
+        JUDGED_ITEMS.map((item) => [
+          item.id,
+          {
+            type: "object",
+            description: item.label,
+            properties: { comment: { type: "string" }, direction: { type: "string" } },
+            required: ["comment", "direction"],
+            additionalProperties: false,
+          },
+        ]),
+      ),
+      required: JUDGED_ITEMS.map((item) => item.id),
+      additionalProperties: false,
     },
     summary: { type: "string" },
     strengths: { type: "array", items: noted },

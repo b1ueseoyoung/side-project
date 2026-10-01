@@ -24,7 +24,7 @@ export default async function ReportsPage() {
             <h1 className="text-2xl font-bold tracking-tight">리포트</h1>
             {reports.length > 0 && <p className="text-secondary">저장된 진단 {reports.length}개</p>}
           </div>
-          {viewer.canDiagnose && reports.length > 0 && (
+          {reports.length > 0 && (
             <Link href="/" className={secondaryButton}>
               새 진단
             </Link>
@@ -39,14 +39,12 @@ export default async function ReportsPage() {
             <div className="flex flex-col gap-1">
               <p className="text-lg font-bold">아직 저장된 리포트가 없어요</p>
               <p className="text-sm text-muted">
-                {viewer.canDiagnose ? "새 진단에서 기획 메모를 진단해 보세요." : "작성자가 진단하면 여기에 쌓여요."}
+                새 진단에서 기획 메모를 진단해 보세요.
               </p>
             </div>
-            {viewer.canDiagnose && (
-              <Link href="/" className={primaryButton}>
-                새 진단 시작하기
-              </Link>
-            )}
+            <Link href="/" className={primaryButton}>
+              새 진단 시작하기
+            </Link>
           </div>
         ) : (
           <ul className="flex flex-col gap-2">

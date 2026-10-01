@@ -121,7 +121,8 @@ export function MemoForm({ value: m, onChange, onSubmit, error }: Props) {
         </button>
       </div>
       <p className="text-sm text-muted">
-        진단은 이 컴퓨터의 Claude Code로 실행되고, 메모와 결과는 로그인한 두 사람만 볼 수 있는 곳에 저장돼요.
+        메모는 진단을 위해 OpenAI API로 보내지고 OpenAI에도 일정 기간 남아요. 메모와 결과는 로그인한 두 사람만 볼 수 있는
+        곳에 저장돼요.
       </p>
     </form>
   );

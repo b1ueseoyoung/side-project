@@ -9,8 +9,8 @@ export function requireEnv(name: string): string {
 }
 
 /**
- * Local mode runs diagnoses with the owner's own Claude Code login, so it must
- * never be on in a deployment, whatever APP_MODE says.
+ * Local mode skips login on the owner's Mac, where the app listens on 127.0.0.1
+ * only, so it must never be on in a deployment, whatever APP_MODE says.
  */
 export function isLocalMode() {
   return process.env.APP_MODE === "local" && !process.env.VERCEL;
@@ -30,7 +30,7 @@ export function isAllowedEmail(email: string) {
   return allowedEmails().has(email.trim().toLowerCase());
 }
 
-/** The writer who runs diagnoses on their Mac; reports are saved under this address. */
+/** The owner's address: in local mode (no login) reports are saved under it. */
 export function ownerEmail() {
   return requireEnv("OWNER_EMAIL").trim().toLowerCase();
 }

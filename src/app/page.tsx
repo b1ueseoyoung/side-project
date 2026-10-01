@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 import { DiagnosisApp } from "@/components/diagnosis-app";
 import { SiteHeader } from "@/components/site-header";
 import { container } from "@/components/styles";
@@ -7,8 +5,6 @@ import { requireViewer } from "@/lib/dal";
 
 export default async function Home() {
   const viewer = await requireViewer();
-  // The deployed app only shows saved reports; diagnosis runs on the owner's Mac.
-  if (!viewer.canDiagnose) redirect("/reports");
 
   return (
     <>
