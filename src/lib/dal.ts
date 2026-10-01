@@ -1,6 +1,6 @@
 import "server-only";
 
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
@@ -11,7 +11,7 @@ import { reports } from "@/db/schema";
 import { auth } from "./auth";
 import { reportIdFor } from "./diagnosis/diagnose";
 import type { Memo, Report } from "./diagnosis/types";
-import { isAllowedEmail, isLocalMode, ownerEmail } from "./env";
+import { isLocalMode, ownerEmail } from "./env";
 
 // Data access layer: every read and write of reports goes through here and
 // checks who is asking first (Next.js data security guide).
@@ -26,7 +26,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
 
   const session = await auth().api.getSession({ headers: await headers() });
   const email = session?.user.email;
-  if (!email || !isAllowedEmail(email)) return null;
+  if (!email) return null;
   return { email: email.toLowerCase(), local: false };
 });
 
@@ -40,11 +40,13 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export type ReportSummary = { id: string; title: string; genre: string; createdAt: Date };
 
+// Reports are private: every query below is limited to the viewer's own.
 export async function listReports(): Promise<ReportSummary[]> {
-  await requireViewer();
+  const viewer = await requireViewer();
   return db()
     .select({ id: reports.id, title: reports.title, genre: reports.genre, createdAt: reports.createdAt })
     .from(reports)
+    .where(eq(reports.createdBy, viewer.email))
     .orderBy(desc(reports.createdAt))
     .limit(200);
 }
@@ -52,9 +54,12 @@ export async function listReports(): Promise<ReportSummary[]> {
 export async function getReport(id: string) {
   const viewer = await requireViewer();
   if (!UUID.test(id)) return null;
-  const [row] = await db().select().from(reports).where(eq(reports.id, id)).limit(1);
-  if (!row) return null;
-  return { ...row, canDelete: row.createdBy === viewer.email };
+  const [row] = await db()
+    .select()
+    .from(reports)
+    .where(and(eq(reports.id, id), eq(reports.createdBy, viewer.email)))
+    .limit(1);
+  return row ?? null;
 }
 
 export async function saveReport(memo: Memo, report: Report, responseId: string): Promise<string> {
@@ -78,7 +83,7 @@ export async function saveReport(memo: Memo, report: Report, responseId: string)
 
 export async function deleteReport(id: string): Promise<boolean> {
   const row = await getReport(id);
-  if (!row?.canDelete) return false;
+  if (!row) return false;
   await db().delete(reports).where(eq(reports.id, id));
   return true;
 }

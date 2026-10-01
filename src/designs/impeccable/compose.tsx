@@ -171,8 +171,7 @@ function Submit({ error }: { error: string | null }) {
 function PrivacyNote() {
   return (
     <p className="type-meta text-muted-foreground">
-      메모는 진단을 위해 OpenAI API로 보내지고 OpenAI에도 일정 기간 남아요. 메모와 결과는 로그인한 두 사람만 볼 수 있는 곳에
-      저장돼요.
+      메모는 진단을 위해 OpenAI API로 보내지고 OpenAI에도 일정 기간 남아요. 메모와 결과는 내 계정에서만 볼 수 있어요.
     </p>
   );
 }

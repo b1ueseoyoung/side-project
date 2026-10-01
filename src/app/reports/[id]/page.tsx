@@ -16,7 +16,6 @@ export default async function ReportPage({ params }: PageProps<"/reports/[id]">)
     createdAt: row.createdAt.toISOString(),
     memo: { genre: row.genre, memo: row.memo, references: row.references },
     report: row.report,
-    canDelete: row.canDelete,
   };
   return <Workspace doc={doc} signOut={!viewer.local} />;
 }

@@ -16,8 +16,7 @@ export function LoginForm() {
     e.preventDefault();
     setState("sending");
     const { error } = await authClient.signIn.magicLink({ email, callbackURL: "/reports" });
-    // Unregistered addresses get the same message, so the form doesn't reveal who is allowed.
-    setState(error && error.status !== 400 ? "error" : "sent");
+    setState(error ? "error" : "sent");
   }
 
   if (state === "sent") {
@@ -26,7 +25,7 @@ export function LoginForm() {
         <span data-family="good" className="flex size-10 items-center justify-center rounded-full bg-(--f-film) text-(--f)">
           <CheckIcon className="size-5" aria-hidden />
         </span>
-        <p className="type-body">등록된 이메일이면 로그인 링크를 보냈어요. 10분 안에 메일의 링크를 눌러 주세요.</p>
+        <p className="type-body">로그인 링크를 보냈어요. 10분 안에 메일의 링크를 눌러 주세요.</p>
       </div>
     );
   }
@@ -47,7 +46,7 @@ export function LoginForm() {
       {state === "error" && (
         <Alert variant="destructive" className="border-destructive/30">
           <AlertCircleIcon />
-          <AlertTitle className="type-ui">잠시 뒤에 다시 해보세요. 여러 번 요청하면 10분 동안 막혀요.</AlertTitle>
+          <AlertTitle className="type-ui">이메일 주소를 확인하고 잠시 뒤에 다시 해보세요. 여러 번 요청하면 10분 동안 막혀요.</AlertTitle>
         </Alert>
       )}
       <Button type="submit" size="lg" className="type-ui h-12 w-full" disabled={state === "sending"}>

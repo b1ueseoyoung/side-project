@@ -9,5 +9,4 @@ export type ReportDoc = {
   createdAt: string;
   memo: Memo;
   report: Report;
-  canDelete: boolean;
 };

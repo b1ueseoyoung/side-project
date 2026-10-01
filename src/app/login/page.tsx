@@ -18,7 +18,7 @@ export default async function LoginPage() {
           </span>
           <div className="flex flex-col gap-1">
             <h1 className="type-page">기획 메모 진단</h1>
-            <p className="type-body text-ink-soft">등록된 이메일로 로그인 링크를 보내드려요.</p>
+            <p className="type-body text-ink-soft">이메일로 로그인 링크를 보내드려요. 처음이면 바로 가입돼요.</p>
           </div>
         </div>
         <div className="paper p-6">

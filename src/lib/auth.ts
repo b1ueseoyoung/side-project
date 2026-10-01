@@ -7,11 +7,11 @@ import { magicLink } from "better-auth/plugins/magic-link";
 
 import { db } from "@/db";
 import * as schema from "@/db/schema";
-import { isAllowedEmail, requireEnv } from "./env";
+import { requireEnv } from "./env";
 import { sendLoginLink } from "./mail";
 
-// Two people use the deployed app. Login is by emailed link only, and only
-// addresses in ALLOWED_EMAILS can receive a link or get an account.
+// Anyone can sign up. Login is by emailed link only, and the rate limits below
+// cap how many links one client can request.
 
 function create() {
   return betterAuth({
@@ -39,21 +39,12 @@ function create() {
       max: 30,
     },
     telemetry: { enabled: false },
-    databaseHooks: {
-      user: {
-        create: {
-          before: async (user) => isAllowedEmail(user.email),
-        },
-      },
-    },
     plugins: [
       magicLink({
         expiresIn: 60 * 10,
         storeToken: "hashed",
         rateLimit: { window: 60 * 10, max: 3 },
         sendMagicLink: async ({ email, url }) => {
-          // Same response either way, so the form doesn't reveal who is allowed.
-          if (!isAllowedEmail(email)) return;
           await sendLoginLink(email, url);
         },
       }),

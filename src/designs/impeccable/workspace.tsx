@@ -93,7 +93,7 @@ export function Workspace({ doc, signOut }: { doc: ReportDoc; signOut: boolean }
           </p>
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          {doc.canDelete && <DeleteButton id={doc.id} />}
+          <DeleteButton id={doc.id} />
           <ToggleGroup
             value={[mode]}
             onValueChange={(value) => {
