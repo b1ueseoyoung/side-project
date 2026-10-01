@@ -106,23 +106,20 @@ function lineIndexOf(lines: Line[], offset: number): number {
   return lo;
 }
 
-/** One flag per opinion per stored line, in memo order. */
+/** One flag per opinion, on the line of the quote its panel entry jumps to. Its other quotes keep only their highlight. */
 export function flagsFor(quotes: Quote[], lines: Line[], review: Review): Flag[] {
-  const seen = new Set<string>();
   const out: Flag[] = [];
-  for (const q of quotes) {
-    if (!q.range) continue;
-    const line = lineIndexOf(lines, q.range.start);
-    const key = `${line}:${q.noteId}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    const note = review.note(q.noteId);
-    if (!note) continue;
+  for (const noteId of new Set(quotes.map((q) => q.noteId))) {
+    const note = review.note(noteId);
+    const quote = note && firstLocated(note);
+    if (!note || !quote?.range) continue;
+    const line = lineIndexOf(lines, quote.range.start);
     const label = flagLabel(note, review);
     const short = note.priority !== null ? String(note.priority) : label.slice(0, 1);
-    out.push({ key, noteId: q.noteId, quoteId: q.id, line, family: familyOf(note), label, short, priority: note.priority });
+    out.push({ key: noteId, noteId, quoteId: quote.id, line, family: familyOf(note), label, short, priority: note.priority });
   }
-  return out;
+  // The margin stacks flags downwards, so they have to come in line order.
+  return out.sort((a, b) => a.line - b.line);
 }
 
 export function problemQuotes(note: Note): Quote[] {

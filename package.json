@@ -10,7 +10,7 @@
     "diagnose": "node --env-file-if-exists=.env.local --conditions=react-server scripts/diagnose.mts",
     "eval": "node --env-file-if-exists=.env.local --conditions=react-server scripts/eval/run.mts",
     "eval:score": "node scripts/eval/score.mts",
-    "test": "node --conditions=react-server --test src/lib/diagnosis/diagnose.test.ts src/designs/shared/review.test.ts scripts/eval/lib.test.ts",
+    "test": "node --conditions=react-server --test src/lib/diagnosis/diagnose.test.ts src/designs/shared/review.test.ts src/designs/impeccable/model.test.ts scripts/eval/lib.test.ts",
     "test:eval": "node --test scripts/eval/lib.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs migrate"
