@@ -20,9 +20,10 @@ const TYPICAL_MINUTES = 6;
 
 export function Compose({ signOut, account }: { signOut: boolean; account: string }) {
   const hydrated = useHydrated();
+  // The key remounts the flow when another account signs in, so the previous memo never stays in its state.
   return (
     <Shell current="new" signOut={signOut}>
-      {hydrated ? <Flow account={account} /> : <main className="flex-1" aria-busy="true" />}
+      {hydrated ? <Flow key={account} account={account} /> : <main className="flex-1" aria-busy="true" />}
     </Shell>
   );
 }
