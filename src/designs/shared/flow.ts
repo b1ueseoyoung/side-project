@@ -18,8 +18,13 @@ const PENDING_PREFIX = "diagnosis-pending";
 const draftKey = (account: string) => `${DRAFT_PREFIX}:${account}`;
 const pendingKey = (account: string) => `${PENDING_PREFIX}:${account}`;
 
+// Counts sign-outs. A flow that was on screen before one writes nothing afterwards, so a draft effect
+// or a diagnosis request that finishes late cannot put the memo back.
+let clears = 0;
+
 /** Removes every draft and running job from this browser, including keys saved before they were per account. */
 export function clearLocalDiagnosis() {
+  clears++;
   try {
     for (const key of Object.keys(localStorage)) {
       if (key.startsWith(DRAFT_PREFIX) || key.startsWith(PENDING_PREFIX)) localStorage.removeItem(key);
@@ -97,14 +102,16 @@ export function useDiagnosisFlow(account: string): DiagnosisFlow {
   const [pending, setPending] = useState<Pending | null>(() => loadPending(account));
   const [starting, setStarting] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [epoch] = useState(clears);
 
   useEffect(() => {
+    if (epoch !== clears) return;
     try {
       localStorage.setItem(draftKey(account), JSON.stringify(memo));
     } catch {
       // Storage full or blocked: keep working without it.
     }
-  }, [memo, account]);
+  }, [memo, account, epoch]);
 
   useEffect(() => {
     if (!pending) return;
@@ -161,12 +168,12 @@ export function useDiagnosisFlow(account: string): DiagnosisFlow {
     window.scrollTo({ top: 0 });
     try {
       const result = await requestDiagnosis(memo);
-      if (result.ok) {
+      if (!result.ok) {
+        setError(result.error);
+      } else if (epoch === clears) {
         const next = { responseId: result.responseId, startedAt, memo };
         savePending(account, next);
         setPending(next);
-      } else {
-        setError(result.error);
       }
     } catch {
       setError("서버에 연결하지 못했어요. 잠시 뒤에 다시 해 주세요.");
