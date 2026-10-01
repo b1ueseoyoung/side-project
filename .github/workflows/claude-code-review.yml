@@ -24,6 +24,7 @@ jobs:
         with:
           fetch-depth: 1
       - uses: anthropics/claude-code-action@v1
+        id: claude
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
@@ -31,6 +32,24 @@ jobs:
           # Read diffs up to 150k characters (default 30k) so mid-size PRs are reviewed in full.
           settings: '{"env": {"BASH_MAX_OUTPUT_LENGTH": "150000"}}'
           prompt: "/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
+          # The gh commands the review command uses, allowed for the whole session as in the action's review examples.
           claude_args: >-
-            --allowedTools "mcp__github_inline_comment__create_inline_comment"
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr list:*),Bash(gh pr comment:*),Bash(gh issue view:*),Bash(gh issue list:*),Bash(gh search:*)"
             --append-system-prompt "Write every review comment in Korean. Files under eval/results/ are generated evaluation data; do not review them."
+      # The action hides Claude's messages. Print its tool calls and last message, so a run that
+      # posts nothing still says why (closed PR, nothing to review, a denied tool).
+      - name: Show what Claude did
+        if: always() && steps.claude.outputs.execution_file != ''
+        env:
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+        run: |
+          jq -r '
+            .[] | . as $m |
+            if .type == "assistant" then
+              .message.content[]? | select(.type == "tool_use") |
+              "tool\(if $m.parent_tool_use_id then " (subagent)" else "" end): \(.name) \(.input | tostring | .[0:200])"
+            elif .type == "result" then
+              "denied: \([.permission_denials[]?.tool_name] | join(", "))",
+              "last message: \(.result // "(none)")"
+            else empty end
+          ' "$EXECUTION_FILE" || echo "could not read $EXECUTION_FILE"
