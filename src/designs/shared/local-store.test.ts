@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { SIGNED_OUT_KEY, clearLocalDiagnosis, signedOutAt } from "./local-store.ts";
+import { SIGNED_OUT_KEY, announceSessionEnd, clearLocalDiagnosis, signedOutAt } from "./local-store.ts";
 
 // Items are own properties, as in a browser, so `Object.keys` lists them.
 class FakeStorage {
@@ -73,5 +73,6 @@ test("a blocked storage is left alone without throwing", () => {
   useStorage(blocked);
 
   assert.doesNotThrow(clearLocalDiagnosis);
+  assert.doesNotThrow(announceSessionEnd);
   assert.equal(signedOutAt(), null);
 });

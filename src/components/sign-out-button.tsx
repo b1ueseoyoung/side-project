@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { SIGNED_OUT_KEY, clearLocalDiagnosis } from "@/designs/shared/local-store";
+import { SESSION_ENDED_KEY, announceSessionEnd, clearLocalDiagnosis } from "@/designs/shared/local-store";
 import { authClient } from "@/lib/auth-client";
 
 export function SignOutButton({ className }: { className?: string }) {
@@ -15,7 +15,8 @@ export function SignOutButton({ className }: { className?: string }) {
       onClick={async () => {
         // The memo must not stay on a shared browser after its writer leaves.
         clearLocalDiagnosis();
-        await authClient.signOut();
+        const { error } = await authClient.signOut();
+        if (!error) announceSessionEnd();
         router.replace("/login");
       }}
     >
@@ -28,7 +29,7 @@ export function SignOutButton({ className }: { className?: string }) {
 export function LeaveOnSignOut() {
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === SIGNED_OUT_KEY) window.location.replace("/login");
+      if (e.key === SESSION_ENDED_KEY) window.location.replace("/login");
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);

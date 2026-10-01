@@ -5,10 +5,22 @@
 export const DRAFT_PREFIX = "memo-draft";
 export const PENDING_PREFIX = "diagnosis-pending";
 
-// Sign-out stamps this key. A flow that was on screen before the stamp writes nothing afterwards, so a
-// draft effect or a diagnosis request that finishes late cannot put the memo back. The stamp lives in
-// storage so that other tabs see it too: they leave for the login page.
+// Sign-out stamps this key before it asks the server. A flow that was on screen before the stamp, in
+// this tab or another, writes nothing afterwards, so a draft effect or a diagnosis request that finishes
+// late cannot put the memo back.
 export const SIGNED_OUT_KEY = "signed-out-at";
+
+// Written once the server has ended the session. Other tabs leave for the login page on this key, not on
+// the stamp: while the session is still alive the login page would send them straight back in.
+export const SESSION_ENDED_KEY = "session-ended-at";
+
+export function announceSessionEnd() {
+  try {
+    localStorage.setItem(SESSION_ENDED_KEY, String(Date.now()));
+  } catch {
+    // Storage full or blocked: other tabs stay where they are.
+  }
+}
 
 export function signedOutAt(): string | null {
   try {
