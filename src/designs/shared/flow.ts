@@ -67,6 +67,7 @@ export function useHydrated() {
 }
 
 export type DiagnosisFlow = {
+  /** The draft; while a diagnosis runs, the memo that was sent. */
   memo: Memo;
   setMemo: (m: Memo) => void;
   /** When a diagnosis is being started or is running: the moment it began. */
@@ -159,7 +160,8 @@ export function useDiagnosisFlow(): DiagnosisFlow {
     setStarting(null);
   }
 
-  return { memo, setMemo, startedAt: pending?.startedAt ?? starting, error, submit };
+  // While a job runs, show the memo that was sent: the draft may have been edited in another tab.
+  return { memo: pending?.memo ?? memo, setMemo, startedAt: pending?.startedAt ?? starting, error, submit };
 }
 
 /** Elapsed time since `startedAt`, ticking once a second. */
