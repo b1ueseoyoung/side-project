@@ -1,0 +1,61 @@
+{
+  "missingQuestionIds": [],
+  "duplicateQuestionIds": [],
+  "unknownQuestionIds": [],
+  "rawQuotes": {
+    "total": 67,
+    "inMemo": 65,
+    "notInMemo": [
+      {
+        "where": "answers",
+        "questionId": "consistency.no_conflict",
+        "quote": "소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적 없다."
+      },
+      {
+        "where": "setting.events",
+        "quote": "소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적 없다."
+      }
+    ]
+  },
+  "appDroppedQuotes": 2,
+  "changedAnswers": [],
+  "priority": {
+    "topFixes": [
+      {
+        "itemId": "core_rules",
+        "signal": "fix",
+        "tableIndex": 1
+      },
+      {
+        "itemId": "versions",
+        "signal": "fix",
+        "tableIndex": 2
+      },
+      {
+        "itemId": "longevity",
+        "signal": "fix",
+        "tableIndex": 4
+      }
+    ],
+    "red": [
+      "core_rules",
+      "versions",
+      "longevity",
+      "genre_fit",
+      "motivation",
+      "arc",
+      "turning_points",
+      "exposition"
+    ],
+    "yellow": [],
+    "redLeftOut": [
+      "genre_fit",
+      "motivation",
+      "arc",
+      "turning_points",
+      "exposition"
+    ],
+    "followsTableOrder": true
+  },
+  "postprocessError": null
+}

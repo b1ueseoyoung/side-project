@@ -1,0 +1,4 @@
+{"sampleId":"p1a","run":1,"ok":true,"stage":"done","durationMs":120110,"error":null}
+{"sampleId":"p1b","run":1,"ok":true,"stage":"done","durationMs":76752,"error":null}
+{"sampleId":"p2a","run":1,"ok":true,"stage":"done","durationMs":97478,"error":null}
+{"sampleId":"p2b","run":1,"ok":false,"stage":"model","durationMs":23902,"error":"fetch failed"}

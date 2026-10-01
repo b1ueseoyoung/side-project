@@ -1,0 +1,53 @@
+{
+  "missingQuestionIds": [],
+  "duplicateQuestionIds": [],
+  "unknownQuestionIds": [],
+  "rawQuotes": {
+    "total": 87,
+    "inMemo": 86,
+    "notInMemo": [
+      {
+        "where": "answers",
+        "questionId": "originality.twist",
+        "quote": "아델은 식물 이름과 효능을 외우는 게 특기다."
+      }
+    ]
+  },
+  "appDroppedQuotes": 1,
+  "changedAnswers": [],
+  "priority": {
+    "topFixes": [
+      {
+        "itemId": "versions",
+        "signal": "fix",
+        "tableIndex": 2
+      },
+      {
+        "itemId": "genre_fit",
+        "signal": "fix",
+        "tableIndex": 5
+      },
+      {
+        "itemId": "motivation",
+        "signal": "fix",
+        "tableIndex": 9
+      }
+    ],
+    "red": [
+      "versions",
+      "genre_fit",
+      "motivation",
+      "turning_points",
+      "cliffhanger",
+      "exposition"
+    ],
+    "yellow": [],
+    "redLeftOut": [
+      "turning_points",
+      "cliffhanger",
+      "exposition"
+    ],
+    "followsTableOrder": true
+  },
+  "postprocessError": null
+}

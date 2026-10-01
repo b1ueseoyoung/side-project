@@ -1,0 +1,18 @@
+{
+  "sampleId": "p2b",
+  "run": 1,
+  "dryRun": false,
+  "ok": false,
+  "stage": "model",
+  "error": "fetch failed",
+  "startedAt": "2026-09-30T08:33:17.913Z",
+  "durationMs": 23902,
+  "settings": {
+    "model": "gpt-6-luna",
+    "effort": "high"
+  },
+  "apiModel": null,
+  "responseId": null,
+  "usage": null,
+  "costUsd": null
+}

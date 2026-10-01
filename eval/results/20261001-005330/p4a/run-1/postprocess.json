@@ -1,0 +1,45 @@
+{
+  "missingQuestionIds": [],
+  "duplicateQuestionIds": [],
+  "unknownQuestionIds": [],
+  "rawQuotes": {
+    "total": 110,
+    "inMemo": 110,
+    "notInMemo": []
+  },
+  "appDroppedQuotes": 0,
+  "changedAnswers": [],
+  "priority": {
+    "topFixes": [
+      {
+        "itemId": "consistency",
+        "signal": "fix",
+        "tableIndex": 0
+      },
+      {
+        "itemId": "versions",
+        "signal": "fix",
+        "tableIndex": 2
+      },
+      {
+        "itemId": "motivation",
+        "signal": "fix",
+        "tableIndex": 9
+      }
+    ],
+    "red": [
+      "consistency",
+      "versions",
+      "motivation",
+      "stakes",
+      "turning_points"
+    ],
+    "yellow": [],
+    "redLeftOut": [
+      "stakes",
+      "turning_points"
+    ],
+    "followsTableOrder": true
+  },
+  "postprocessError": null
+}

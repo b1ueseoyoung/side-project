@@ -1,0 +1,40 @@
+{
+  "createdAt": "2026-10-01T00:53:30.669Z",
+  "dryRun": false,
+  "samples": [
+    "p1a",
+    "p1b",
+    "p2a",
+    "p2b",
+    "p3a",
+    "p3b",
+    "p4a",
+    "p4b"
+  ],
+  "repeat": 1,
+  "plannedModelCalls": 8,
+  "provider": "openai-responses",
+  "settings": {
+    "model": "gpt-6-luna",
+    "effort": "max"
+  },
+  "versions": {
+    "gitHead": "881827f529b9a781bd7fd77653e079cb6448f5c8",
+    "uncommittedVersionedFiles": [
+      "M src/lib/diagnosis/diagnose.ts",
+      "M src/lib/diagnosis/prompt.ts",
+      "M src/lib/llm.ts"
+    ],
+    "files": {
+      "src/lib/diagnosis/prompt.ts": "fb1365e361f5bb73",
+      "src/lib/diagnosis/rules.ts": "da6a55683be26719",
+      "src/lib/diagnosis/items.ts": "1293e659696d7113",
+      "src/lib/diagnosis/types.ts": "880face5276968a7",
+      "src/lib/diagnosis/diagnose.ts": "819e8befc012a42d",
+      "src/lib/llm.ts": "5f62f5e52e0ccd78"
+    },
+    "systemPromptSha256": "6e63177dca9e3b84",
+    "outputSchemaSha256": "4e955489cd78221e"
+  },
+  "node": "v26.10.0"
+}
