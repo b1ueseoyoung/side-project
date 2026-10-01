@@ -1,17 +1,19 @@
 "use client";
 
+// The diagnosis flow as a hook: a draft kept in this browser, a job handed to the server,
+// a poll every ten seconds, and a job that survives closing the window.
+
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { pollDiagnosis, requestDiagnosis } from "@/app/actions";
 import type { Memo } from "@/lib/diagnosis/types";
-import { ElapsedTime } from "./elapsed-time";
-import { EMPTY_MEMO, MemoForm } from "./memo-form";
-import { card, enter } from "./styles";
 
-// The draft lives in this browser only, so a reload doesn't lose a long memo.
+export const EMPTY_MEMO: Memo = { genre: "", memo: "", references: "" };
+
+// Storage keys are unchanged from the previous screens, so a draft or a running job carries over
+// across the redesign.
 const DRAFT_KEY = "memo-draft";
-
 const PENDING_KEY = "diagnosis-pending";
 const POLL_MS = 10_000;
 const GIVE_UP_MS = 60 * 60 * 1000;
@@ -28,9 +30,6 @@ function loadDraft(): Memo {
   }
 }
 
-// ponytail: 다른 탭이 같은 작업을 폴링하는 동안 리포트를 지우면 그 탭이 다시 저장할 수 있고,
-// 다른 기기에서는 이어받지 못한다. 배포 직후에는 옛 화면의 확인 요청이 실패해 계속 기다릴 수 있고,
-// 새로고침하면 이어진다. 서버에 실행 기록을 두면(B안) 풀린다.
 function loadPending(): Pending | null {
   try {
     const raw = localStorage.getItem(PENDING_KEY);
@@ -62,13 +61,22 @@ function clearPending(responseId: string) {
 
 const noSubscribe = () => () => {};
 
-export function DiagnosisApp() {
-  // Render only after hydration so the first client render can read localStorage.
-  const hydrated = useSyncExternalStore(noSubscribe, () => true, () => false);
-  return hydrated ? <App /> : null;
+/** False on the server and during hydration. Read localStorage only after this turns true. */
+export function useHydrated() {
+  return useSyncExternalStore(noSubscribe, () => true, () => false);
 }
 
-function App() {
+export type DiagnosisFlow = {
+  memo: Memo;
+  setMemo: (m: Memo) => void;
+  /** When a diagnosis is being started or is running: the moment it began. */
+  startedAt: number | null;
+  error: string | null;
+  submit: () => void;
+};
+
+/** Mount only after `useHydrated()` is true: the first render reads localStorage. */
+export function useDiagnosisFlow(): DiagnosisFlow {
   const router = useRouter();
   const [memo, setMemo] = useState<Memo>(loadDraft);
   const [pending, setPending] = useState<Pending | null>(loadPending);
@@ -105,7 +113,7 @@ function App() {
         if (result.state === "done") {
           stopped = true;
           clearPending(pending.responseId);
-          return router.push("/reports/" + result.id);
+          return router.push(`/reports/${result.id}`);
         }
         if (result.state === "failed") return finish(result.error);
       } catch {
@@ -151,17 +159,23 @@ function App() {
     setStarting(null);
   }
 
-  const startedAt = pending?.startedAt ?? starting;
-  if (startedAt !== null) {
-    return (
-      <div className={`${card} flex flex-col items-center gap-4 px-6 py-14 text-center ${enter}`}>
-        <ElapsedTime startedAt={startedAt} />
-        <p className="text-sm text-muted">
-          이 창을 닫아도 진단은 계속돼요. 새 진단 화면을 다시 열면 결과를 이어서 받아요.
-        </p>
-      </div>
-    );
-  }
+  return { memo, setMemo, startedAt: pending?.startedAt ?? starting, error, submit };
+}
 
-  return <MemoForm value={memo} onChange={setMemo} onSubmit={submit} error={error} />;
+/** Elapsed time since `startedAt`, ticking once a second. */
+export function useElapsed(startedAt: number) {
+  const [now, setNow] = useState(startedAt);
+
+  useEffect(() => {
+    // A resumed job is already minutes in: show that at once instead of 0:00 for a second.
+    const first = setTimeout(() => setNow(Date.now()), 0);
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(id);
+    };
+  }, []);
+
+  const seconds = Math.max(0, Math.floor((now - startedAt) / 1000));
+  return { seconds, clock: `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}` };
 }
