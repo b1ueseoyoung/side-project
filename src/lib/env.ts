@@ -16,20 +16,6 @@ export function isLocalMode() {
   return process.env.APP_MODE === "local" && !process.env.VERCEL;
 }
 
-/** Lowercased allowlist from ALLOWED_EMAILS (comma separated). */
-export function allowedEmails(): Set<string> {
-  return new Set(
-    requireEnv("ALLOWED_EMAILS")
-      .split(",")
-      .map((e) => e.trim().toLowerCase())
-      .filter(Boolean),
-  );
-}
-
-export function isAllowedEmail(email: string) {
-  return allowedEmails().has(email.trim().toLowerCase());
-}
-
 /** The owner's address: in local mode (no login) reports are saved under it. */
 export function ownerEmail() {
   return requireEnv("OWNER_EMAIL").trim().toLowerCase();

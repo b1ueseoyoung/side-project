@@ -17,7 +17,7 @@ export default async function LoginPage() {
           <Logo className="size-11" />
           <div className="flex flex-col gap-1">
             <h1 className="text-2xl font-bold tracking-tight">기획 메모 진단</h1>
-            <p className="text-secondary">등록된 이메일로 로그인 링크를 보내드려요.</p>
+            <p className="text-secondary">이메일로 로그인 링크를 보내드려요. 처음이면 바로 가입돼요.</p>
           </div>
         </div>
         <div className={`${card} p-6`}>

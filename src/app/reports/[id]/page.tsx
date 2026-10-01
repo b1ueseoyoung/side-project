@@ -54,11 +54,9 @@ export default async function ReportPage({ params }: PageProps<"/reports/[id]">)
           </div>
         </details>
 
-        {row.canDelete && (
-          <footer className="flex justify-center">
-            <DeleteReportButton id={row.id} />
-          </footer>
-        )}
+        <footer className="flex justify-center">
+          <DeleteReportButton id={row.id} />
+        </footer>
       </main>
     </>
   );

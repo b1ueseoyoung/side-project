@@ -1,6 +1,6 @@
 # 기획 메모 진단
 
-웹툰·만화 작가가 러프하게 쓴 기획 메모를 붙여넣으면 설정을 정리하고, 상업성(개성, 장르 재미)·캐릭터·서사·웹툰 연재 작법과 참고작 겹침을 진단해 가장 먼저 손볼 점을 알려주는 도구. 투고를 준비하는 지망생이 작품이 얼마나 개성 있고 팔릴 만한지 편집자 눈높이로 조언받는 데 쓴다. 작성자와 친구 한 명, 두 사람만 쓴다.
+웹툰·만화 작가가 러프하게 쓴 기획 메모를 붙여넣으면 설정을 정리하고, 상업성(개성, 장르 재미)·캐릭터·서사·웹툰 연재 작법과 참고작 겹침을 진단해 가장 먼저 손볼 점을 알려주는 도구. 투고를 준비하는 지망생이 작품이 얼마나 개성 있고 팔릴 만한지 편집자 눈높이로 조언받는 데 쓴다. 이메일만 있으면 누구나 가입해 쓴다.
 
 - 진단 결과는 합격 확률 같은 숫자가 아니라 신호등과 근거(메모 속 문장 인용)로 보여준다.
 - 모델이 붙인 인용은 코드에서 메모 원문과 대조하고, 원문에 없는 인용은 버린다. 근거가 모두 버려진 "예" 답은 "아니오"로 바꾼다.
@@ -28,30 +28,30 @@
 
 - Next.js 16 (App Router, TypeScript, Tailwind CSS 4). 디자인 규칙은 [DESIGN.md](DESIGN.md).
 - **진단**은 OpenAI Responses API(`gpt-6-luna`)를 background 모드로 부른다(`src/lib/llm.ts`). 서버는 작업을 맡기고 바로 응답하고, 브라우저가 10초마다 결과를 확인한다. 진행 중인 작업 번호는 브라우저에 보관해서, 창을 닫아도 같은 브라우저에서 이어받는다.
-- **배포 앱(Vercel)** 에서 허용된 두 사람이 진단하고 리포트를 본다. `APP_MODE=local`은 맥에서 로그인만 건너뛴다(`src/lib/env.ts`).
+- **배포 앱(Vercel)** 에서는 누구나 가입해 진단하고, 자기가 만든 리포트만 본다. 진단 비용은 모든 사용자가 같은 OpenAI 크레딧에서 쓴다. `APP_MODE=local`은 맥에서 로그인만 건너뛴다(`src/lib/env.ts`).
 - DB는 Neon Postgres + Drizzle ORM(`src/db/`). 맥의 로컬 앱과 배포 앱이 같은 DB를 쓴다.
-- 로그인은 이메일 링크(better-auth). `ALLOWED_EMAILS`에 있는 주소만 링크를 받는다. 데이터 접근은 모두 `src/lib/dal.ts`에서 로그인을 확인한 뒤 한다.
+- 로그인은 이메일 링크(better-auth)이고 누구나 가입할 수 있다. 링크 요청은 10분에 3번으로 제한한다. 데이터 접근은 모두 `src/lib/dal.ts`에서 로그인을 확인한 뒤 하고, 리포트는 만든 사람에게만 보인다.
 
 ## 맥에서 실행
 
 `.env.local`에 `OPENAI_API_KEY`가 있어야 한다.
 
 ```bash
-npm install
-cp .env.example .env.local   # DATABASE_URL, ALLOWED_EMAILS, OWNER_EMAIL, OPENAI_API_KEY, APP_MODE=local 채우기
-npm run db:migrate           # 처음 한 번, 테이블 만들기
-npm run dev                  # 브라우저가 자동으로 열린다
+bun install
+cp .env.example .env.local   # DATABASE_URL, OWNER_EMAIL, OPENAI_API_KEY, APP_MODE=local 채우기
+bun run db:migrate           # 처음 한 번, 테이블 만들기
+bun run dev                  # 브라우저가 자동으로 열린다
 ```
 
-로컬 앱은 `127.0.0.1`에서만 열리고 로그인 없이 작성자로 동작한다. 명령줄로 샘플을 진단하려면 `npm run diagnose -- samples/02-play-assignment.json`.
+로컬 앱은 `127.0.0.1`에서만 열리고 로그인 없이 작성자로 동작한다. 명령줄로 샘플을 진단하려면 `bun run diagnose -- samples/02-play-assignment.json`.
 
 ## 배포 (Vercel)
 
 1. Vercel에 저장소를 연결하고, Storage에서 Neon Postgres를 만들어 연결한다(`DATABASE_URL`이 자동으로 들어간다).
-2. 환경변수: `ALLOWED_EMAILS`, `OWNER_EMAIL`, `OPENAI_API_KEY`, `BETTER_AUTH_SECRET`(`openssl rand -base64 32`), `BETTER_AUTH_URL`(배포 주소), `SMTP_URL`, `SMTP_FROM`. `APP_MODE`는 넣지 않는다.
-3. 맥의 `.env.local`에 같은 `DATABASE_URL`을 넣고 `npm run db:migrate`.
+2. 환경변수: `OWNER_EMAIL`, `OPENAI_API_KEY`, `BETTER_AUTH_SECRET`(`openssl rand -base64 32`), `BETTER_AUTH_URL`(배포 주소), `SMTP_URL`, `SMTP_FROM`. `APP_MODE`는 넣지 않는다.
+3. 맥의 `.env.local`에 같은 `DATABASE_URL`을 넣고 `bun run db:migrate`.
 
-로그인 메일은 SMTP로 보낸다. Gmail 앱 비밀번호를 쓰면 친구에게도 보낼 수 있다(Resend 무료 발신 주소는 가입자 본인에게만 보낸다).
+로그인 메일은 SMTP로 보낸다. Gmail 앱 비밀번호를 쓰면 누구에게나 보낼 수 있다(Resend 무료 발신 주소는 가입자 본인에게만 보낸다).
 
 공유 주소는 `https://side-project-gamma.vercel.app`이다(`side-project-for-me13` 별칭은 Vercel 인증으로 막혀 있다).
 

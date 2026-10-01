@@ -14,8 +14,7 @@ export function LoginForm() {
     e.preventDefault();
     setState("sending");
     const { error } = await authClient.signIn.magicLink({ email, callbackURL: "/reports" });
-    // Unregistered addresses get the same message, so the form doesn't reveal who is allowed.
-    setState(error && error.status !== 400 ? "error" : "sent");
+    setState(error ? "error" : "sent");
   }
 
   if (state === "sent") {
@@ -25,7 +24,7 @@ export function LoginForm() {
           <Check className="size-5" />
         </span>
         <p className="leading-relaxed">
-          등록된 이메일이면 로그인 링크를 보냈어요. 10분 안에 메일의 링크를 눌러 주세요.
+          로그인 링크를 보냈어요. 10분 안에 메일의 링크를 눌러 주세요.
         </p>
       </div>
     );
@@ -46,7 +45,7 @@ export function LoginForm() {
       </label>
       {state === "error" && (
         <p role="alert" className="rounded-md bg-signal-fix-soft px-4 py-3 text-sm font-semibold text-signal-fix">
-          잠시 뒤에 다시 해보세요. 여러 번 요청하면 10분 동안 막혀요.
+          이메일 주소를 확인하고 잠시 뒤에 다시 해보세요. 여러 번 요청하면 10분 동안 막혀요.
         </p>
       )}
       <button type="submit" className={`${primaryButton} w-full`} disabled={state === "sending"}>
