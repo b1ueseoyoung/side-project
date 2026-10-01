@@ -53,6 +53,7 @@ const git = (...args: string[]) => tryRun("git", args);
 const dryRun = values["dry-run"];
 const repeat = Number(values.repeat);
 const maxCalls = Number(values["max-calls"]);
+if (!Number.isInteger(maxCalls) || maxCalls < 1) throw new Error("--max-calls must be a positive integer");
 const available = (await readdir(path.join(ROOT, "eval/samples")))
   .filter((f) => f.endsWith(".json"))
   .map((f) => f.slice(0, -".json".length))
