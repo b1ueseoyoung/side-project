@@ -18,17 +18,17 @@ const INVALID_MESSAGE = "장르를 골라주세요.";
 // gpt-6-luna at max effort: median 305 s over 8 eval runs; two runs took about 20 minutes.
 const TYPICAL_MINUTES = 6;
 
-export function Compose({ signOut }: { signOut: boolean }) {
+export function Compose({ signOut, account }: { signOut: boolean; account: string }) {
   const hydrated = useHydrated();
   return (
     <Shell current="new" signOut={signOut}>
-      {hydrated ? <Flow /> : <main className="flex-1" aria-busy="true" />}
+      {hydrated ? <Flow account={account} /> : <main className="flex-1" aria-busy="true" />}
     </Shell>
   );
 }
 
-function Flow() {
-  const flow = useDiagnosisFlow();
+function Flow({ account }: { account: string }) {
+  const flow = useDiagnosisFlow(account);
   if (flow.startedAt !== null) return <Running startedAt={flow.startedAt} memo={flow.memo} />;
   return <Form memo={flow.memo} onChange={flow.setMemo} onSubmit={flow.submit} error={flow.error} />;
 }

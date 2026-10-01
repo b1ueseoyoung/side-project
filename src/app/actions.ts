@@ -23,13 +23,13 @@ function toMemo(input: Memo): Memo {
 // requestDiagnosis starts a diagnosis and returns its OpenAI response id.
 // Server functions are reachable by direct POST, so each one checks the viewer itself.
 export async function requestDiagnosis(input: Memo): Promise<StartResult> {
-  await requireViewer();
+  const viewer = await requireViewer();
   const memo = toMemo(input);
   const problem = validateMemo(memo);
   if (problem) return { ok: false, error: problem };
 
   try {
-    const responseId = await startDiagnosis(memo);
+    const responseId = await startDiagnosis(memo, viewer.email);
     return { ok: true, responseId };
   } catch (error) {
     const code = error instanceof ApiError ? error.code : null;
@@ -41,7 +41,7 @@ export async function requestDiagnosis(input: Memo): Promise<StartResult> {
 
 // pollDiagnosis checks a running diagnosis and saves the report when complete.
 export async function pollDiagnosis(responseId: string, input: Memo): Promise<PollResult> {
-  await requireViewer();
+  const viewer = await requireViewer();
   const memo = toMemo(input);
   const id = String(responseId);
 
@@ -52,7 +52,7 @@ export async function pollDiagnosis(responseId: string, input: Memo): Promise<Po
   if (problem) return { state: "failed", error: errorMessage(null, null) };
 
   try {
-    const check = await checkDiagnosis(id, memo);
+    const check = await checkDiagnosis(id, memo, viewer.email);
     if (check.state === "running") return { state: "running" };
     if (check.state === "failed") {
       console.error("Diagnosis failed:", check.reason);

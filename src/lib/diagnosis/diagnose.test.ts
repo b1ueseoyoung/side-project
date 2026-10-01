@@ -6,7 +6,7 @@ import { describe, test } from "node:test";
 import { fakeModelOutput } from "../../../scripts/eval/lib.ts";
 import { ApiError, isResponseId } from "../llm.ts";
 import type { ApiResponse } from "../llm.ts";
-import { buildRun, checkResponse, errorMessage, isTransient, memoHash, reportIdFor, toModelOutput } from "./diagnose.ts";
+import { accountHash, buildRun, checkResponse, errorMessage, isTransient, memoHash, reportIdFor, toModelOutput } from "./diagnose.ts";
 import type { RawOutput } from "./diagnose.ts";
 import { ALL_QUESTIONS, JUDGED_ITEMS } from "./items.ts";
 import { OUTPUT_SCHEMA, answerKey } from "./prompt.ts";
@@ -14,7 +14,8 @@ import type { Memo, ModelOutput } from "./types.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "../../..");
 const memo = JSON.parse(readFileSync(path.join(ROOT, "eval/samples/p1a.json"), "utf8")) as Memo;
-const metadata = { memo_sha256: memoHash(memo) };
+const account = "writer@example.com";
+const metadata = { memo_sha256: memoHash(memo), account_sha256: accountHash(account) };
 
 const message = (content: { type: string; text?: string; refusal?: string }[]) => [
   { type: "reasoning" },
@@ -111,12 +112,12 @@ test("isResponseId accepts only resp_ ids safe for a URL path", () => {
 describe("checkResponse", () => {
   test("queued and in_progress are still running", () => {
     for (const status of ["queued", "in_progress"] as const) {
-      assert.deepEqual(checkResponse(response({ status }), memo), { state: "running" });
+      assert.deepEqual(checkResponse(response({ status }), memo, account), { state: "running" });
     }
   });
 
   const reason = (r: ApiResponse) => {
-    const check = checkResponse(r, memo);
+    const check = checkResponse(r, memo, account);
     assert.equal(check.state, "failed");
     return check.state === "failed" ? check.reason : null;
   };
@@ -124,6 +125,13 @@ describe("checkResponse", () => {
   test("a response for another memo is rejected", () => {
     assert.equal(reason(response({ status: "queued", metadata: { memo_sha256: "other" } })), "memo_mismatch");
     assert.equal(reason(response({ metadata: null })), "memo_mismatch");
+  });
+
+  test("a response started by another account is rejected", () => {
+    const other = { ...metadata, account_sha256: accountHash("other@example.com") };
+    assert.equal(reason(response({ status: "queued", metadata: other })), "account_mismatch");
+    // A response started before accounts were recorded has no account hash.
+    assert.equal(reason(response({ metadata: { memo_sha256: metadata.memo_sha256 } })), "account_mismatch");
   });
 
   test("failed and incomplete responses report their code or reason", () => {
@@ -149,7 +157,7 @@ describe("checkResponse", () => {
       { type: "output_text", text: text.slice(0, half) },
       { type: "output_text", text: text.slice(half) },
     ]);
-    const check = checkResponse(response({ output, usage: { input_tokens: 1, output_tokens: 2 } }), memo);
+    const check = checkResponse(response({ output, usage: { input_tokens: 1, output_tokens: 2 } }), memo, account);
     assert.equal(check.state, "done");
     if (check.state !== "done") return;
     assert.notEqual(check.run.report, null);
