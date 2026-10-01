@@ -18,13 +18,27 @@ const PENDING_PREFIX = "diagnosis-pending";
 const draftKey = (account: string) => `${DRAFT_PREFIX}:${account}`;
 const pendingKey = (account: string) => `${PENDING_PREFIX}:${account}`;
 
-// Counts sign-outs. A flow that was on screen before one writes nothing afterwards, so a draft effect
-// or a diagnosis request that finishes late cannot put the memo back.
-let clears = 0;
+// Sign-out stamps this key. A flow that was on screen before the stamp writes nothing afterwards, so a
+// draft effect or a diagnosis request that finishes late cannot put the memo back. The stamp lives in
+// storage so that other tabs see it too: they leave for the login page.
+const SIGNED_OUT_KEY = "signed-out-at";
+
+function signedOutAt(): string | null {
+  try {
+    return localStorage.getItem(SIGNED_OUT_KEY);
+  } catch {
+    return null;
+  }
+}
 
 /** Removes every draft and running job from this browser, including keys saved before they were per account. */
 export function clearLocalDiagnosis() {
-  clears++;
+  try {
+    // Stamp first: a write that races with the removal below is already refused.
+    localStorage.setItem(SIGNED_OUT_KEY, String(Date.now()));
+  } catch {
+    // Storage full or blocked: the removal below still runs.
+  }
   try {
     for (const key of Object.keys(localStorage)) {
       if (key.startsWith(DRAFT_PREFIX) || key.startsWith(PENDING_PREFIX)) localStorage.removeItem(key);
@@ -102,10 +116,18 @@ export function useDiagnosisFlow(account: string): DiagnosisFlow {
   const [pending, setPending] = useState<Pending | null>(() => loadPending(account));
   const [starting, setStarting] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [epoch] = useState(clears);
+  const [epoch] = useState(signedOutAt);
 
   useEffect(() => {
-    if (epoch !== clears) return;
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === SIGNED_OUT_KEY) window.location.replace("/login");
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  useEffect(() => {
+    if (epoch !== signedOutAt()) return;
     try {
       localStorage.setItem(draftKey(account), JSON.stringify(memo));
     } catch {
@@ -170,7 +192,7 @@ export function useDiagnosisFlow(account: string): DiagnosisFlow {
       const result = await requestDiagnosis(memo);
       if (!result.ok) {
         setError(result.error);
-      } else if (epoch === clears) {
+      } else if (epoch === signedOutAt()) {
         const next = { responseId: result.responseId, startedAt, memo };
         savePending(account, next);
         setPending(next);
