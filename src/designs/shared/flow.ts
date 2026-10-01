@@ -11,18 +11,51 @@ import type { Memo } from "@/lib/diagnosis/types";
 
 export const EMPTY_MEMO: Memo = { genre: "", memo: "", references: "" };
 
-// Storage keys are unchanged from the previous screens, so a draft or a running job carries over
-// across the redesign.
-const DRAFT_KEY = "memo-draft";
-const PENDING_KEY = "diagnosis-pending";
+// Storage is per account: another person signing in on this browser must not see the memo or
+// pick up the running job.
+const DRAFT_PREFIX = "memo-draft";
+const PENDING_PREFIX = "diagnosis-pending";
+const draftKey = (account: string) => `${DRAFT_PREFIX}:${account}`;
+const pendingKey = (account: string) => `${PENDING_PREFIX}:${account}`;
+
+// Sign-out stamps this key. A flow that was on screen before the stamp writes nothing afterwards, so a
+// draft effect or a diagnosis request that finishes late cannot put the memo back. The stamp lives in
+// storage so that other tabs see it too: they leave for the login page.
+const SIGNED_OUT_KEY = "signed-out-at";
+
+function signedOutAt(): string | null {
+  try {
+    return localStorage.getItem(SIGNED_OUT_KEY);
+  } catch {
+    return null;
+  }
+}
+
+/** Removes every draft and running job from this browser, including keys saved before they were per account. */
+export function clearLocalDiagnosis() {
+  try {
+    // Stamp first: a write that races with the removal below is already refused.
+    localStorage.setItem(SIGNED_OUT_KEY, String(Date.now()));
+  } catch {
+    // Storage full or blocked: the removal below still runs.
+  }
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith(DRAFT_PREFIX) || key.startsWith(PENDING_PREFIX)) localStorage.removeItem(key);
+    }
+  } catch {
+    // Storage blocked: nothing to remove.
+  }
+}
+
 const POLL_MS = 10_000;
 const GIVE_UP_MS = 60 * 60 * 1000;
 
 type Pending = { responseId: string; startedAt: number; memo: Memo };
 
-function loadDraft(): Memo {
+function loadDraft(account: string): Memo {
   try {
-    const raw = localStorage.getItem(DRAFT_KEY);
+    const raw = localStorage.getItem(draftKey(account));
     const parsed = raw ? (JSON.parse(raw) as Partial<Memo>) : null;
     return { ...EMPTY_MEMO, ...parsed };
   } catch {
@@ -30,9 +63,9 @@ function loadDraft(): Memo {
   }
 }
 
-function loadPending(): Pending | null {
+function loadPending(account: string): Pending | null {
   try {
-    const raw = localStorage.getItem(PENDING_KEY);
+    const raw = localStorage.getItem(pendingKey(account));
     const p = raw ? (JSON.parse(raw) as Partial<Pending>) : null;
     if (!p || typeof p.responseId !== "string" || typeof p.startedAt !== "number") return null;
     if (typeof p.memo !== "object" || p.memo === null) return null;
@@ -42,18 +75,18 @@ function loadPending(): Pending | null {
   }
 }
 
-function savePending(p: Pending) {
+function savePending(account: string, p: Pending) {
   try {
-    localStorage.setItem(PENDING_KEY, JSON.stringify(p));
+    localStorage.setItem(pendingKey(account), JSON.stringify(p));
   } catch {
     // Storage full or blocked: the result still arrives while this page stays open.
   }
 }
 
 // Only the entry for this job is removed: another tab may have started a newer one.
-function clearPending(responseId: string) {
+function clearPending(account: string, responseId: string) {
   try {
-    if (loadPending()?.responseId === responseId) localStorage.removeItem(PENDING_KEY);
+    if (loadPending(account)?.responseId === responseId) localStorage.removeItem(pendingKey(account));
   } catch {
     // Storage blocked: nothing to remove.
   }
@@ -77,20 +110,30 @@ export type DiagnosisFlow = {
 };
 
 /** Mount only after `useHydrated()` is true: the first render reads localStorage. */
-export function useDiagnosisFlow(): DiagnosisFlow {
+export function useDiagnosisFlow(account: string): DiagnosisFlow {
   const router = useRouter();
-  const [memo, setMemo] = useState<Memo>(loadDraft);
-  const [pending, setPending] = useState<Pending | null>(loadPending);
+  const [memo, setMemo] = useState<Memo>(() => loadDraft(account));
+  const [pending, setPending] = useState<Pending | null>(() => loadPending(account));
   const [starting, setStarting] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [epoch] = useState(signedOutAt);
 
   useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === SIGNED_OUT_KEY) window.location.replace("/login");
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  useEffect(() => {
+    if (epoch !== signedOutAt()) return;
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(memo));
+      localStorage.setItem(draftKey(account), JSON.stringify(memo));
     } catch {
       // Storage full or blocked: keep working without it.
     }
-  }, [memo]);
+  }, [memo, account, epoch]);
 
   useEffect(() => {
     if (!pending) return;
@@ -99,7 +142,7 @@ export function useDiagnosisFlow(): DiagnosisFlow {
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const finish = (message: string) => {
-      clearPending(pending.responseId);
+      clearPending(account, pending.responseId);
       setPending(null);
       setError(message);
     };
@@ -113,7 +156,7 @@ export function useDiagnosisFlow(): DiagnosisFlow {
         if (stopped) return;
         if (result.state === "done") {
           stopped = true;
-          clearPending(pending.responseId);
+          clearPending(account, pending.responseId);
           return router.push(`/reports/${result.id}`);
         }
         if (result.state === "failed") return finish(result.error);
@@ -138,7 +181,7 @@ export function useDiagnosisFlow(): DiagnosisFlow {
       clearTimeout(timer);
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [pending, router]);
+  }, [pending, router, account]);
 
   async function submit() {
     setError(null);
@@ -147,12 +190,12 @@ export function useDiagnosisFlow(): DiagnosisFlow {
     window.scrollTo({ top: 0 });
     try {
       const result = await requestDiagnosis(memo);
-      if (result.ok) {
-        const next = { responseId: result.responseId, startedAt, memo };
-        savePending(next);
-        setPending(next);
-      } else {
+      if (!result.ok) {
         setError(result.error);
+      } else if (epoch === signedOutAt()) {
+        const next = { responseId: result.responseId, startedAt, memo };
+        savePending(account, next);
+        setPending(next);
       }
     } catch {
       setError("서버에 연결하지 못했어요. 잠시 뒤에 다시 해 주세요.");

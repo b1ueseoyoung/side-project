@@ -9,6 +9,8 @@ import type { Memo, ModelOutput, Report } from "./types.ts";
 
 const POLL_MS = 5_000;
 const MAX_WAIT_MS = 60 * 60 * 1000;
+// The CLI and eval have no signed-in viewer.
+const CLI_ACCOUNT = "cli";
 
 /** One diagnosis kept whole for evaluation: `report` is null when buildReport rejected the output. */
 export type DiagnosisRun = { output: ModelOutput; api: ApiResponse; report: Report | null; error: unknown };
@@ -56,12 +58,17 @@ export function reportIdFor(responseId: string): string {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-8${h.slice(13, 16)}-${variant}${h.slice(17, 20)}-${h.slice(20, 32)}`;
 }
 
-export async function startDiagnosis(memo: Memo): Promise<string> {
+/** Ties a response to the account that started it; OpenAI gets the hash, not the address. */
+export function accountHash(account: string): string {
+  return sha256(account);
+}
+
+export async function startDiagnosis(memo: Memo, account: string): Promise<string> {
   const r = await startStructured({
     system: SYSTEM_PROMPT,
     prompt: buildPrompt(memo),
     schema: OUTPUT_SCHEMA,
-    metadata: { memo_sha256: memoHash(memo) },
+    metadata: { memo_sha256: memoHash(memo), account_sha256: accountHash(account) },
   });
   return r.id;
 }
@@ -77,8 +84,10 @@ function withoutOutput(r: ApiResponse): ApiResponse {
   return rest;
 }
 
-export function checkResponse(r: ApiResponse, memo: Memo): Check {
+export function checkResponse(r: ApiResponse, memo: Memo, account: string): Check {
   if (r.metadata?.memo_sha256 !== memoHash(memo)) return { state: "failed", reason: "memo_mismatch", api: r };
+  // Only the account that started a diagnosis may collect it, so a report is never saved under someone else.
+  if (r.metadata?.account_sha256 !== accountHash(account)) return { state: "failed", reason: "account_mismatch", api: r };
   if (r.status === "queued" || r.status === "in_progress") return { state: "running" };
   if (r.status !== "completed") {
     return { state: "failed", reason: r.error?.code ?? r.incomplete_details?.reason ?? r.status, api: r };
@@ -93,9 +102,9 @@ export function checkResponse(r: ApiResponse, memo: Memo): Check {
   return { state: "done", run: buildRun(output, withoutOutput(r), memo) };
 }
 
-export async function checkDiagnosis(id: string, memo: Memo): Promise<Check> {
+export async function checkDiagnosis(id: string, memo: Memo, account: string): Promise<Check> {
   try {
-    return checkResponse(await getResponse(id), memo);
+    return checkResponse(await getResponse(id), memo, account);
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) return { state: "failed", reason: "not_found", api: null };
     throw error;
@@ -128,7 +137,7 @@ export function isTransient(error: unknown): boolean {
 /** For the CLI and eval only: starts a diagnosis and polls until it settles. */
 export async function diagnoseDetailed(memo: Memo): Promise<DiagnosisRun> {
   // The paid start is never retried; only the free status checks are.
-  const id = await startDiagnosis(memo);
+  const id = await startDiagnosis(memo, CLI_ACCOUNT);
   const deadline = Date.now() + MAX_WAIT_MS;
   let failures = 0;
   try {
@@ -136,7 +145,7 @@ export async function diagnoseDetailed(memo: Memo): Promise<DiagnosisRun> {
       await new Promise((resolve) => setTimeout(resolve, POLL_MS));
       let check: Check;
       try {
-        check = await checkDiagnosis(id, memo);
+        check = await checkDiagnosis(id, memo, CLI_ACCOUNT);
       } catch (error) {
         if (!isTransient(error) || ++failures > MAX_TRANSIENT_FAILURES) throw error;
         continue;
