@@ -1,0 +1,29 @@
+{
+  "sampleId": "p2b",
+  "run": 2,
+  "dryRun": false,
+  "ok": true,
+  "stage": "done",
+  "error": null,
+  "startedAt": "2026-10-02T05:50:00.847Z",
+  "durationMs": 264363,
+  "settings": {
+    "model": "gpt-6-luna",
+    "effort": "max"
+  },
+  "apiModel": "gpt-6-luna",
+  "responseId": "resp_0cc604f40104dab0006abf4609115087d09c8937dc61da5087",
+  "usage": {
+    "input_tokens": 7951,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 7948
+    },
+    "output_tokens": 39718,
+    "output_tokens_details": {
+      "reasoning_tokens": 30941
+    },
+    "total_tokens": 47669
+  },
+  "costUsd": 0.01993878
+}

@@ -1,0 +1,57 @@
+{
+  "missingQuestionIds": [],
+  "duplicateQuestionIds": [],
+  "unknownQuestionIds": [],
+  "rawQuotes": {
+    "total": 74,
+    "inMemo": 73,
+    "notInMemo": [
+      {
+        "where": "answers",
+        "questionId": "genre_fit.core_fun",
+        "quote": "이장은 그 애는 도망간 게 아니라 돈을 돌려주러 갔다고 말하고 잠든다."
+      }
+    ]
+  },
+  "appDroppedQuotes": 1,
+  "changedAnswers": [],
+  "priority": {
+    "topFixes": [
+      {
+        "itemId": "versions",
+        "signal": "fix",
+        "tableIndex": 2
+      },
+      {
+        "itemId": "longevity",
+        "signal": "fix",
+        "tableIndex": 4
+      },
+      {
+        "itemId": "motivation",
+        "signal": "fix",
+        "tableIndex": 9
+      }
+    ],
+    "red": [
+      "versions",
+      "longevity",
+      "motivation",
+      "arc",
+      "stakes",
+      "turning_points",
+      "ending",
+      "theme"
+    ],
+    "yellow": [],
+    "redLeftOut": [
+      "arc",
+      "stakes",
+      "turning_points",
+      "ending",
+      "theme"
+    ],
+    "followsTableOrder": true
+  },
+  "postprocessError": null
+}
