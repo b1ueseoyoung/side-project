@@ -66,7 +66,7 @@
 ### 메모는 어디로 가나
 
 - 진단을 위해 메모와 참고작을 OpenAI API로 보낸다. OpenAI는 API로 받은 데이터를 모델 학습에 쓰지 않는다.
-- 창을 닫았다가 결과를 이어받을 수 있게 응답 저장(`store: true`)을 켜 두어서, OpenAI에 30일 동안 남는다([OpenAI 데이터 정책](https://developers.openai.com/api/docs/guides/your-data)).
+- 창을 닫았다가 결과를 이어받을 수 있게 응답 저장(`store: true`)을 켜 두어서, OpenAI에 기본 30일 동안 남는다. 오용 감시 기록도 최대 30일 남고, 법적으로 필요하면 더 길어질 수 있다([OpenAI 데이터 정책](https://developers.openai.com/api/docs/guides/your-data)).
 - 메모 원문과 리포트는 이 앱의 DB(Neon Postgres)에 함께 저장되고, 앱에서는 만든 사람만 볼 수 있다. 리포트를 지우면 원문도 함께 지워진다.
 
 ## 만들면서 바꾼 것
