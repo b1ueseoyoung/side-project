@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "cn";
 
-import { SignOutButton } from "@/components/sign-out-button";
+import { LeaveOnSignOut, SignOutButton } from "@/components/sign-out-button";
 import type { Signal as SignalId } from "@/lib/diagnosis/types";
 
 const dateFormat = new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Seoul" });
@@ -29,6 +29,7 @@ export function Shell({
 }) {
   return (
     <div className={cn("flex min-h-dvh flex-col", className)}>
+      <LeaveOnSignOut />
       <header className="z-20 flex h-13 shrink-0 items-center gap-6 border-b border-border bg-card px-4 sm:px-6">
         <Link href="/" className="type-ui flex items-center gap-2.5 font-bold text-foreground">
           <span className="flex size-7 items-center justify-center rounded-md bg-foreground text-card">
