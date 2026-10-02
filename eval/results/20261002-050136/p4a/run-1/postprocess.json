@@ -1,0 +1,53 @@
+{
+  "missingQuestionIds": [],
+  "duplicateQuestionIds": [],
+  "unknownQuestionIds": [],
+  "rawQuotes": {
+    "total": 97,
+    "inMemo": 95,
+    "notInMemo": [
+      {
+        "where": "answers",
+        "questionId": "supporting.role",
+        "quote": "이장은 요양원에서 은서를 만나"
+      },
+      {
+        "where": "setting.events",
+        "quote": "이장은 요양원에서 은서를 만나"
+      }
+    ]
+  },
+  "appDroppedQuotes": 2,
+  "changedAnswers": [],
+  "priority": {
+    "topFixes": [
+      {
+        "itemId": "consistency",
+        "signal": "fix",
+        "tableIndex": 0
+      },
+      {
+        "itemId": "longevity",
+        "signal": "fix",
+        "tableIndex": 4
+      },
+      {
+        "itemId": "motivation",
+        "signal": "fix",
+        "tableIndex": 9
+      }
+    ],
+    "red": [
+      "consistency",
+      "longevity",
+      "motivation",
+      "turning_points"
+    ],
+    "yellow": [],
+    "redLeftOut": [
+      "turning_points"
+    ],
+    "followsTableOrder": true
+  },
+  "postprocessError": null
+}

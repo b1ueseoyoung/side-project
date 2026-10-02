@@ -1,0 +1,29 @@
+{
+  "sampleId": "p4b",
+  "run": 1,
+  "dryRun": false,
+  "ok": true,
+  "stage": "done",
+  "error": null,
+  "startedAt": "2026-10-02T06:52:56.206Z",
+  "durationMs": 206693,
+  "settings": {
+    "model": "gpt-6-luna",
+    "effort": "max"
+  },
+  "apiModel": "gpt-6-luna",
+  "responseId": "resp_05fa3f18c238aab9006abf54c8877887d084766a737e3bc489",
+  "usage": {
+    "input_tokens": 7799,
+    "input_tokens_details": {
+      "cache_write_tokens": 1526,
+      "cached_tokens": 6270
+    },
+    "output_tokens": 28944,
+    "output_tokens_details": {
+      "reasoning_tokens": 20737
+    },
+    "total_tokens": 36743
+  },
+  "costUsd": 0.01472575
+}

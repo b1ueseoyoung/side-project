@@ -1,0 +1,227 @@
+# 평가 실행 결과: 20261002-050136
+
+> 합성 기획 메모로 잰 결과다. 실제 사용자 메모에서 검증한 품질이 아니다. 라벨은 AI가 쓴 사람 검토 전 임시 라벨이다. 상업성·매력·개성 문항은 라벨 없이 사람 검토표로만 본다.
+
+## 실행 개요
+
+- 표본: 샘플 8개 × 회차 3 = 계획 24건, 기록된 실행 24건
+- 결과: 성공 24건, 실패 0건, 실행 안 됨 0건
+- 모델 설정: gpt-6-luna, 추론 max, openai-responses
+- 응답이 보고한 실제 모델: gpt-6-luna
+- 비용: 합계 $0.4584, 1회 중앙값 $0.0190, 최대 $0.0260 (표준 요금)
+- 토큰: 입력 중앙값 7934, 출력 중앙값 37597.5
+- 버전: git a664ce8, 시스템 프롬프트 6e63177dca9e3b84, 출력 스키마 4e955489cd78221e, rules.ts da6a55683be26719, items.ts 1293e659696d7113
+- 소요 시간: 합계 7405초, 중앙값 266초, 범위 207~1219초
+
+| 샘플 | 회차 | 결과 | 소요(초) | 원본 인용 | 원문에 없는 인용 | 앱이 뺀 인용 | 후처리로 바뀐 답 | 질문 누락 | 오류 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| p1a | 1 | 성공 | 367 | 86 | 0 | 0 | 0 | 0 |  |
+| p1a | 2 | 성공 | 249 | 94 | 0 | 0 | 0 | 0 |  |
+| p1a | 3 | 성공 | 275 | 99 | 0 | 0 | 0 | 0 |  |
+| p1b | 1 | 성공 | 270 | 84 | 0 | 0 | 0 | 0 |  |
+| p1b | 2 | 성공 | 271 | 88 | 0 | 0 | 0 | 0 |  |
+| p1b | 3 | 성공 | 322 | 99 | 0 | 0 | 0 | 0 |  |
+| p2a | 1 | 성공 | 373 | 87 | 0 | 0 | 0 | 0 |  |
+| p2a | 2 | 성공 | 267 | 90 | 1 | 1 | 0 | 0 |  |
+| p2a | 3 | 성공 | 250 | 94 | 0 | 0 | 0 | 0 |  |
+| p2b | 1 | 성공 | 260 | 94 | 0 | 0 | 0 | 0 |  |
+| p2b | 2 | 성공 | 264 | 98 | 0 | 0 | 0 | 0 |  |
+| p2b | 3 | 성공 | 255 | 112 | 0 | 0 | 0 | 0 |  |
+| p3a | 1 | 성공 | 211 | 83 | 0 | 0 | 0 | 0 |  |
+| p3a | 2 | 성공 | 227 | 76 | 0 | 0 | 0 | 0 |  |
+| p3a | 3 | 성공 | 298 | 90 | 0 | 0 | 0 | 0 |  |
+| p3b | 1 | 성공 | 1219 | 74 | 0 | 0 | 0 | 0 |  |
+| p3b | 2 | 성공 | 270 | 77 | 0 | 0 | 0 | 0 |  |
+| p3b | 3 | 성공 | 301 | 87 | 0 | 0 | 0 | 0 |  |
+| p4a | 1 | 성공 | 251 | 97 | 2 | 2 | 0 | 0 |  |
+| p4a | 2 | 성공 | 237 | 98 | 0 | 0 | 0 | 0 |  |
+| p4a | 3 | 성공 | 242 | 95 | 0 | 0 | 0 | 0 |  |
+| p4b | 1 | 성공 | 207 | 85 | 0 | 0 | 0 | 0 |  |
+| p4b | 2 | 성공 | 223 | 89 | 0 | 0 | 0 | 0 |  |
+| p4b | 3 | 성공 | 296 | 74 | 1 | 1 | 0 | 0 |  |
+
+라벨 자체 점검: 문제 없음 (라벨 인용이 모두 메모에 있고 질문 ID가 모두 유효)
+
+## 1. 대상 질문 판정 (라벨 범주별, 합산하지 않음)
+
+| 샘플 | 회차 | 질문 | 임시 라벨 | 앱 원본→최종 | 신호 | 먼저 고칠 3 | 결과 | 예상 근거 인용 | 예상 밖 인용 | 정보 부족 표현 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| p1a | 1 | consistency.no_conflict (설정 일관성) | 문제 없음 | 예→예 | good | - | 일치 | 0/0 | 3 | 없음 |
+| p1a | 2 | consistency.no_conflict (설정 일관성) | 문제 없음 | 예→예 | good | - | 일치 | 0/0 | 3 | 없음 |
+| p1a | 3 | consistency.no_conflict (설정 일관성) | 문제 없음 | 예→예 | good | - | 일치 | 0/0 | 2 | 없음 |
+| p1b | 1 | consistency.no_conflict (설정 일관성) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 2/2 | 0 | 없음 |
+| p1b | 2 | consistency.no_conflict (설정 일관성) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 2/2 | 1 | 없음 |
+| p1b | 3 | consistency.no_conflict (설정 일관성) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 2/2 | 1 | 없음 |
+| p2a | 1 | motivation.reason (행동 동기) | 문제 없음 | 아니오→아니오 | fix | - | 불일치 | 0/3 | 2 | 없음 |
+| p2a | 2 | motivation.reason (행동 동기) | 문제 없음 | 아니오→아니오 | fix | 포함 | 불일치 | 1/3 | 2 | 없음 |
+| p2a | 3 | motivation.reason (행동 동기) | 문제 없음 | 아니오→아니오 | fix | 포함 | 불일치 | 2/3 | 1 | 있음 |
+| p2b | 1 | motivation.reason (행동 동기) | 정보 부족 | 아니오→아니오 | fix | 포함 | 일치 | 2/3 | 1 | 있음 |
+| p2b | 2 | motivation.reason (행동 동기) | 정보 부족 | 아니오→아니오 | fix | 포함 | 일치 | 1/3 | 3 | 없음 |
+| p2b | 3 | motivation.reason (행동 동기) | 정보 부족 | 아니오→아니오 | fix | 포함 | 일치 | 2/3 | 1 | 있음 |
+| p3a | 1 | versions.separated (버전 정리) | 문제 없음 | 예→예 | good | - | 일치 | 3/3 | 0 | 없음 |
+| p3a | 1 | consistency.no_conflict (설정 일관성) | 문제 없음 | 예→예 | good | - | 일치 | 0/0 | 3 | 없음 |
+| p3a | 2 | versions.separated (버전 정리) | 문제 없음 | 예→예 | good | - | 일치 | 3/3 | 0 | 없음 |
+| p3a | 2 | consistency.no_conflict (설정 일관성) | 문제 없음 | 예→예 | good | - | 일치 | 0/0 | 3 | 없음 |
+| p3a | 3 | versions.separated (버전 정리) | 문제 없음 | 예→예 | good | - | 일치 | 3/3 | 0 | 없음 |
+| p3a | 3 | consistency.no_conflict (설정 일관성) | 문제 없음 | 아니오→아니오 | fix | 포함 | 불일치 | 0/0 | 2 | 없음 |
+| p3b | 1 | versions.separated (버전 정리) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 0/3 | 0 | 있음 |
+| p3b | 1 | consistency.no_conflict (설정 일관성) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 2/4 | 0 | 없음 |
+| p3b | 2 | versions.separated (버전 정리) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 1/3 | 2 | 있음 |
+| p3b | 2 | consistency.no_conflict (설정 일관성) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 2/4 | 1 | 없음 |
+| p3b | 3 | versions.separated (버전 정리) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 0/3 | 0 | 없음 |
+| p3b | 3 | consistency.no_conflict (설정 일관성) | 문제 있음 | 아니오→아니오 | fix | 포함 | 일치 | 2/4 | 0 | 없음 |
+| p4a | 1 | ending.decided (결말 방향) | 문제 없음 | 예→예 | good | - | 일치 | 2/2 | 1 | 없음 |
+| p4a | 2 | ending.decided (결말 방향) | 문제 없음 | 예→예 | good | - | 일치 | 2/2 | 1 | 없음 |
+| p4a | 3 | ending.decided (결말 방향) | 문제 없음 | 예→예 | good | - | 일치 | 2/2 | 1 | 없음 |
+| p4b | 1 | ending.decided (결말 방향) | 정보 부족 | 아니오→아니오 | fix | - | 일치 | 1/1 | 1 | 있음 |
+| p4b | 2 | ending.decided (결말 방향) | 정보 부족 | 아니오→아니오 | fix | - | 일치 | 1/1 | 1 | 있음 |
+| p4b | 3 | ending.decided (결말 방향) | 정보 부족 | 아니오→아니오 | fix | - | 일치 | 1/1 | 0 | 있음 |
+
+| 임시 라벨 | 대상 건수 | 앱 최종 예 | 앱 최종 아니오 | 결과 없음(실패) |
+| --- | --- | --- | --- | --- |
+| 문제 없음 | 15 | 11 | 4 | 0 |
+| 문제 있음 | 9 | 0 | 9 | 0 |
+| 정보 부족 | 6 | 0 | 6 | 0 |
+| 해당 없음 | 0 | 0 | 0 | 0 |
+
+'정보 부족 표현'은 이유·코멘트에 '메모에 없다' 류의 말이 있는지 본 휴리스틱이다. 사람이 확인해야 한다.
+
+## 2. 반드시 찾아야 할 문제
+
+| 샘플 | 회차 | 문제 | 질문 답 | 필수 인용 | 찾음 |
+| --- | --- | --- | --- | --- | --- |
+| p1b | 1 | 3년 전 죽었다는 테오의 기사 학교 학비를 아델이 마련하려 한다 | 아니오 | 2/2 | 예 |
+| p1b | 2 | 3년 전 죽었다는 테오의 기사 학교 학비를 아델이 마련하려 한다 | 아니오 | 2/2 | 예 |
+| p1b | 3 | 3년 전 죽었다는 테오의 기사 학교 학비를 아델이 마련하려 한다 | 아니오 | 2/2 | 예 |
+| p2b | 1 | 2화 서윤을 구하기로 한 이유, 4~10화 회수인과 맞서기로 한 이유, 20화 수명 10년을 내준 이유가 메모에 없다 | 아니오 | 2/3 | 아니오 |
+| p2b | 2 | 2화 서윤을 구하기로 한 이유, 4~10화 회수인과 맞서기로 한 이유, 20화 수명 10년을 내준 이유가 메모에 없다 | 아니오 | 1/3 | 아니오 |
+| p2b | 3 | 2화 서윤을 구하기로 한 이유, 4~10화 회수인과 맞서기로 한 이유, 20화 수명 10년을 내준 이유가 메모에 없다 | 아니오 | 2/3 | 아니오 |
+| p3b | 1 | 흑의 무리의 첩자로 길러졌다는 설정과 누구의 제자도 된 적 없다는 설정이 함께 적혀 있다 | 아니오 | 0/2 | 아니오 |
+| p3b | 1 | 객잔 이름이 청운객잔과 흑비단객잔으로 엇갈린다 | 아니오 | 2/2 | 예 |
+| p3b | 1 | 어느 설정이 최종이고 어느 설정을 버렸는지 표시가 없다 | 아니오 | 0/2 | 아니오 |
+| p3b | 2 | 흑의 무리의 첩자로 길러졌다는 설정과 누구의 제자도 된 적 없다는 설정이 함께 적혀 있다 | 아니오 | 0/2 | 아니오 |
+| p3b | 2 | 객잔 이름이 청운객잔과 흑비단객잔으로 엇갈린다 | 아니오 | 2/2 | 예 |
+| p3b | 2 | 어느 설정이 최종이고 어느 설정을 버렸는지 표시가 없다 | 아니오 | 1/2 | 예 |
+| p3b | 3 | 흑의 무리의 첩자로 길러졌다는 설정과 누구의 제자도 된 적 없다는 설정이 함께 적혀 있다 | 아니오 | 0/2 | 아니오 |
+| p3b | 3 | 객잔 이름이 청운객잔과 흑비단객잔으로 엇갈린다 | 아니오 | 2/2 | 예 |
+| p3b | 3 | 어느 설정이 최종이고 어느 설정을 버렸는지 표시가 없다 | 아니오 | 0/2 | 아니오 |
+| p4b | 1 | 이야기가 도달할 지점(결말)이 메모에 없다 | 아니오 | 없음 | 예 |
+| p4b | 2 | 이야기가 도달할 지점(결말)이 메모에 없다 | 아니오 | 없음 | 예 |
+| p4b | 3 | 이야기가 도달할 지점(결말)이 메모에 없다 | 아니오 | 없음 | 예 |
+
+## 3. 하면 안 되는 지적 (자동 적발은 의심 건이며 사람이 확인)
+
+| 샘플 | 회차 | 하면 안 되는 지적 | 자동 적발 |
+| --- | --- | --- | --- |
+| p1a | 1 | 가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다 | 없음 |
+| p1a | 1 | 리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다 | 없음 |
+| p1a | 2 | 가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다 | 없음 |
+| p1a | 2 | 리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다 | 없음 |
+| p1a | 3 | 가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다 | 없음 |
+| p1a | 3 | 리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다 | 없음 |
+| p1b | 1 | 가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다 | 없음 |
+| p1b | 1 | 리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다 | 없음 |
+| p1b | 2 | 가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다 | 없음 |
+| p1b | 2 | 리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다 | 없음 |
+| p1b | 3 | 가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다 | 없음 |
+| p1b | 3 | 리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다 | 없음 |
+| p2a | 1 | 작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다 | motivation.reason: "아니오" 근거로 인용 |
+| p2a | 2 | 작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다 | motivation.reason: "아니오" 근거로 인용 |
+| p2a | 3 | 작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다 | 없음 |
+| p2b | 1 | 작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다 | 없음 |
+| p2b | 2 | 작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다 | motivation.reason: "아니오" 근거로 인용 |
+| p2b | 3 | 작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다 | 없음 |
+| p3a | 1 | [폐기] 표시한 첩자 설정과 '청운객잔'을 최종 설정과 어긋난다고 지적한다 | 없음 |
+| p3a | 2 | [폐기] 표시한 첩자 설정과 '청운객잔'을 최종 설정과 어긋난다고 지적한다 | 없음 |
+| p3a | 3 | [폐기] 표시한 첩자 설정과 '청운객잔'을 최종 설정과 어긋난다고 지적한다 | 없음 |
+| p4a | 1 | 여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다 | turning_points.why: "아니오" 근거로 인용 |
+| p4a | 2 | 여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다 | turning_points.why: "아니오" 근거로 인용 |
+| p4a | 3 | 여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다 | turning_points.why: "아니오" 근거로 인용 |
+| p4b | 1 | 여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다 | turning_points.why: "아니오" 근거로 인용 |
+| p4b | 1 | 메모에 없는 결말을 지어내 판단 근거로 삼는다 | 사람만 판단 가능 |
+| p4b | 2 | 여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다 | 없음 |
+| p4b | 2 | 메모에 없는 결말을 지어내 판단 근거로 삼는다 | 사람만 판단 가능 |
+| p4b | 3 | 여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다 | 없음 |
+| p4b | 3 | 메모에 없는 결말을 지어내 판단 근거로 삼는다 | 사람만 판단 가능 |
+
+## 4. 근거 정확성 (자동: 원문 존재만 확인)
+
+- 원본 응답 인용 2150개 중 원문에 없는 인용 4개 (성공·후처리 실패 실행만 집계, 모델 호출 실패는 응답이 없음)
+
+| 샘플 | 회차 | 위치 | 질문 | 인용 |
+| --- | --- | --- | --- | --- |
+| p2a | 2 | answers | early_pace.goal_early | 한결의 수명은 1년 줄어 있다. |
+| p4a | 1 | answers | supporting.role | 이장은 요양원에서 은서를 만나 |
+| p4a | 1 | setting.events | - | 이장은 요양원에서 은서를 만나 |
+| p4b | 3 | answers | genre_fit.core_fun | 이장은 그 애는 도망간 게 아니라 돈을 돌려주러 갔다고 말하고 잠든다. |
+
+- 후처리로 바뀐 답 0건 (근거 인용이 원문에서 확인되지 않아 "예"가 "아니오"가 된 경우)
+
+## 5. 수정 우선순위 (먼저 고칠 3가지)
+
+| 샘플 | 회차 | 빨강 항목 (목록 순) | 먼저 고칠 3 | 목록 순서와 같음 | 빠진 빨강 | 대상 문제 포함 |
+| --- | --- | --- | --- | --- | --- | --- |
+| p1a | 1 | versions, genre_fit, motivation, turning_points, cliffhanger, exposition | versions(3번째), genre_fit(6번째), motivation(10번째) | 예 | turning_points, cliffhanger, exposition | 해당 없음 |
+| p1a | 2 | versions, genre_fit, motivation, turning_points, exposition | versions(3번째), genre_fit(6번째), motivation(10번째) | 예 | turning_points, exposition | 해당 없음 |
+| p1a | 3 | versions, genre_fit, motivation, turning_points | versions(3번째), genre_fit(6번째), motivation(10번째) | 예 | turning_points | 해당 없음 |
+| p1b | 1 | consistency, genre_fit, motivation, turning_points, exposition | consistency(1번째), genre_fit(6번째), motivation(10번째) | 예 | turning_points, exposition | 예 |
+| p1b | 2 | consistency, versions, genre_fit, motivation, turning_points, exposition | consistency(1번째), versions(3번째), genre_fit(6번째) | 예 | motivation, turning_points, exposition | 예 |
+| p1b | 3 | consistency, versions, genre_fit, motivation, turning_points | consistency(1번째), versions(3번째), genre_fit(6번째) | 예 | motivation, turning_points | 예 |
+| p2a | 1 | core_rules, versions, genre_fit, motivation, cliffhanger | core_rules(2번째), versions(3번째), genre_fit(6번째) | 예 | motivation, cliffhanger | 해당 없음 |
+| p2a | 2 | versions, genre_fit, motivation, turning_points | versions(3번째), genre_fit(6번째), motivation(10번째) | 예 | turning_points | 해당 없음 |
+| p2a | 3 | versions, genre_fit, motivation, turning_points, cliffhanger | versions(3번째), genre_fit(6번째), motivation(10번째) | 예 | turning_points, cliffhanger | 해당 없음 |
+| p2b | 1 | core_rules, versions, motivation, turning_points | core_rules(2번째), versions(3번째), motivation(10번째) | 예 | turning_points | 예 |
+| p2b | 2 | genre_fit, motivation, turning_points, cliffhanger | genre_fit(6번째), motivation(10번째), turning_points(16번째) | 예 | cliffhanger | 예 |
+| p2b | 3 | consistency, genre_fit, motivation, turning_points | consistency(1번째), genre_fit(6번째), motivation(10번째) | 예 | turning_points | 예 |
+| p3a | 1 | longevity, genre_fit, motivation, stakes, turning_points, exposition | longevity(5번째), genre_fit(6번째), motivation(10번째) | 예 | stakes, turning_points, exposition | 해당 없음 |
+| p3a | 2 | longevity, genre_fit, motivation, stakes, turning_points | longevity(5번째), genre_fit(6번째), motivation(10번째) | 예 | stakes, turning_points | 해당 없음 |
+| p3a | 3 | consistency, longevity, genre_fit, motivation, stakes, turning_points, exposition | consistency(1번째), longevity(5번째), genre_fit(6번째) | 예 | motivation, stakes, turning_points, exposition | 해당 없음 |
+| p3b | 1 | consistency, versions, longevity, genre_fit, motivation, turning_points | consistency(1번째), versions(3번째), longevity(5번째) | 예 | genre_fit, motivation, turning_points | 예 |
+| p3b | 2 | consistency, versions, longevity, genre_fit, motivation, stakes, turning_points, exposition | consistency(1번째), versions(3번째), longevity(5번째) | 예 | genre_fit, motivation, stakes, turning_points, exposition | 예 |
+| p3b | 3 | consistency, versions, longevity, genre_fit, motivation, stakes, turning_points, cliffhanger, exposition | consistency(1번째), versions(3번째), longevity(5번째) | 예 | genre_fit, motivation, stakes, turning_points, cliffhanger, exposition | 예 |
+| p4a | 1 | consistency, longevity, motivation, turning_points | consistency(1번째), longevity(5번째), motivation(10번째) | 예 | turning_points | 해당 없음 |
+| p4a | 2 | versions, longevity, motivation, stakes, turning_points | versions(3번째), longevity(5번째), motivation(10번째) | 예 | stakes, turning_points | 해당 없음 |
+| p4a | 3 | versions, longevity, motivation, turning_points | versions(3번째), longevity(5번째), motivation(10번째) | 예 | turning_points | 해당 없음 |
+| p4b | 1 | versions, longevity, motivation, arc, turning_points, ending, theme | versions(3번째), longevity(5번째), motivation(10번째) | 예 | arc, turning_points, ending, theme | 아니오 |
+| p4b | 2 | versions, motivation, arc, turning_points, ending, theme | versions(3번째), motivation(10번째), arc(13번째) | 예 | turning_points, ending, theme | 아니오 |
+| p4b | 3 | versions, longevity, motivation, arc, stakes, turning_points, ending, theme | versions(3번째), longevity(5번째), motivation(10번째) | 예 | arc, stakes, turning_points, ending, theme | 아니오 |
+
+항목 목록은 22개이고, 앱은 빨강을 먼저, 같은 색 안에서는 목록 순서대로 3개를 고른다.
+
+## 6. 쌍 비교: 바꾼 부분과 무관한 질문이 흔들렸는가
+
+| 쌍 | 회차 | 비교한 질문 수 | 달라진 질문 |
+| --- | --- | --- | --- |
+| p1a↔p1b | 1 | 19 | versions.separated 아니오→예, cliffhanger.hooks 아니오→예 |
+| p1a↔p1b | 2 | 19 | 없음 |
+| p1a↔p1b | 3 | 19 | 없음 |
+| p2a↔p2b | 1 | 18 | genre_fit.core_fun 아니오→예(주관), turning_points.why 예→아니오, cliffhanger.hooks 아니오→예 |
+| p2a↔p2b | 2 | 18 | versions.separated 아니오→예, cliffhanger.hooks 예→아니오 |
+| p2a↔p2b | 3 | 18 | consistency.no_conflict 예→아니오, versions.separated 아니오→예, cliffhanger.hooks 아니오→예 |
+| p3a↔p3b | 1 | 21 | stakes.cost 아니오→예, exposition.not_dumped 아니오→예 |
+| p3a↔p3b | 2 | 21 | exposition.not_dumped 예→아니오 |
+| p3a↔p3b | 3 | 21 | cliffhanger.hooks 예→아니오 |
+| p4a↔p4b | 1 | 20 | consistency.no_conflict 아니오→예, versions.separated 예→아니오 |
+| p4a↔p4b | 2 | 20 | longevity.next 아니오→예, stakes.cost 아니오→예 |
+| p4a↔p4b | 3 | 20 | stakes.cost 예→아니오 |
+
+비교에서 뺀 질문: 대상 질문과 라벨의 mayAlsoChange(바꾼 부분 때문에 달라질 수 있는 질문).
+
+## 7. 반복 일관성
+
+| 샘플 | 회차 | 성공 | 바뀐 질문 수 | 바뀐 대상 질문 |
+| --- | --- | --- | --- | --- |
+| p1a | 3 | 3 | 2 | 없음 |
+| p1b | 3 | 3 | 2 | 없음 |
+| p2a | 3 | 3 | 3 | 없음 |
+| p2b | 3 | 3 | 5 | 없음 |
+| p3a | 3 | 3 | 2 | consistency.no_conflict |
+| p3b | 3 | 3 | 3 | 없음 |
+| p4a | 3 | 3 | 3 | 없음 |
+| p4b | 3 | 3 | 2 | 없음 |
+
+## 8. 사람 검토표
+
+- review.csv: 552행 (1순위 34행, 2순위 96행, 3순위 43행, 4순위 29행, 5순위 350행). 1순위는 대상 질문, 하면 안 되는 지적 의심, 근거 확인 실패로 바뀐 답이다.
+- 인용이 판단을 실제로 뒷받침하는지, 조언이 어느 부분을 왜 봐야 하는지 알려 주는지는 자동으로 판정하지 않는다. [검토] 열을 사람이 채운다.
+- 주관 문항(장르 재미, 개성, 셀링 포인트, 주인공 매력)은 흥행이나 투고 성공을 검증하지 않는다. 근거와 유용성만 본다.

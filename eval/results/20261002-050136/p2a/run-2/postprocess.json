@@ -1,0 +1,49 @@
+{
+  "missingQuestionIds": [],
+  "duplicateQuestionIds": [],
+  "unknownQuestionIds": [],
+  "rawQuotes": {
+    "total": 90,
+    "inMemo": 89,
+    "notInMemo": [
+      {
+        "where": "answers",
+        "questionId": "early_pace.goal_early",
+        "quote": "한결의 수명은 1년 줄어 있다."
+      }
+    ]
+  },
+  "appDroppedQuotes": 1,
+  "changedAnswers": [],
+  "priority": {
+    "topFixes": [
+      {
+        "itemId": "versions",
+        "signal": "fix",
+        "tableIndex": 2
+      },
+      {
+        "itemId": "genre_fit",
+        "signal": "fix",
+        "tableIndex": 5
+      },
+      {
+        "itemId": "motivation",
+        "signal": "fix",
+        "tableIndex": 9
+      }
+    ],
+    "red": [
+      "versions",
+      "genre_fit",
+      "motivation",
+      "turning_points"
+    ],
+    "yellow": [],
+    "redLeftOut": [
+      "turning_points"
+    ],
+    "followsTableOrder": true
+  },
+  "postprocessError": null
+}
