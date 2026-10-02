@@ -55,6 +55,8 @@ bun run dev                  # 브라우저가 자동으로 열린다
 
 공유 주소는 `https://side-project-gamma.vercel.app`이다(`side-project-for-me13` 별칭은 Vercel 인증으로 막혀 있다).
 
+로그인 없이 둘러보는 데모는 `https://side-project-gamma.vercel.app/demo`이다. 저장소에 든 예시 리포트 하나(`src/lib/demo-report.json`, 새로 쓴 기획 메모를 실제로 한 번 진단한 결과)를 보여주고, 진단 실행과 삭제는 막혀 있다.
+
 ## 설계 문서
 
 - [기능 설계](https://claude.ai/code/artifact/fa81e68b-c6be-48c7-aa96-fff9fc7335de)
