@@ -11,6 +11,9 @@ import { ApiError, isResponseId } from "@/lib/llm";
 export type StartResult = { ok: true; responseId: string } | { ok: false; error: string };
 export type PollResult = { state: "running" } | { state: "done"; id: string } | { state: "failed"; error: string };
 
+// The demo link is public, so its visitors spend no OpenAI credit.
+const DEMO_MESSAGE = "데모에서는 진단을 실행할 수 없어요. 로그아웃한 뒤 이메일로 가입하면 직접 진단할 수 있어요.";
+
 // toMemo normalizes user input to a well-formed Memo.
 function toMemo(input: Memo): Memo {
   return {
@@ -24,6 +27,7 @@ function toMemo(input: Memo): Memo {
 // Server functions are reachable by direct POST, so each one checks the viewer itself.
 export async function requestDiagnosis(input: Memo): Promise<StartResult> {
   const viewer = await requireViewer();
+  if (viewer.demo) return { ok: false, error: DEMO_MESSAGE };
   const memo = toMemo(input);
   const problem = validateMemo(memo);
   if (problem) return { ok: false, error: problem };
@@ -42,6 +46,7 @@ export async function requestDiagnosis(input: Memo): Promise<StartResult> {
 // pollDiagnosis checks a running diagnosis and saves the report when complete.
 export async function pollDiagnosis(responseId: string, input: Memo): Promise<PollResult> {
   const viewer = await requireViewer();
+  if (viewer.demo) return { state: "failed", error: DEMO_MESSAGE };
   const memo = toMemo(input);
   const id = String(responseId);
 

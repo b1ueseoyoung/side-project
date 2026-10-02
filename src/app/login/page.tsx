@@ -7,7 +7,9 @@ import { isLocalMode } from "@/lib/env";
 
 export default async function LoginPage() {
   if (isLocalMode()) redirect("/");
-  if (await getViewer()) redirect("/reports");
+  // A demo visitor may still sign up, so the form stays open to them.
+  const viewer = await getViewer();
+  if (viewer && !viewer.demo) redirect("/reports");
 
   return (
     <main className="flex min-h-dvh flex-1 items-center justify-center px-4 py-16">
