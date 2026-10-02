@@ -153,21 +153,21 @@ Claude 기준선은 작성자 맥의 Claude Code 구독으로 돌려서 비용 �
 
 ## 맥에서 실행
 
-Node 22.18 이상(스크립트가 `.mts`를 그대로 실행한다), Neon Postgres DB, OpenAI API 키가 필요하다.
+bun과 Node 22.18 이상(스크립트는 `node`로 `.mts`를 그대로 실행한다), Neon Postgres DB, OpenAI API 키가 필요하다.
 
 ```bash
-npm install
+bun install
 cp .env.example .env.local   # DATABASE_URL, OWNER_EMAIL, OPENAI_API_KEY, APP_MODE=local 채우기
-npm run db:migrate           # 처음 한 번, 테이블 만들기
-npm run dev                  # 브라우저가 자동으로 열린다
+bun run db:migrate           # 처음 한 번, 테이블 만들기
+bun run dev                  # 브라우저가 자동으로 열린다
 ```
 
-로컬 앱은 `127.0.0.1`에서만 열리고 로그인 없이 `OWNER_EMAIL` 계정으로 동작한다. 명령줄로 샘플을 진단하려면 `npm run diagnose -- samples/02-play-assignment.json`. 테스트는 `npm test`로 돌린다(모델을 부르지 않는다).
+로컬 앱은 `127.0.0.1`에서만 열리고 로그인 없이 `OWNER_EMAIL` 계정으로 동작한다. 명령줄로 샘플을 진단하려면 `bun run diagnose -- samples/02-play-assignment.json`. 테스트는 `bun run test`로 돌린다(모델을 부르지 않는다).
 
 ## 배포 (Vercel)
 
 1. Vercel에 저장소를 연결하고, Storage에서 Neon Postgres를 만들어 연결한다(`DATABASE_URL`이 자동으로 들어간다).
 2. 환경변수: `OPENAI_API_KEY`, `BETTER_AUTH_SECRET`(`openssl rand -base64 32`), `BETTER_AUTH_URL`(배포 주소), `SMTP_URL`, `SMTP_FROM`. 모델이나 추론 강도를 바꾸려면 `OPENAI_MODEL`, `OPENAI_EFFORT`(기본 `gpt-6-luna`, `max`). `APP_MODE`와 `OWNER_EMAIL`은 맥에서만 쓰므로 넣지 않는다.
-3. 맥의 `.env.local`에 같은 `DATABASE_URL`을 넣고 `npm run db:migrate`.
+3. 맥의 `.env.local`에 같은 `DATABASE_URL`을 넣고 `bun run db:migrate`.
 
 로그인 메일은 SMTP로 보낸다. Gmail 앱 비밀번호를 쓰면 누구에게나 보낼 수 있다(Resend 무료 발신 주소는 가입자 본인에게만 보낸다).

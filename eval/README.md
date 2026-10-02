@@ -17,18 +17,18 @@
 
 ```bash
 # 1. 집계 로직 테스트 (모델 호출 없음)
-npm run test:eval
+bun run test:eval
 
 # 2. 드라이런: 가짜 응답으로 저장과 집계만 확인 (모델 호출 없음, 임시 폴더에 저장)
-npm run eval -- --dry-run --repeat 3
-npm run eval:score -- <출력된 폴더>
+bun run eval -- --dry-run --repeat 3
+bun run eval:score -- <출력된 폴더>
 
 # 3. 실제 실행: 샘플 8개를 1회씩, 순차로 (모델 호출 8회)
-npm run eval -- --samples all --repeat 1 --max-calls 8
-npm run eval:score -- eval/results/<실행 시각>
+bun run eval -- --samples all --repeat 1 --max-calls 8
+bun run eval:score -- eval/results/<실행 시각>
 
 # 반복 일관성: 같은 샘플을 3회씩 (모델 호출 24회라 상한을 직접 올려야 한다)
-npm run eval -- --samples all --repeat 3 --max-calls 24
+bun run eval -- --samples all --repeat 3 --max-calls 24
 ```
 
 - 일부 샘플만 돌리려면 `--samples p1a,p1b`처럼 쓴다.
