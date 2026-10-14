@@ -6,12 +6,12 @@ import { deleteReport, requireViewer, saveReport } from "@/lib/dal";
 import { checkDiagnosis, errorMessage, isTransient, startDiagnosis } from "@/lib/diagnosis/diagnose";
 import type { Memo } from "@/lib/diagnosis/types";
 import { validateMemo } from "@/lib/diagnosis/validate";
-import { ApiError, isResponseId } from "@/lib/llm";
+import { ApiError, isBatchId } from "@/lib/llm";
 
 export type StartResult = { ok: true; responseId: string } | { ok: false; error: string };
 export type PollResult = { state: "running" } | { state: "done"; id: string } | { state: "failed"; error: string };
 
-// The demo link is public, so its visitors spend no OpenAI credit.
+// The demo link is public, so its visitors spend no Claude API credit.
 const DEMO_MESSAGE = "데모에서는 진단을 실행할 수 없어요. 로그아웃한 뒤 이메일로 가입하면 직접 진단할 수 있어요.";
 
 // toMemo normalizes user input to a well-formed Memo.
@@ -23,7 +23,7 @@ function toMemo(input: Memo): Memo {
   };
 }
 
-// requestDiagnosis starts a diagnosis and returns its OpenAI response id.
+// requestDiagnosis starts a diagnosis and returns its batch id.
 // Server functions are reachable by direct POST, so each one checks the viewer itself.
 export async function requestDiagnosis(input: Memo): Promise<StartResult> {
   const viewer = await requireViewer();
@@ -50,7 +50,7 @@ export async function pollDiagnosis(responseId: string, input: Memo): Promise<Po
   const memo = toMemo(input);
   const id = String(responseId);
 
-  if (!isResponseId(id)) {
+  if (!isBatchId(id)) {
     return { state: "failed", error: errorMessage(null, null) };
   }
   const problem = validateMemo(memo);
@@ -80,7 +80,7 @@ export async function pollDiagnosis(responseId: string, input: Memo): Promise<Po
   } catch (error) {
     console.error("Diagnosis check failed:", error instanceof Error ? error.message : error);
 
-    // The work continues on OpenAI's side; try again next poll.
+    // The batch keeps running on Anthropic's side; try again next poll.
     if (isTransient(error)) return { state: "running" };
 
     // Permanent errors: fail.

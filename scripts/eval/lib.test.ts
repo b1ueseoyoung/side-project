@@ -108,25 +108,19 @@ describe("pair and repeat comparison", () => {
 });
 
 describe("costUsd", () => {
-  const usage = {
-    input_tokens: 5671,
-    input_tokens_details: { cache_write_tokens: 5668, cached_tokens: 0 },
-    output_tokens: 14748,
-    output_tokens_details: { reasoning_tokens: 7103 },
-    total_tokens: 20419,
-  };
+  const usage = { input_tokens: 7934, cache_creation_input_tokens: 0, cache_read_input_tokens: 0, output_tokens: 92000 };
 
-  test("prices luna usage including cache writes and cached input", () => {
-    assert.ok(Math.abs((costUsd("gpt-6-luna", usage) ?? 0) - 0.0080828) < 1e-9);
-    const cached = { input_tokens: 1000, input_tokens_details: { cached_tokens: 400 }, output_tokens: 100 };
-    assert.ok(Math.abs((costUsd("gpt-6-luna-2026-09-01", cached) ?? 0) - (600 * 0.1 + 400 * 0.01 + 100 * 0.5) / 1e6) < 1e-12);
+  test("prices Opus 5.5 at batch rates, counting cache writes and reads apart from input", () => {
+    assert.ok(Math.abs((costUsd("claude-opus-5-5", usage) ?? 0) - (7934 * 2 + 92000 * 10) / 1e6) < 1e-12);
+    const cached = { input_tokens: 600, cache_creation_input_tokens: 300, cache_read_input_tokens: 100, output_tokens: 100 };
+    assert.ok(Math.abs((costUsd("claude-opus-5-5", cached) ?? 0) - (600 * 2 + 300 * 2.5 + 100 * 0.1 + 100 * 10) / 1e6) < 1e-12);
   });
 
   test("is null for an unknown model or missing usage", () => {
-    assert.equal(costUsd("gpt-4o", usage), null);
+    assert.equal(costUsd("gpt-6-luna", usage), null);
     assert.equal(costUsd(undefined, usage), null);
-    assert.equal(costUsd("gpt-6-luna", null), null);
-    assert.equal(costUsd("gpt-6-luna", {}), null);
+    assert.equal(costUsd("claude-opus-5-5", null), null);
+    assert.equal(costUsd("claude-opus-5-5", {}), null);
   });
 });
 

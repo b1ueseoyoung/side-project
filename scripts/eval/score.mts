@@ -228,7 +228,7 @@ const apiModels = [...new Set(runs.flatMap((r) => (r.meta?.apiModel ? [r.meta.ap
 const models = apiModels.length ? apiModels : [...new Set(runs.flatMap((r) => r.meta?.cliModels ?? []))];
 lines.push(`- 응답이 보고한 실제 모델: ${models.join(", ") || "-"}`);
 const usd = (x: number) => `$${x.toFixed(4)}`;
-if (cost) lines.push(`- 비용: 합계 ${usd(cost.total)}, 1회 중앙값 ${usd(cost.median)}, 최대 ${usd(cost.max)} (표준 요금)`);
+if (cost) lines.push(`- 비용: 합계 ${usd(cost.total)}, 1회 중앙값 ${usd(cost.median)}, 최대 ${usd(cost.max)} (${info.provider === "anthropic-batches" ? "배치 요금" : "표준 요금"})`);
 if (tokens) lines.push(`- 토큰: 입력 중앙값 ${tokens.inputMedian}, 출력 중앙값 ${tokens.outputMedian}`);
 lines.push(
   `- 버전: git ${info.versions.gitHead?.slice(0, 7) ?? "-"}` +

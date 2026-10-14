@@ -121,7 +121,7 @@ export function useDiagnosisFlow(account: string): DiagnosisFlow {
         }
         if (result.state === "failed") return finish(result.error);
       } catch {
-        // Offline or the server restarted: the job keeps running on OpenAI's side, so check again later.
+        // Offline or the server restarted: the batch keeps running on Anthropic's side, so check again later.
       } finally {
         busy = false;
       }
