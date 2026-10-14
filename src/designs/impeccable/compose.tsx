@@ -15,8 +15,8 @@ import { useDiagnosisFlow, useElapsed, useHydrated } from "../shared/flow";
 import { GenreTag, Shell } from "./chrome";
 
 const INVALID_MESSAGE = "장르를 골라주세요.";
-// gpt-6-luna at max effort: median 305 s over 8 eval runs; two runs took about 20 minutes.
-const TYPICAL_MINUTES = 6;
+// claude-opus-5-5 at max effort through batches: median 1,075 s over 8 eval runs (758-1,127 s).
+const TYPICAL_MINUTES = 18;
 
 export function Compose({ signOut, account }: { signOut: boolean; account: string }) {
   const hydrated = useHydrated();
@@ -172,7 +172,7 @@ function Submit({ error }: { error: string | null }) {
 function PrivacyNote() {
   return (
     <p className="type-meta text-muted-foreground">
-      메모는 진단을 위해 OpenAI API로 보내지고 OpenAI에도 일정 기간 남아요. 메모와 결과는 내 계정에서만 볼 수 있어요.
+      메모는 진단을 위해 Anthropic의 Claude API로 보내지고 Anthropic에도 일정 기간 남아요. 메모와 결과는 내 계정에서만 볼 수 있어요.
     </p>
   );
 }

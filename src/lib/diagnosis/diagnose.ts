@@ -8,7 +8,8 @@ import { buildReport } from "./rules.ts";
 import type { Memo, ModelOutput, Report } from "./types.ts";
 
 const POLL_MS = 5_000;
-const MAX_WAIT_MS = 60 * 60 * 1000;
+// A batch can take up to 24 hours; the browser and the CLI wait that long so a paid result is kept.
+const MAX_WAIT_MS = 24 * 60 * 60 * 1000;
 // The CLI and eval have no signed-in viewer.
 const CLI_ACCOUNT = "cli";
 
@@ -58,9 +59,14 @@ export function reportIdFor(responseId: string): string {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-8${h.slice(13, 16)}-${variant}${h.slice(17, 20)}-${h.slice(20, 32)}`;
 }
 
-/** Ties a response to the account that started it; OpenAI gets the hash, not the address. */
+/** Ties a batch to the account that started it; Anthropic gets the hash, not the address. */
 export function accountHash(account: string): string {
   return sha256(account);
+}
+
+/** The batch request's custom id: memo hash, then account hash, 32 hex characters each (64 is the limit). */
+export function customIdFor(memo: Memo, account: string): string {
+  return memoHash(memo).slice(0, 32) + accountHash(account).slice(0, 32);
 }
 
 export async function startDiagnosis(memo: Memo, account: string): Promise<string> {
@@ -68,7 +74,7 @@ export async function startDiagnosis(memo: Memo, account: string): Promise<strin
     system: SYSTEM_PROMPT,
     prompt: buildPrompt(memo),
     schema: OUTPUT_SCHEMA,
-    metadata: { memo_sha256: memoHash(memo), account_sha256: accountHash(account) },
+    customId: customIdFor(memo, account),
   });
   return r.id;
 }
@@ -80,18 +86,20 @@ export type Check =
 
 function withoutOutput(r: ApiResponse): ApiResponse {
   const rest: ApiResponse = { ...r };
-  delete rest.output;
+  delete rest.content;
   return rest;
 }
 
 export function checkResponse(r: ApiResponse, memo: Memo, account: string): Check {
-  if (r.metadata?.memo_sha256 !== memoHash(memo)) return { state: "failed", reason: "memo_mismatch", api: r };
+  // A batch shows its custom id only in the result, so who may collect it is checked once it has ended.
+  if (r.status !== "ended") return { state: "running" };
+  if (!r.custom_id) return { state: "failed", reason: "no_result", api: r };
+  const expected = customIdFor(memo, account);
+  if (r.custom_id.slice(0, 32) !== expected.slice(0, 32)) return { state: "failed", reason: "memo_mismatch", api: r };
   // Only the account that started a diagnosis may collect it, so a report is never saved under someone else.
-  if (r.metadata?.account_sha256 !== accountHash(account)) return { state: "failed", reason: "account_mismatch", api: r };
-  if (r.status === "queued" || r.status === "in_progress") return { state: "running" };
-  if (r.status !== "completed") {
-    return { state: "failed", reason: r.error?.code ?? r.incomplete_details?.reason ?? r.status, api: r };
-  }
+  if (r.custom_id !== expected) return { state: "failed", reason: "account_mismatch", api: r };
+  if (r.result !== "succeeded") return { state: "failed", reason: r.error?.type ?? r.result ?? "no_result", api: r };
+  if (r.stop_reason === "max_tokens") return { state: "failed", reason: "max_tokens", api: r };
   let output: ModelOutput;
   try {
     output = toModelOutput(structuredOutput<RawOutput>(r));
@@ -111,17 +119,9 @@ export async function checkDiagnosis(id: string, memo: Memo, account: string): P
   }
 }
 
-const CREDIT_CODES = new Set([
-  "credit_balance_exhausted",
-  "insufficient_quota",
-  "project_spend_limit_exceeded",
-  "organization_spend_limit_exceeded",
-  "organization_usage_limit_exceeded",
-]);
-
 /** The only source of user-facing failure messages. */
 export function errorMessage(code: string | null, status: number | null): string {
-  if (code && CREDIT_CODES.has(code)) return "OpenAI 크레딧을 다 썼어요. 작성자에게 알려 주세요.";
+  if (code === "billing_error") return "Claude API 크레딧을 다 썼어요. 작성자에게 알려 주세요.";
   if (status === 429) return "요청이 많아요. 잠시 뒤에 다시 해 주세요.";
   return "진단을 끝내지 못했어요. 잠시 뒤에 다시 해보세요.";
 }

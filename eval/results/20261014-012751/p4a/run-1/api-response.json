@@ -1,0 +1,27 @@
+{
+  "id": "msgbatch_01PqWAoSzbRoYdxRF4HDaxVk",
+  "status": "ended",
+  "created_at": "2026-10-14T01:27:53.190210+00:00",
+  "ended_at": "2026-10-14T01:46:33.654902+00:00",
+  "custom_id": "d679b1e4eadf207b221b5444d0d9c2c699bb88401742848e032fd6f51709415f",
+  "result": "succeeded",
+  "error": null,
+  "message_id": "msg_011Cg1HKrhusxPdtArerwdV2",
+  "model": "claude-opus-5-5",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 12330,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 115981,
+    "output_tokens_details": {
+      "thinking_tokens": 101405
+    },
+    "service_tier": "batch",
+    "inference_geo": "global"
+  }
+}

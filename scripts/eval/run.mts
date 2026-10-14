@@ -13,7 +13,7 @@ import { buildRun, diagnoseDetailed } from "../../src/lib/diagnosis/diagnose.ts"
 import type { DiagnosisRun } from "../../src/lib/diagnosis/diagnose.ts";
 import { OUTPUT_SCHEMA, SYSTEM_PROMPT, buildPrompt } from "../../src/lib/diagnosis/prompt.ts";
 import type { Memo } from "../../src/lib/diagnosis/types.ts";
-import { openaiSettings } from "../../src/lib/llm.ts";
+import { claudeSettings } from "../../src/lib/llm.ts";
 import type { ApiResponse } from "../../src/lib/llm.ts";
 import { costUsd, diffPostprocess, fakeModelOutput, safeError } from "./lib.ts";
 
@@ -81,8 +81,8 @@ await writeJson(out, "run-info.json", {
   samples: chosen,
   repeat,
   plannedModelCalls: dryRun ? 0 : calls,
-  provider: "openai-responses",
-  settings: openaiSettings(),
+  provider: "anthropic-batches",
+  settings: claudeSettings(),
   versions: {
     gitHead: git("rev-parse", "HEAD"),
     uncommittedVersionedFiles: (git("status", "--porcelain", "--", ...VERSIONED_FILES) ?? "")
@@ -112,7 +112,7 @@ runs: for (const sampleId of chosen) {
     let failedResponseId: string | null = null;
     try {
       run = dryRun
-        ? buildRun(fakeModelOutput(memo, sampleId, n), { id: "dry-run", status: "completed" } as ApiResponse, memo)
+        ? buildRun(fakeModelOutput(memo, sampleId, n), { id: "dry-run", status: "ended" } as ApiResponse, memo)
         : await diagnoseDetailed(memo);
     } catch (e) {
       error = safeError(e);
@@ -144,7 +144,7 @@ runs: for (const sampleId of chosen) {
       error: error ?? (run?.error ? safeError(run.error) : null),
       startedAt: startedAt.toISOString(),
       durationMs,
-      settings: openaiSettings(),
+      settings: claudeSettings(),
       apiModel: api?.model ?? null,
       responseId: api?.id ?? failedResponseId,
       usage: api?.usage ?? null,

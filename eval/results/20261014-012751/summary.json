@@ -1,0 +1,1360 @@
+{
+  "runInfo": {
+    "createdAt": "2026-10-14T01:27:52.045Z",
+    "dryRun": false,
+    "samples": [
+      "p1a",
+      "p1b",
+      "p2a",
+      "p2b",
+      "p3a",
+      "p3b",
+      "p4a",
+      "p4b"
+    ],
+    "repeat": 1,
+    "plannedModelCalls": 8,
+    "provider": "anthropic-batches",
+    "settings": {
+      "model": "claude-opus-5-5",
+      "effort": "max"
+    },
+    "versions": {
+      "gitHead": "1297bc8f93372ca8790c68605207b3ff727ea254",
+      "uncommittedVersionedFiles": [
+        "M src/lib/diagnosis/diagnose.ts",
+        "M src/lib/llm.ts"
+      ],
+      "files": {
+        "src/lib/diagnosis/prompt.ts": "fb1365e361f5bb73",
+        "src/lib/diagnosis/rules.ts": "da6a55683be26719",
+        "src/lib/diagnosis/items.ts": "1293e659696d7113",
+        "src/lib/diagnosis/types.ts": "880face5276968a7",
+        "src/lib/diagnosis/diagnose.ts": "2d6af525e47ce472",
+        "src/lib/llm.ts": "7c9df6bc2d9a583e"
+      },
+      "systemPromptSha256": "6e63177dca9e3b84",
+      "outputSchemaSha256": "4e955489cd78221e"
+    },
+    "node": "v26.10.0",
+    "note": "8 one-sample runner processes started in parallel (one batch each); samples merged after the runs"
+  },
+  "cost": {
+    "total": 8.643284,
+    "median": 1.089271,
+    "max": 1.250646
+  },
+  "tokens": {
+    "inputMedian": 12432,
+    "outputMedian": 106401.5
+  },
+  "labelProblems": {
+    "p1a": [],
+    "p1b": [],
+    "p2a": [],
+    "p2b": [],
+    "p3a": [],
+    "p3b": [],
+    "p4a": [],
+    "p4b": []
+  },
+  "runs": [
+    {
+      "sampleId": "p1a",
+      "run": 1,
+      "meta": {
+        "sampleId": "p1a",
+        "run": 1,
+        "dryRun": false,
+        "ok": true,
+        "stage": "done",
+        "error": null,
+        "startedAt": "2026-10-14T01:27:52.119Z",
+        "durationMs": 1034078,
+        "settings": {
+          "model": "claude-opus-5-5",
+          "effort": "max"
+        },
+        "apiModel": "claude-opus-5-5",
+        "responseId": "msgbatch_01AP5fWJFYCyschwbTHVUa1Q",
+        "usage": {
+          "input_tokens": 12643,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 122536,
+          "output_tokens_details": {
+            "thinking_tokens": 107120
+          },
+          "service_tier": "batch",
+          "inference_geo": "global"
+        },
+        "costUsd": 1.250646
+      },
+      "post": {
+        "missingQuestionIds": [],
+        "duplicateQuestionIds": [],
+        "unknownQuestionIds": [],
+        "rawQuotes": {
+          "total": 113,
+          "inMemo": 113,
+          "notInMemo": []
+        },
+        "appDroppedQuotes": 0,
+        "changedAnswers": [],
+        "priority": {
+          "topFixes": [
+            {
+              "itemId": "consistency",
+              "signal": "fix",
+              "tableIndex": 0
+            },
+            {
+              "itemId": "versions",
+              "signal": "fix",
+              "tableIndex": 2
+            },
+            {
+              "itemId": "genre_fit",
+              "signal": "fix",
+              "tableIndex": 5
+            }
+          ],
+          "red": [
+            "consistency",
+            "versions",
+            "genre_fit",
+            "motivation",
+            "central_question",
+            "stakes",
+            "turning_points",
+            "theme"
+          ],
+          "yellow": [],
+          "redLeftOut": [
+            "motivation",
+            "central_question",
+            "stakes",
+            "turning_points",
+            "theme"
+          ],
+          "followsTableOrder": true
+        },
+        "postprocessError": null
+      }
+    },
+    {
+      "sampleId": "p1b",
+      "run": 1,
+      "meta": {
+        "sampleId": "p1b",
+        "run": 1,
+        "dryRun": false,
+        "ok": true,
+        "stage": "done",
+        "error": null,
+        "startedAt": "2026-10-14T01:27:52.119Z",
+        "durationMs": 902627,
+        "settings": {
+          "model": "claude-opus-5-5",
+          "effort": "max"
+        },
+        "apiModel": "claude-opus-5-5",
+        "responseId": "msgbatch_01UKCnCZpWuwDKrAH8gPRd5o",
+        "usage": {
+          "input_tokens": 12646,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 102046,
+          "output_tokens_details": {
+            "thinking_tokens": 87415
+          },
+          "service_tier": "batch",
+          "inference_geo": "global"
+        },
+        "costUsd": 1.045752
+      },
+      "post": {
+        "missingQuestionIds": [],
+        "duplicateQuestionIds": [],
+        "unknownQuestionIds": [],
+        "rawQuotes": {
+          "total": 115,
+          "inMemo": 115,
+          "notInMemo": []
+        },
+        "appDroppedQuotes": 0,
+        "changedAnswers": [],
+        "priority": {
+          "topFixes": [
+            {
+              "itemId": "consistency",
+              "signal": "fix",
+              "tableIndex": 0
+            },
+            {
+              "itemId": "versions",
+              "signal": "fix",
+              "tableIndex": 2
+            },
+            {
+              "itemId": "genre_fit",
+              "signal": "fix",
+              "tableIndex": 5
+            }
+          ],
+          "red": [
+            "consistency",
+            "versions",
+            "genre_fit",
+            "motivation",
+            "central_question",
+            "turning_points",
+            "theme"
+          ],
+          "yellow": [],
+          "redLeftOut": [
+            "motivation",
+            "central_question",
+            "turning_points",
+            "theme"
+          ],
+          "followsTableOrder": true
+        },
+        "postprocessError": null
+      }
+    },
+    {
+      "sampleId": "p2a",
+      "run": 1,
+      "meta": {
+        "sampleId": "p2a",
+        "run": 1,
+        "dryRun": false,
+        "ok": true,
+        "stage": "done",
+        "error": null,
+        "startedAt": "2026-10-14T01:27:52.119Z",
+        "durationMs": 1122124,
+        "settings": {
+          "model": "claude-opus-5-5",
+          "effort": "max"
+        },
+        "apiModel": "claude-opus-5-5",
+        "responseId": "msgbatch_01MsGPoyfssJBfzRqh3LzDVp",
+        "usage": {
+          "input_tokens": 12610,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 110757,
+          "output_tokens_details": {
+            "thinking_tokens": 95466
+          },
+          "service_tier": "batch",
+          "inference_geo": "global"
+        },
+        "costUsd": 1.13279
+      },
+      "post": {
+        "missingQuestionIds": [],
+        "duplicateQuestionIds": [],
+        "unknownQuestionIds": [],
+        "rawQuotes": {
+          "total": 111,
+          "inMemo": 111,
+          "notInMemo": []
+        },
+        "appDroppedQuotes": 0,
+        "changedAnswers": [],
+        "priority": {
+          "topFixes": [
+            {
+              "itemId": "consistency",
+              "signal": "fix",
+              "tableIndex": 0
+            },
+            {
+              "itemId": "core_rules",
+              "signal": "fix",
+              "tableIndex": 1
+            },
+            {
+              "itemId": "versions",
+              "signal": "fix",
+              "tableIndex": 2
+            }
+          ],
+          "red": [
+            "consistency",
+            "core_rules",
+            "versions",
+            "genre_fit",
+            "motivation",
+            "stakes",
+            "turning_points"
+          ],
+          "yellow": [],
+          "redLeftOut": [
+            "genre_fit",
+            "motivation",
+            "stakes",
+            "turning_points"
+          ],
+          "followsTableOrder": true
+        },
+        "postprocessError": null
+      }
+    },
+    {
+      "sampleId": "p2b",
+      "run": 1,
+      "meta": {
+        "sampleId": "p2b",
+        "run": 1,
+        "dryRun": false,
+        "ok": true,
+        "stage": "done",
+        "error": null,
+        "startedAt": "2026-10-14T01:27:52.119Z",
+        "durationMs": 1116370,
+        "settings": {
+          "model": "claude-opus-5-5",
+          "effort": "max"
+        },
+        "apiModel": "claude-opus-5-5",
+        "responseId": "msgbatch_01WQHSbjBaEYEDSYx18oNrDL",
+        "usage": {
+          "input_tokens": 12482,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 118095,
+          "output_tokens_details": {
+            "thinking_tokens": 103037
+          },
+          "service_tier": "batch",
+          "inference_geo": "global"
+        },
+        "costUsd": 1.205914
+      },
+      "post": {
+        "missingQuestionIds": [],
+        "duplicateQuestionIds": [],
+        "unknownQuestionIds": [],
+        "rawQuotes": {
+          "total": 112,
+          "inMemo": 112,
+          "notInMemo": []
+        },
+        "appDroppedQuotes": 0,
+        "changedAnswers": [],
+        "priority": {
+          "topFixes": [
+            {
+              "itemId": "consistency",
+              "signal": "fix",
+              "tableIndex": 0
+            },
+            {
+              "itemId": "core_rules",
+              "signal": "fix",
+              "tableIndex": 1
+            },
+            {
+              "itemId": "versions",
+              "signal": "fix",
+              "tableIndex": 2
+            }
+          ],
+          "red": [
+            "consistency",
+            "core_rules",
+            "versions",
+            "genre_fit",
+            "motivation",
+            "supporting",
+            "protagonist_appeal",
+            "arc",
+            "stakes",
+            "turning_points"
+          ],
+          "yellow": [],
+          "redLeftOut": [
+            "genre_fit",
+            "motivation",
+            "supporting",
+            "protagonist_appeal",
+            "arc",
+            "stakes",
+            "turning_points"
+          ],
+          "followsTableOrder": true
+        },
+        "postprocessError": null
+      }
+    },
+    {
+      "sampleId": "p3a",
+      "run": 1,
+      "meta": {
+        "sampleId": "p3a",
+        "run": 1,
+        "dryRun": false,
+        "ok": true,
+        "stage": "done",
+        "error": null,
+        "startedAt": "2026-10-14T01:27:52.119Z",
+        "durationMs": 1126643,
+        "settings": {
+          "model": "claude-opus-5-5",
+          "effort": "max"
+        },
+        "apiModel": "claude-opus-5-5",
+        "responseId": "msgbatch_01Ldb5oxF513aAScB5CGkpwo",
+        "usage": {
+          "input_tokens": 12382,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 90969,
+          "output_tokens_details": {
+            "thinking_tokens": 77360
+          },
+          "service_tier": "batch",
+          "inference_geo": "global"
+        },
+        "costUsd": 0.934454
+      },
+      "post": {
+        "missingQuestionIds": [],
+        "duplicateQuestionIds": [],
+        "unknownQuestionIds": [],
+        "rawQuotes": {
+          "total": 97,
+          "inMemo": 97,
+          "notInMemo": []
+        },
+        "appDroppedQuotes": 0,
+        "changedAnswers": [],
+        "priority": {
+          "topFixes": [
+            {
+              "itemId": "genre_fit",
+              "signal": "fix",
+              "tableIndex": 5
+            },
+            {
+              "itemId": "motivation",
+              "signal": "fix",
+              "tableIndex": 9
+            },
+            {
+              "itemId": "stakes",
+              "signal": "fix",
+              "tableIndex": 14
+            }
+          ],
+          "red": [
+            "genre_fit",
+            "motivation",
+            "stakes",
+            "turning_points"
+          ],
+          "yellow": [],
+          "redLeftOut": [
+            "turning_points"
+          ],
+          "followsTableOrder": true
+        },
+        "postprocessError": null
+      }
+    },
+    {
+      "sampleId": "p3b",
+      "run": 1,
+      "meta": {
+        "sampleId": "p3b",
+        "run": 1,
+        "dryRun": false,
+        "ok": true,
+        "stage": "done",
+        "error": null,
+        "startedAt": "2026-10-14T01:27:52.118Z",
+        "durationMs": 831457,
+        "settings": {
+          "model": "claude-opus-5-5",
+          "effort": "max"
+        },
+        "apiModel": "claude-opus-5-5",
+        "responseId": "msgbatch_01NePXbWwHq9buPZXwqzgikU",
+        "usage": {
+          "input_tokens": 12322,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 89608,
+          "output_tokens_details": {
+            "thinking_tokens": 76691
+          },
+          "service_tier": "batch",
+          "inference_geo": "global"
+        },
+        "costUsd": 0.920724
+      },
+      "post": {
+        "missingQuestionIds": [],
+        "duplicateQuestionIds": [],
+        "unknownQuestionIds": [],
+        "rawQuotes": {
+          "total": 100,
+          "inMemo": 100,
+          "notInMemo": []
+        },
+        "appDroppedQuotes": 0,
+        "changedAnswers": [],
+        "priority": {
+          "topFixes": [
+            {
+              "itemId": "consistency",
+              "signal": "fix",
+              "tableIndex": 0
+            },
+            {
+              "itemId": "versions",
+              "signal": "fix",
+              "tableIndex": 2
+            },
+            {
+              "itemId": "genre_fit",
+              "signal": "fix",
+              "tableIndex": 5
+            }
+          ],
+          "red": [
+            "consistency",
+            "versions",
+            "genre_fit",
+            "motivation",
+            "stakes",
+            "turning_points"
+          ],
+          "yellow": [],
+          "redLeftOut": [
+            "motivation",
+            "stakes",
+            "turning_points"
+          ],
+          "followsTableOrder": true
+        },
+        "postprocessError": null
+      }
+    },
+    {
+      "sampleId": "p4a",
+      "run": 1,
+      "meta": {
+        "sampleId": "p4a",
+        "run": 1,
+        "dryRun": false,
+        "ok": true,
+        "stage": "done",
+        "error": null,
+        "startedAt": "2026-10-14T01:27:52.119Z",
+        "durationMs": 1126397,
+        "settings": {
+          "model": "claude-opus-5-5",
+          "effort": "max"
+        },
+        "apiModel": "claude-opus-5-5",
+        "responseId": "msgbatch_01PqWAoSzbRoYdxRF4HDaxVk",
+        "usage": {
+          "input_tokens": 12330,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 115981,
+          "output_tokens_details": {
+            "thinking_tokens": 101405
+          },
+          "service_tier": "batch",
+          "inference_geo": "global"
+        },
+        "costUsd": 1.18447
+      },
+      "post": {
+        "missingQuestionIds": [],
+        "duplicateQuestionIds": [],
+        "unknownQuestionIds": [],
+        "rawQuotes": {
+          "total": 112,
+          "inMemo": 112,
+          "notInMemo": []
+        },
+        "appDroppedQuotes": 0,
+        "changedAnswers": [],
+        "priority": {
+          "topFixes": [
+            {
+              "itemId": "consistency",
+              "signal": "fix",
+              "tableIndex": 0
+            },
+            {
+              "itemId": "versions",
+              "signal": "fix",
+              "tableIndex": 2
+            },
+            {
+              "itemId": "genre_fit",
+              "signal": "fix",
+              "tableIndex": 5
+            }
+          ],
+          "red": [
+            "consistency",
+            "versions",
+            "genre_fit",
+            "motivation",
+            "protagonist_appeal",
+            "stakes",
+            "turning_points",
+            "theme"
+          ],
+          "yellow": [],
+          "redLeftOut": [
+            "motivation",
+            "protagonist_appeal",
+            "stakes",
+            "turning_points",
+            "theme"
+          ],
+          "followsTableOrder": true
+        },
+        "postprocessError": null
+      }
+    },
+    {
+      "sampleId": "p4b",
+      "run": 1,
+      "meta": {
+        "sampleId": "p4b",
+        "run": 1,
+        "dryRun": false,
+        "ok": true,
+        "stage": "done",
+        "error": null,
+        "startedAt": "2026-10-14T01:27:52.119Z",
+        "durationMs": 757960,
+        "settings": {
+          "model": "claude-opus-5-5",
+          "effort": "max"
+        },
+        "apiModel": "claude-opus-5-5",
+        "responseId": "msgbatch_016qKkBGUVwmMQXzVCab5E17",
+        "usage": {
+          "input_tokens": 12212,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 94411,
+          "output_tokens_details": {
+            "thinking_tokens": 79750
+          },
+          "service_tier": "batch",
+          "inference_geo": "global"
+        },
+        "costUsd": 0.968534
+      },
+      "post": {
+        "missingQuestionIds": [],
+        "duplicateQuestionIds": [],
+        "unknownQuestionIds": [],
+        "rawQuotes": {
+          "total": 101,
+          "inMemo": 101,
+          "notInMemo": []
+        },
+        "appDroppedQuotes": 0,
+        "changedAnswers": [],
+        "priority": {
+          "topFixes": [
+            {
+              "itemId": "consistency",
+              "signal": "fix",
+              "tableIndex": 0
+            },
+            {
+              "itemId": "core_rules",
+              "signal": "fix",
+              "tableIndex": 1
+            },
+            {
+              "itemId": "motivation",
+              "signal": "fix",
+              "tableIndex": 9
+            }
+          ],
+          "red": [
+            "consistency",
+            "core_rules",
+            "motivation",
+            "protagonist_appeal",
+            "arc",
+            "stakes",
+            "turning_points",
+            "ending",
+            "theme"
+          ],
+          "yellow": [],
+          "redLeftOut": [
+            "protagonist_appeal",
+            "arc",
+            "stakes",
+            "turning_points",
+            "ending",
+            "theme"
+          ],
+          "followsTableOrder": true
+        },
+        "postprocessError": null
+      }
+    }
+  ],
+  "targets": [
+    {
+      "sampleId": "p1a",
+      "run": 1,
+      "questionId": "consistency.no_conflict",
+      "itemId": "consistency",
+      "expected": "문제 없음",
+      "rawAnswer": "no",
+      "finalAnswer": "no",
+      "downgradedForEvidence": false,
+      "signal": "fix",
+      "inTopFixes": true,
+      "outcome": "불일치",
+      "reason": "세계관에는 은방울눈이 달빛을 받으면 향이 사라져 밤에 옮기면 흔적이 남지 않는다고 적혀 있고, 3화에서 아델도 이 규칙으로 '밤에 옮겨졌다'고 반박해요. 그런데 같은 3화 마지막 장면에서는 황태자 잔에서 은방울눈 향이 나요. 향이 다시 나는 조건이 어디에도 없어서 세계관의 규칙과 3화 마지막 장면이 서로 어긋나 보여요.",
+      "evidence": [
+        "독초 은방울눈은 달빛을 받으면 향이 사라진다.",
+        "그래서 밤에 옮기면 흔적이 남지 않는다.",
+        "3화 마지막 장면에서 연회장의 황태자 잔에서 은방울눈 향이 난다."
+      ],
+      "comment": "세계관에서는 은방울눈이 달빛을 받으면 향이 사라져 밤에 옮기면 흔적이 남지 않는다고 하고, 3화에서 아델도 흙에 향이 없다는 점으로 '밤에 옮겨졌다'고 밝혀요. 그런데 같은 3화 마지막 장면에서는 연회장의 황태자 잔에서 은방울눈 향이 나요. 밤에 옮겨진 독초라면 향이 이미 사라졌어야 하는데 잔에서는 왜 향이 나는지 설명이 없어서, 독자는 3화의 추리와 마지막 장면 중 하나가 규칙을 어겼다고 느낄 수 있어요.",
+      "direction": "세계관의 은방울눈 항목에 향이 달빛 아래에서만 잠깐 사라지는지, 한 번 사라지면 돌아오지 않는지, 다시 난다면 어떤 조건에서인지를 한 줄 더 적어 보면 어떨까요.",
+      "expectedCited": [],
+      "unexpectedEvidence": [
+        "독초 은방울눈은 달빛을 받으면 향이 사라진다.",
+        "그래서 밤에 옮기면 흔적이 남지 않는다.",
+        "3화 마지막 장면에서 연회장의 황태자 잔에서 은방울눈 향이 난다."
+      ],
+      "missingInfoWording": false
+    },
+    {
+      "sampleId": "p1b",
+      "run": 1,
+      "questionId": "consistency.no_conflict",
+      "itemId": "consistency",
+      "expected": "문제 있음",
+      "rawAnswer": "no",
+      "finalAnswer": "no",
+      "downgradedForEvidence": false,
+      "signal": "fix",
+      "inTopFixes": true,
+      "outcome": "일치",
+      "reason": "인물 메모는 아델이 원하는 것으로 남동생 테오의 기사 학교 학비 마련을 들고, 중반에도 아델은 테오의 학비를 포기하고 증거를 들고 나가요. 그런데 테오 항목에는 테오가 3년 전 영지를 잃던 날 마차 사고로 죽었다고 적혀 있어서 두 설정이 서로 어긋나요.",
+      "evidence": [
+        "남동생 테오의 기사 학교 학비를 마련하는 것",
+        "3년 전 영지를 잃던 날 마차 사고로 죽었다.",
+        "아델은 테오의 학비를 포기하고 증거를 들고 나간다."
+      ],
+      "comment": "인물 메모에서 아델이 원하는 것은 남동생 테오의 기사 학교 학비를 마련하는 일이고, 중반에도 아델은 테오의 학비를 포기하고 증거를 들고 나가요. 그런데 바로 아래 테오 항목에는 테오가 3년 전 영지를 잃던 날 마차 사고로 죽었다고 적혀 있어요. 독자는 테오가 살아 있는지부터 헷갈리고, 이 작품에서 가장 큰 선택인 중반 장면이 무엇을 내려놓는 장면인지 알 수 없게 돼요.",
+      "direction": "테오가 살아 있는지 죽었는지 하나로 정하고, 그에 맞춰 아델이 원하는 것과 중반에 포기하는 것을 다시 맞춰 보면 어떨까요?",
+      "expectedCited": [
+        {
+          "quote": "테오 로웬(14): 아델의 남동생. 3년 전 영지를 잃던 날 마차 사고로 죽었다.",
+          "cited": true
+        },
+        {
+          "quote": "원하는 것은 가문의 빚을 갚고 남동생 테오의 기사 학교 학비를 마련하는 것.",
+          "cited": true
+        }
+      ],
+      "unexpectedEvidence": [
+        "아델은 테오의 학비를 포기하고 증거를 들고 나간다."
+      ],
+      "missingInfoWording": false
+    },
+    {
+      "sampleId": "p2a",
+      "run": 1,
+      "questionId": "motivation.reason",
+      "itemId": "motivation",
+      "expected": "문제 없음",
+      "rawAnswer": "no",
+      "finalAnswer": "no",
+      "downgradedForEvidence": false,
+      "signal": "fix",
+      "inTopFixes": false,
+      "outcome": "불일치",
+      "reason": "2화의 구하기, 4~10화의 맞서기, 20화의 10년 내주기까지 한결의 1부 선택에는 이유가 모두 붙어 있어요. 하지만 2부에서 회수인이 한결의 능력을 노리는 까닭과, 결말에서 한결이 남은 수명을 걸고 거래 장부를 불태우는 까닭은 메모에 없어요.",
+      "evidence": [
+        "2부: 회수인이 한결의 능력을 노린다.",
+        "남은 수명을 걸고 거래 장부를 불태운다."
+      ],
+      "comment": "2화에서 서윤을 구하기로 하는 것, 4~10화에서 회수인과 맞서기로 하는 것, 20화에서 10년을 내주는 것까지 한결의 1부 선택에는 이유가 빠짐없이 붙어 있어요. 그런데 2부에서 회수인이 왜 한결의 능력을 노리는지, 결말에서 한결이 왜 남은 수명을 걸고 거래 장부를 불태우기로 하는지는 적혀 있지 않아요. 가장 큰 대가를 치르는 마지막 선택에 이유가 비어 있으면 독자는 1부만큼 한결의 마음을 따라가지 못한 채 결말을 맞게 되고, 2부의 회수인도 그저 쫓아오는 적으로만 보여요.",
+      "direction": "2부에서 회수인이 한결의 능력으로 무엇을 하려는지, 결말에서 한결이 장부를 태우기로 마음먹는 이유가 무엇인지 1부 선택처럼 한 줄씩 적어 보면 어떨까요.",
+      "expectedCited": [
+        {
+          "quote": "아버지 때처럼 알고도 모른 척하면 평생 후회할 것 같아서다.",
+          "cited": false
+        },
+        {
+          "quote": "자신도 빚 때문에 인생을 저당 잡힌 처지라 서윤의 계약을 남의 일로 볼 수 없어서다.",
+          "cited": false
+        },
+        {
+          "quote": "서윤이 어른들이 정한 날짜가 아니라 자기 날짜로 살기를 바라서다.",
+          "cited": false
+        }
+      ],
+      "unexpectedEvidence": [
+        "2부: 회수인이 한결의 능력을 노린다.",
+        "남은 수명을 걸고 거래 장부를 불태운다."
+      ],
+      "missingInfoWording": true
+    },
+    {
+      "sampleId": "p2b",
+      "run": 1,
+      "questionId": "motivation.reason",
+      "itemId": "motivation",
+      "expected": "정보 부족",
+      "rawAnswer": "no",
+      "finalAnswer": "no",
+      "downgradedForEvidence": false,
+      "signal": "fix",
+      "inTopFixes": false,
+      "outcome": "일치",
+      "reason": "2화에서 한결이 서윤을 구하기로 하는 선택과, 20화에서 수명 10년을 내주는 선택에 이유가 적혀 있지 않아요. 서윤의 부모가 딸의 수명을 넘긴 데는 빚이라는 이유가 있지만, 주인공의 가장 큰 두 선택은 이유가 비어 있어요.",
+      "evidence": [
+        "2화: 한결은 서윤을 구하기로 한다.",
+        "1부 끝(20화): 한결은 자기 수명 10년을 내주고 서윤의 계약을 깬다."
+      ],
+      "comment": "2화에서 한결은 빚 독촉에 쫓기는 처지인데도 단골손님인 서윤을 위해 자기 수명을 쓰기로 해요. 그런데 메모에는 둘이 손님과 알바생이라는 것 말고 그럴 이유가 없어요. 20화에서 10년을 내주는 선택도 마찬가지라, 아버지의 임종을 놓친 일이 이 선택들을 밀어주는지 독자는 알 수 없어요. 이유가 비어 있으면 한결의 희생이 인물의 마음이 아니라 줄거리를 굴리는 장치로 보여요.",
+      "direction": "2화와 20화의 선택 바로 앞에, 한결이 왜 서윤을 그냥 지나치지 못하는지 보여줄 계기나 속마음을 정해보면 어떨까요.",
+      "expectedCited": [
+        {
+          "quote": "한결은 서윤을 구하기로 한다.",
+          "cited": true
+        },
+        {
+          "quote": "한결은 회수인과 맞서기로 한다.",
+          "cited": false
+        },
+        {
+          "quote": "한결은 자기 수명 10년을 내주고 서윤의 계약을 깬다.",
+          "cited": true
+        }
+      ],
+      "unexpectedEvidence": [],
+      "missingInfoWording": true
+    },
+    {
+      "sampleId": "p3a",
+      "run": 1,
+      "questionId": "versions.separated",
+      "itemId": "versions",
+      "expected": "문제 없음",
+      "rawAnswer": "yes",
+      "finalAnswer": "yes",
+      "downgradedForEvidence": false,
+      "signal": "good",
+      "inTopFixes": false,
+      "outcome": "일치",
+      "reason": "설정 메모에 [폐기]와 [최종] 표시가 붙어 있어 첩자 설정과 청운객잔이 버린 안이라는 것이 분명해요. 버린 이유도 이야기가 너무 복잡해져서라고 적혀 있고, 최종 줄거리에는 버린 설정이 섞여 있지 않아요.",
+      "evidence": [
+        "[폐기] 소운이 흑의 무리의 첩자로 길러졌다가 배신하는 설정.",
+        "[폐기] 객잔 이름 '청운객잔' → [최종] '흑비단객잔'.",
+        "[최종] 소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다."
+      ],
+      "comment": "첩자로 길러진 소운과 청운객잔에는 [폐기], 우물에서 살아남은 소운과 흑비단객잔에는 [최종] 표시가 붙어 있어 무엇이 최종안인지 헷갈리지 않아요. 최종 줄거리에도 버린 설정이 남아 있지 않아요.",
+      "direction": "",
+      "expectedCited": [
+        {
+          "quote": "[폐기] 소운이 흑의 무리의 첩자로 길러졌다가 배신하는 설정.",
+          "cited": true
+        },
+        {
+          "quote": "[최종] 소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다.",
+          "cited": true
+        },
+        {
+          "quote": "[폐기] 객잔 이름 '청운객잔' → [최종] '흑비단객잔'.",
+          "cited": true
+        }
+      ],
+      "unexpectedEvidence": [],
+      "missingInfoWording": false
+    },
+    {
+      "sampleId": "p3a",
+      "run": 1,
+      "questionId": "consistency.no_conflict",
+      "itemId": "consistency",
+      "expected": "문제 없음",
+      "rawAnswer": "yes",
+      "finalAnswer": "yes",
+      "downgradedForEvidence": false,
+      "signal": "good",
+      "inTopFixes": false,
+      "outcome": "일치",
+      "reason": "객잔 이름은 바꾼 뒤로 인물 메모와 1화 줄거리에서 모두 흑비단객잔으로 쓰이고, 2화에서 단비가 보는 왼손 굳은살도 소운이 왼손잡이라는 설정과 맞아요. 폐기한 첩자 설정에 기대는 장면도 최종 줄거리에 남아 있지 않아서, 서로 어긋나는 설정은 찾지 못했어요.",
+      "evidence": [
+        "1화: 비 오는 밤, 소운이 흑비단객잔에 점소이로 들어온다.",
+        "소운은 왼손잡이다.",
+        "단비가 소운의 왼손 굳은살을 본다."
+      ],
+      "comment": "바꾼 객잔 이름 흑비단객잔이 인물 메모와 1화에 똑같이 쓰이고, 소운이 왼손잡이라는 설정이 2화에서 단비가 보는 왼손 굳은살로 정확히 이어져요. 메모 안에서 서로 부딪히는 설정이 없어요.",
+      "direction": "",
+      "expectedCited": [],
+      "unexpectedEvidence": [
+        "1화: 비 오는 밤, 소운이 흑비단객잔에 점소이로 들어온다.",
+        "소운은 왼손잡이다.",
+        "단비가 소운의 왼손 굳은살을 본다."
+      ],
+      "missingInfoWording": false
+    },
+    {
+      "sampleId": "p3b",
+      "run": 1,
+      "questionId": "versions.separated",
+      "itemId": "versions",
+      "expected": "문제 있음",
+      "rawAnswer": "no",
+      "finalAnswer": "no",
+      "downgradedForEvidence": false,
+      "signal": "fix",
+      "inTopFixes": true,
+      "outcome": "일치",
+      "reason": "메모 어디에도 버렸거나 바꾼 설정이라는 표시가 없어요. 객잔 이름과 소운의 과거처럼 서로 다른 두 버전이 함께 적혀 있는데, 어느 쪽이 최종안인지 알 수 없어요.",
+      "evidence": [
+        "객잔 이름은 '청운객잔'이다.",
+        "소운은 흑의 무리의 첩자로 길러졌다가 배신한다."
+      ],
+      "comment": "메모에 '버림'이나 '변경' 같은 표시가 하나도 없어서, 객잔 이름과 소운의 과거 중 어느 쪽 버전이 최신인지 가릴 근거가 없어요. 특히 첩자 설정은 줄거리 구상 어디에도 다시 나오지 않아서, 버린 설정인지 앞으로 넣을 설정인지 알 수 없어요. 이대로 원고를 쓰기 시작하면 회차마다 다른 버전이 섞여 들어갈 수 있어요.",
+      "direction": "버리거나 바꾼 설정 옆에 표시를 달고, 최종안만 따로 모아 두면 어떨까요?",
+      "expectedCited": [
+        {
+          "quote": "소운은 흑의 무리의 첩자로 길러졌다가 배신한다.",
+          "cited": true
+        },
+        {
+          "quote": "소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다.",
+          "cited": false
+        },
+        {
+          "quote": "객잔 이름은 '청운객잔'이다.",
+          "cited": true
+        }
+      ],
+      "unexpectedEvidence": [],
+      "missingInfoWording": false
+    },
+    {
+      "sampleId": "p3b",
+      "run": 1,
+      "questionId": "consistency.no_conflict",
+      "itemId": "consistency",
+      "expected": "문제 있음",
+      "rawAnswer": "no",
+      "finalAnswer": "no",
+      "downgradedForEvidence": false,
+      "signal": "fix",
+      "inTopFixes": true,
+      "outcome": "일치",
+      "reason": "설정 메모는 객잔 이름을 '청운객잔'이라고 하지만 인물 메모와 1화 줄거리에서는 '흑비단객잔'이라고 해요. 소운의 과거도 흑의 무리의 첩자로 길러졌다는 줄과, 우물에 숨어 살아남은 뒤 누구의 제자도 된 적이 없다는 줄이 서로 맞지 않아요.",
+      "evidence": [
+        "객잔 이름은 '청운객잔'이다.",
+        "마 노인(60대): 흑비단객잔 주인.",
+        "소운은 흑의 무리의 첩자로 길러졌다가 배신한다.",
+        "소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다."
+      ],
+      "comment": "설정 메모에는 객잔 이름이 '청운객잔'이라고 되어 있는데, 인물 메모와 1화 줄거리에서는 '흑비단객잔'이에요. 더 큰 문제는 소운의 과거예요. 한 줄은 흑의 무리의 첩자로 길러졌다가 배신한다고 하고, 바로 다음 줄은 멸문 당일 우물에 숨어 살아남아 누구의 제자도 된 적이 없다고 해요. 첩자 설정을 따르면 소운은 흑의 무리 안에서 자란 셈이라, 점소이로 숨어들어 신표를 쫓다가 3화에서 마 노인의 정체에 놀라는 흐름을 독자가 믿기 어려워져요.",
+      "direction": "객잔 이름을 하나로 정하고, 소운이 멸문 뒤 어디서 어떻게 자랐는지를 한 가지 과거로 정리해 보면 어떨까요?",
+      "expectedCited": [
+        {
+          "quote": "소운은 흑의 무리의 첩자로 길러졌다가 배신한다.",
+          "cited": true
+        },
+        {
+          "quote": "소운은 멸문 당일 우물에 숨어 살아남았고, 그 뒤로 누구의 제자도 된 적이 없다.",
+          "cited": true
+        },
+        {
+          "quote": "객잔 이름은 '청운객잔'이다.",
+          "cited": true
+        },
+        {
+          "quote": "소운이 흑비단객잔에 점소이로 들어온다.",
+          "cited": false
+        }
+      ],
+      "unexpectedEvidence": [
+        "마 노인(60대): 흑비단객잔 주인."
+      ],
+      "missingInfoWording": false
+    },
+    {
+      "sampleId": "p4a",
+      "run": 1,
+      "questionId": "ending.decided",
+      "itemId": "ending",
+      "expected": "문제 없음",
+      "rawAnswer": "yes",
+      "finalAnswer": "yes",
+      "downgradedForEvidence": false,
+      "signal": "good",
+      "inTopFixes": false,
+      "outcome": "일치",
+      "reason": "결말에서 은서가 진실을 밝히고, 언니의 이름으로 장부를 공개하고, 마을이 다시 물에 잠기고, 은서가 자신을 용서하는 것까지 정해져 있어요. 사건의 끝과 감정의 끝이 모두 적혀 있어요.",
+      "evidence": [
+        "은서는 기사 대신 언니의 이름으로 장부를 공개하고",
+        "마을은 다시 물에 잠긴다.",
+        "은서는 언니를 의심했던 자신을 용서한다."
+      ],
+      "comment": "진실 공개, 언니의 이름으로 남기는 장부, 다시 물에 잠기는 마을, 은서의 자기 용서까지 사건과 감정의 도착점이 모두 정해져 있어요. 다시 잠기는 마을이라는 마지막 그림이 물이 빠지며 드러난 첫 장면과 짝을 이뤄요.",
+      "direction": "",
+      "expectedCited": [
+        {
+          "quote": "은서는 진실을 밝히지만, 처벌할 사람 대부분은 이미 죽었거나 늙었다.",
+          "cited": false
+        },
+        {
+          "quote": "은서는 기사 대신 언니의 이름으로 장부를 공개하고, 마을은 다시 물에 잠긴다.",
+          "cited": true
+        }
+      ],
+      "unexpectedEvidence": [
+        "은서는 언니를 의심했던 자신을 용서한다."
+      ],
+      "missingInfoWording": false
+    },
+    {
+      "sampleId": "p4b",
+      "run": 1,
+      "questionId": "ending.decided",
+      "itemId": "ending",
+      "expected": "정보 부족",
+      "rawAnswer": "no",
+      "finalAnswer": "no",
+      "downgradedForEvidence": false,
+      "signal": "fix",
+      "inTopFixes": false,
+      "outcome": "일치",
+      "reason": "줄거리 구상은 후반에 마을 사람 여럿이 관여했다는 진실이 드러나는 데서 멈춰요. 은주의 생사, 은서가 중심 질문에 내리는 답, 마을 사람들과 태민 부자가 맞는 결과 같은 이야기의 도착점은 메모에 없어요.",
+      "evidence": [
+        "은주의 실종에는 마을 사람 여럿이 조금씩 관여했다.",
+        "모두가 조금씩 가담한 죄는 누가 책임져야 할까?"
+      ],
+      "comment": "줄거리 구상은 후반에 마을 사람 여럿이 조금씩 관여했다는 진실이 드러나는 데서 멈춰 있어요. 은주가 살아 있는지, 은서가 '누가 책임져야 하나'라는 질문에 어떤 답을 내리는지, 마을 사람들과 태민 부자가 어떤 결과를 맞는지가 정해져 있지 않아요. 도착점이 없으면 중반부터 어떤 단서를 깔고 어느 쪽으로 긴장을 몰아갈지도 정하기 어려워요.",
+      "direction": "은주의 생사, 마을 사람들이 지게 되는 책임, 은서와 태민이 마지막에 서는 자리를 결말 메모로 먼저 정해 보면 어떨까요?",
+      "expectedCited": [
+        {
+          "quote": "은주의 실종에는 마을 사람 여럿이 조금씩 관여했다.",
+          "cited": true
+        }
+      ],
+      "unexpectedEvidence": [
+        "모두가 조금씩 가담한 죄는 누가 책임져야 할까?"
+      ],
+      "missingInfoWording": true
+    }
+  ],
+  "mustFind": [
+    {
+      "sampleId": "p1b",
+      "run": 1,
+      "description": "3년 전 죽었다는 테오의 기사 학교 학비를 아델이 마련하려 한다",
+      "id": "dead-brother-tuition",
+      "questionId": "consistency.no_conflict",
+      "answer": "no",
+      "cited": 2,
+      "of": 2,
+      "found": true
+    },
+    {
+      "sampleId": "p2b",
+      "run": 1,
+      "description": "2화 서윤을 구하기로 한 이유, 4~10화 회수인과 맞서기로 한 이유, 20화 수명 10년을 내준 이유가 메모에 없다",
+      "id": "choices-without-reason",
+      "questionId": "motivation.reason",
+      "answer": "no",
+      "cited": 2,
+      "of": 3,
+      "found": false
+    },
+    {
+      "sampleId": "p3b",
+      "run": 1,
+      "description": "흑의 무리의 첩자로 길러졌다는 설정과 누구의 제자도 된 적 없다는 설정이 함께 적혀 있다",
+      "id": "spy-vs-nobody",
+      "questionId": "consistency.no_conflict",
+      "answer": "no",
+      "cited": 2,
+      "of": 2,
+      "found": true
+    },
+    {
+      "sampleId": "p3b",
+      "run": 1,
+      "description": "객잔 이름이 청운객잔과 흑비단객잔으로 엇갈린다",
+      "id": "inn-name",
+      "questionId": "consistency.no_conflict",
+      "answer": "no",
+      "cited": 1,
+      "of": 2,
+      "found": false
+    },
+    {
+      "sampleId": "p3b",
+      "run": 1,
+      "description": "어느 설정이 최종이고 어느 설정을 버렸는지 표시가 없다",
+      "id": "versions-mixed",
+      "questionId": "versions.separated",
+      "answer": "no",
+      "cited": 2,
+      "of": 2,
+      "found": true
+    },
+    {
+      "sampleId": "p4b",
+      "run": 1,
+      "description": "이야기가 도달할 지점(결말)이 메모에 없다",
+      "id": "ending-missing",
+      "questionId": "ending.decided",
+      "answer": "no",
+      "cited": 0,
+      "of": 0,
+      "found": true
+    }
+  ],
+  "mustNotFlag": [
+    {
+      "sampleId": "p1a",
+      "run": 1,
+      "description": "가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다",
+      "hasReport": true,
+      "id": "alias",
+      "humanOnly": false,
+      "hits": []
+    },
+    {
+      "sampleId": "p1a",
+      "run": 1,
+      "description": "리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다",
+      "hasReport": true,
+      "id": "rina-informant",
+      "humanOnly": false,
+      "hits": []
+    },
+    {
+      "sampleId": "p1b",
+      "run": 1,
+      "description": "가명 '엘라'를 아델의 이름과 어긋나는 설정으로 지적한다",
+      "hasReport": true,
+      "id": "alias",
+      "humanOnly": false,
+      "hits": []
+    },
+    {
+      "sampleId": "p1b",
+      "run": 1,
+      "description": "리나의 정보원 반전을 인물 설정과 어긋난다고 지적한다",
+      "hasReport": true,
+      "id": "rina-informant",
+      "humanOnly": false,
+      "hits": []
+    },
+    {
+      "sampleId": "p2a",
+      "run": 1,
+      "description": "작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다",
+      "hasReport": true,
+      "id": "miso-hidden",
+      "humanOnly": false,
+      "hits": []
+    },
+    {
+      "sampleId": "p2b",
+      "run": 1,
+      "description": "작가가 일부러 숨긴 미소의 정체와 목적을 동기 누락이나 설정 충돌로 지적한다",
+      "hasReport": true,
+      "id": "miso-hidden",
+      "humanOnly": false,
+      "hits": [
+        "consistency.no_conflict: \"아니오\" 근거로 인용",
+        "설정 정리의 어긋나는 설정: 작가 메모는 미소의 정체를 1부에서 숨긴다고 해요. 그런데 3화에서 미소가 서윤의 날짜를 이미 받았다고 말해서, 회수인 쪽 사람이라는 점이 1부에서 드러나요."
+      ]
+    },
+    {
+      "sampleId": "p3a",
+      "run": 1,
+      "description": "[폐기] 표시한 첩자 설정과 '청운객잔'을 최종 설정과 어긋난다고 지적한다",
+      "hasReport": true,
+      "id": "discarded-as-conflict",
+      "humanOnly": false,
+      "hits": []
+    },
+    {
+      "sampleId": "p4a",
+      "run": 1,
+      "description": "여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다",
+      "hasReport": true,
+      "id": "many-culprits",
+      "humanOnly": false,
+      "hits": []
+    },
+    {
+      "sampleId": "p4b",
+      "run": 1,
+      "description": "여러 사람이 조금씩 관여했다는 의도적 설정을 전환점 이유 누락이나 설정 충돌로 지적한다",
+      "hasReport": true,
+      "id": "many-culprits",
+      "humanOnly": false,
+      "hits": []
+    },
+    {
+      "sampleId": "p4b",
+      "run": 1,
+      "description": "메모에 없는 결말을 지어내 판단 근거로 삼는다",
+      "hasReport": true,
+      "id": "invented-ending",
+      "humanOnly": true,
+      "hits": []
+    }
+  ],
+  "pairs": [
+    {
+      "pair": "p1",
+      "run": 1,
+      "a": "p1a",
+      "b": "p1b",
+      "excluded": [
+        "consistency.no_conflict",
+        "desire_lack.want",
+        "supporting.role",
+        "motivation.reason"
+      ],
+      "diff": {
+        "compared": 19,
+        "differences": [
+          {
+            "questionId": "stakes.cost",
+            "a": "no",
+            "b": "yes",
+            "subjective": false
+          }
+        ]
+      }
+    },
+    {
+      "pair": "p2",
+      "run": 1,
+      "a": "p2a",
+      "b": "p2b",
+      "excluded": [
+        "motivation.reason",
+        "protagonist_appeal.root",
+        "arc.change",
+        "theme.coherent",
+        "stakes.cost"
+      ],
+      "diff": {
+        "compared": 18,
+        "differences": [
+          {
+            "questionId": "supporting.role",
+            "a": "yes",
+            "b": "no",
+            "subjective": false
+          }
+        ]
+      }
+    },
+    {
+      "pair": "p3",
+      "run": 1,
+      "a": "p3a",
+      "b": "p3b",
+      "excluded": [
+        "versions.separated",
+        "consistency.no_conflict"
+      ],
+      "diff": {
+        "compared": 21,
+        "differences": []
+      }
+    },
+    {
+      "pair": "p4",
+      "run": 1,
+      "a": "p4a",
+      "b": "p4b",
+      "excluded": [
+        "ending.decided",
+        "arc.change",
+        "theme.coherent"
+      ],
+      "diff": {
+        "compared": 20,
+        "differences": [
+          {
+            "questionId": "core_rules.stated",
+            "a": "yes",
+            "b": "no",
+            "subjective": false
+          },
+          {
+            "questionId": "versions.separated",
+            "a": "no",
+            "b": "yes",
+            "subjective": false
+          },
+          {
+            "questionId": "genre_fit.core_fun",
+            "a": "no",
+            "b": "yes",
+            "subjective": true
+          }
+        ]
+      }
+    }
+  ],
+  "repeats": []
+}

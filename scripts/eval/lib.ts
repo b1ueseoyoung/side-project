@@ -282,28 +282,28 @@ export function safeError(error: unknown): string {
   return text.replace(/sk-[\w-]{10,}/g, "<masked>").slice(0, 2000);
 }
 
-// USD per 1M tokens, standard tier, 2026-09-30: https://developers.openai.com/api/docs/models/gpt-6-luna
-const PRICES: Record<string, { input: number; cached: number; cacheWrite: number; output: number }> = {
-  "gpt-6-luna": { input: 0.1, cached: 0.01, cacheWrite: 0.125, output: 0.5 },
+// USD per 1M tokens on the Message Batches API (half the standard price), 2026-10-14:
+// https://platform.claude.com/docs/en/about-claude/pricing#batch-processing
+const PRICES: Record<string, { input: number; cacheWrite: number; cacheRead: number; output: number }> = {
+  "claude-opus-5-5": { input: 2, cacheWrite: 2.5, cacheRead: 0.1, output: 10 },
 };
 
 type Usage = {
   input_tokens?: number;
   output_tokens?: number;
-  input_tokens_details?: { cached_tokens?: number; cache_write_tokens?: number };
+  cache_creation_input_tokens?: number;
+  cache_read_input_tokens?: number;
 };
 
-/** Standard-tier cost of one response in USD; null for an unknown model or missing usage. */
+/** Batch-price cost of one request in USD; null for an unknown model or missing usage. */
 export function costUsd(model: string | null | undefined, usage: Record<string, unknown> | null | undefined): number | null {
   const price = Object.entries(PRICES).find(([key]) => model?.startsWith(key))?.[1];
   const u = usage as Usage | null | undefined;
   if (!price || typeof u?.input_tokens !== "number" || typeof u.output_tokens !== "number") return null;
-  const cached = u.input_tokens_details?.cached_tokens ?? 0;
-  const cacheWrite = u.input_tokens_details?.cache_write_tokens ?? 0;
-  return (
-    ((u.input_tokens - cached - cacheWrite) * price.input + cached * price.cached + cacheWrite * price.cacheWrite + u.output_tokens * price.output) /
-    1e6
-  );
+  // Anthropic counts cache writes and reads apart from input_tokens.
+  const cacheWrite = u.cache_creation_input_tokens ?? 0;
+  const cacheRead = u.cache_read_input_tokens ?? 0;
+  return (u.input_tokens * price.input + cacheWrite * price.cacheWrite + cacheRead * price.cacheRead + u.output_tokens * price.output) / 1e6;
 }
 
 /**

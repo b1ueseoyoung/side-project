@@ -1,0 +1,51 @@
+{
+  "missingQuestionIds": [],
+  "duplicateQuestionIds": [],
+  "unknownQuestionIds": [],
+  "rawQuotes": {
+    "total": 113,
+    "inMemo": 113,
+    "notInMemo": []
+  },
+  "appDroppedQuotes": 0,
+  "changedAnswers": [],
+  "priority": {
+    "topFixes": [
+      {
+        "itemId": "consistency",
+        "signal": "fix",
+        "tableIndex": 0
+      },
+      {
+        "itemId": "versions",
+        "signal": "fix",
+        "tableIndex": 2
+      },
+      {
+        "itemId": "genre_fit",
+        "signal": "fix",
+        "tableIndex": 5
+      }
+    ],
+    "red": [
+      "consistency",
+      "versions",
+      "genre_fit",
+      "motivation",
+      "central_question",
+      "stakes",
+      "turning_points",
+      "theme"
+    ],
+    "yellow": [],
+    "redLeftOut": [
+      "motivation",
+      "central_question",
+      "stakes",
+      "turning_points",
+      "theme"
+    ],
+    "followsTableOrder": true
+  },
+  "postprocessError": null
+}

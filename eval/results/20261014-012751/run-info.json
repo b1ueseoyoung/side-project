@@ -1,0 +1,40 @@
+{
+  "createdAt": "2026-10-14T01:27:52.045Z",
+  "dryRun": false,
+  "samples": [
+    "p1a",
+    "p1b",
+    "p2a",
+    "p2b",
+    "p3a",
+    "p3b",
+    "p4a",
+    "p4b"
+  ],
+  "repeat": 1,
+  "plannedModelCalls": 8,
+  "provider": "anthropic-batches",
+  "settings": {
+    "model": "claude-opus-5-5",
+    "effort": "max"
+  },
+  "versions": {
+    "gitHead": "1297bc8f93372ca8790c68605207b3ff727ea254",
+    "uncommittedVersionedFiles": [
+      "M src/lib/diagnosis/diagnose.ts",
+      "M src/lib/llm.ts"
+    ],
+    "files": {
+      "src/lib/diagnosis/prompt.ts": "fb1365e361f5bb73",
+      "src/lib/diagnosis/rules.ts": "da6a55683be26719",
+      "src/lib/diagnosis/items.ts": "1293e659696d7113",
+      "src/lib/diagnosis/types.ts": "880face5276968a7",
+      "src/lib/diagnosis/diagnose.ts": "2d6af525e47ce472",
+      "src/lib/llm.ts": "7c9df6bc2d9a583e"
+    },
+    "systemPromptSha256": "6e63177dca9e3b84",
+    "outputSchemaSha256": "4e955489cd78221e"
+  },
+  "node": "v26.10.0",
+  "note": "8 one-sample runner processes started in parallel (one batch each); samples merged after the runs"
+}
