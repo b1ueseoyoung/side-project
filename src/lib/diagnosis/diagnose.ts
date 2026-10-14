@@ -8,7 +8,7 @@ import { buildReport } from "./rules.ts";
 import type { Memo, ModelOutput, Report } from "./types.ts";
 
 const POLL_MS = 5_000;
-// A batch can take up to 24 hours: the app gives up after an hour, the CLI and eval keep the paid result.
+// A batch can take up to 24 hours; the browser and the CLI wait that long so a paid result is kept.
 const MAX_WAIT_MS = 24 * 60 * 60 * 1000;
 // The CLI and eval have no signed-in viewer.
 const CLI_ACCOUNT = "cli";

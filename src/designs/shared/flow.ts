@@ -16,7 +16,8 @@ const draftKey = (account: string) => `${DRAFT_PREFIX}:${account}`;
 const pendingKey = (account: string) => `${PENDING_PREFIX}:${account}`;
 
 const POLL_MS = 10_000;
-const GIVE_UP_MS = 60 * 60 * 1000;
+// A batch can take up to 24 hours: keep checking that long so a paid result is still saved.
+const GIVE_UP_MS = 24 * 60 * 60 * 1000;
 
 type Pending = { responseId: string; startedAt: number; memo: Memo };
 
